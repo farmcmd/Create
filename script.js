@@ -150,6 +150,13 @@ const logTripMileageStatusElement = document.getElementById('log-trip-mileage-st
 const taxiInfoModal = document.getElementById('taxi-info-modal');
 const taxiInfoButton = document.getElementById('taxi-info-button'); // Button to open taxi info modal
 
+// New DOM elements for POI Review Section
+const poiReviewSection = document.getElementById('poi-review-section');
+const consumptionAmountInput = document.getElementById('consumption-amount');
+const reviewCodeInput = document.getElementById('review-code');
+const submitPoiReviewButton = document.getElementById('submit-poi-review');
+const poiReviewStatusElement = document.getElementById('poi-review-status');
+
 
 // --- Local Storage ---
 const localStorageKey = 'shuilSustainableTourismData';
@@ -268,7 +275,7 @@ function showHomepage() {
       // Remove highlight from previously selected activity item
      const previousSelectedItem = activityListElement.querySelector(`.selected-activity-item`);
      if (previousSelectedItem) {
-         previousSelectedItem.classList.remove('selected-activity-item');
+                 previousSelectedItem.classList.remove('selected-activity-item');
      }
      console.log("Showing homepage."); // Debugging line
 }
@@ -690,6 +697,19 @@ function showPoiModal(poi) {
         poiModalSocialDiv.appendChild(socialLinkElement);
     }
 
+    // --- Handle POI Review Section Visibility and Setup ---
+    // Check if the current POI is '機車貓聯盟' (poi14) or '水里里山村' (poi16)
+    if (poi.id === 'poi14' || poi.id === 'poi16') {
+        poiReviewSection.classList.remove('hidden'); // Show the review section
+        // Clear previous input values and status message
+        consumptionAmountInput.value = '';
+        reviewCodeInput.value = '';
+        poiReviewStatusElement.textContent = '';
+        poiReviewStatusElement.classList.remove('text-green-600', 'text-red-600');
+    } else {
+        poiReviewSection.classList.add('hidden'); // Hide the review section
+    }
+
 
     poiModal.classList.remove('hidden');
 }
@@ -699,6 +719,80 @@ function hidePoiModal() {
     poiModal.classList.add('hidden');
     poiModal.currentPoi = null; // Clear temporary data
 }
+
+// --- POI Review Submission ---
+function submitPoiReview() {
+    console.log("Submit POI review button clicked."); // Debugging line
+    const currentPoi = poiModal.currentPoi;
+    if (!currentPoi) {
+        console.error("No POI selected for review submission.");
+        return; // Should not happen if button is only shown for valid POIs
+    }
+
+    const consumptionAmount = parseFloat(consumptionAmountInput.value);
+    const reviewCode = reviewCodeInput.value.trim();
+
+    // Validation
+    if (isNaN(consumptionAmount) || consumptionAmount <= 0) {
+        poiReviewStatusElement.textContent = '請輸入有效的消費金額。';
+        poiReviewStatusElement.classList.remove('text-green-600');
+        poiReviewStatusElement.classList.add('text-red-600');
+        console.warn("Invalid consumption amount:", consumptionAmount);
+        return;
+    }
+
+    // Check if the code is exactly 3 digits (0-9)
+    const codeRegex = /^[0-9]{3}$/;
+    if (!codeRegex.test(reviewCode)) {
+        poiReviewStatusElement.textContent = '請輸入有效的3碼數字審核碼。';
+        poiReviewStatusElement.classList.remove('text-green-600');
+        poiReviewStatusElement.classList.add('text-red-600');
+        console.warn("Invalid review code format:", reviewCode);
+        return;
+    }
+
+    // If validation passes, add points and log the action
+    const pointsEarned = 10; // As per requirement
+    totalScore += pointsEarned;
+    updateStatsDisplay(); // Update score display
+    saveData(); // Save the updated score
+
+    const now = new Date();
+    const timestamp = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')} ${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
+
+    const newLogEntry = {
+        type: 'poi_review', // Mark this as a POI review log
+        poiName: currentPoi.name,
+        consumption: consumptionAmount,
+        reviewCode: reviewCode,
+        timestamp: timestamp,
+        points: pointsEarned
+    };
+
+    loggedActions.push(newLogEntry); // Add new log to the array
+    saveData(); // Save updated logs
+    renderLoggedActions(); // Re-render the list
+
+    console.log(`Logged review for ${currentPoi.name}: Consumption ${consumptionAmount}, Code ${reviewCode}. Points: ${pointsEarned}`); // Debugging line
+
+    poiReviewStatusElement.textContent = `審核成功！獲得 +${pointsEarned} 積分！`;
+    poiReviewStatusElement.classList.remove('text-red-600');
+    poiReviewStatusElement.classList.add('text-green-600');
+
+    // Clear input fields after successful submission
+    consumptionAmountInput.value = '';
+    reviewCodeInput.value = '';
+
+    // Optional: Hide the review section after submission, or leave it visible with success message
+    // poiReviewSection.classList.add('hidden');
+
+    // Reset status message after a few seconds
+    setTimeout(() => {
+        poiReviewStatusElement.textContent = '';
+        poiReviewStatusElement.classList.remove('text-green-600');
+    }, 5000); // Display success message for 5 seconds
+}
+
 
 // --- Sustainable Activities and Verification Modal ---
  function populateActivityList() {
@@ -1018,6 +1112,14 @@ function renderLoggedActions() {
                  <p class="text-sm text-gray-700 mb-1">里程: ${(log.mileageInMeters / 1000).toFixed(2)} km</p>
                  <p class="text-sm text-gray-700 mb-1">估計減碳: ${log.carbonReduction.toFixed(2)} g</p>
              `;
+            } else if (log.type === 'poi_review') {
+             // Render POI review log
+             logContentHTML = `
+                  <p class="log-type">永續消費記錄</p>
+                  <p class="text-sm text-gray-700 mb-1">景點: ${log.poiName}</p>
+                  <p class="text-sm text-gray-700 mb-1">消費金額: ${log.consumption}</p>
+                  <p class="text-sm text-gray-700 mb-1">審核碼: ${log.reviewCode}</p>
+              `;
          }
 
 
@@ -1306,11 +1408,19 @@ function downloadTourismData() {
                  htmlContent += `<p><strong>交通方式:</strong> ${log.transportName} (${log.transportIcon})</p>`;
                  htmlContent += `<p><strong>里程:</strong> ${(log.mileageInMeters / 1000).toFixed(2)} km</p>`;
                  htmlContent += `<p><strong>估計減碳:</strong> ${log.carbonReduction.toFixed(2)} g</p>`;
-            }
+            } else if (log.type === 'poi_review') {
+             // Render POI review log
+             htmlContent += `
+                  <h4>永續消費記錄</h4>
+                  <p><strong>景點:</strong> ${log.poiName}</p>
+                  <p><strong>消費金額:</strong> ${log.consumption}</p>
+                  <p><strong>審核碼:</strong> ${log.reviewCode}</p>
+              `;
+         }
 
-             if (log.points !== undefined) {
-                  htmlContent += `<p><strong>獲得積分:</strong> ${log.points}</p>`;
-             }
+                     if (log.points !== undefined) {
+                          htmlContent += `<p><strong>獲得積分:</strong> ${log.points}</p>`;
+                     }
 
             htmlContent += `<p class="timestamp">${log.timestamp}</p>`;
 
@@ -1467,6 +1577,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     console.log("Set as end button listener added.");
 
+    // Submit POI Review button
+    submitPoiReviewButton.addEventListener('click', submitPoiReview);
+    console.log("Submit POI Review button listener added.");
+
 
     // Participate Activity button (Triggers the modal)
      participateActivityButton.addEventListener('click', showActivityModal);
@@ -1564,4 +1678,3 @@ document.addEventListener('DOMContentLoaded', () => {
  // Global function required by Google Maps API script's callback parameter
  // This function will be called when the API is fully loaded
  window.initMap = initMap;
-
