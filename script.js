@@ -331,9 +331,9 @@ function initMap() {
          // Update map status element in mission page
          const missionPageMapStatus = document.getElementById('map-status');
          if (missionPageMapStatus) {
-              missionPageMapStatus.innerHTML = '地圖載入失敗，請檢查API金鑰和網路連線。<br><span class="text-xs">若地圖未正確載入，請利用景點列表中的 <i class="fas fa-car-side text-orange-500"></i> 圖示記錄您的里程。</span>';
-              missionPageMapStatus.classList.remove('text-gray-600');
-              missionPageMapStatus.classList.add('text-red-600');
+              mapStatusElement.innerHTML = '地圖載入失敗，請檢查API金鑰和網路連線。<br><span class="text-xs">若地圖未正確載入，請利用景點列表中的 <i class="fas fa-car-side text-orange-500"></i> 圖示記錄您的里程。</span>';
+              mapStatusElement.classList.remove('text-gray-600');
+              mapStatusElement.classList.add('text-red-600');
          }
          // Re-added tripCalculationStatusElement update
          tripCalculationStatusElement.textContent = '地圖服務未載入，無法計算路徑。';
@@ -414,9 +414,9 @@ function initMap() {
     // Update map status element in mission page
      const missionPageMapStatus = document.getElementById('map-status');
      if (missionPageMapStatus) {
-         missionPageMapStatus.innerHTML = '地圖載入成功！請從下方景點列表或地圖上選擇起點和終點。<br><span class="text-xs">若地圖未正確載入，請利用景點列表中的 <i class="fas fa-car-side text-orange-500"></i> 圖示記錄您的里程。</span>';
-         missionPageMapStatus.classList.remove('text-gray-600', 'text-red-600');
-         missionPageMapStatus.classList.add('text-green-600');
+         mapStatusElement.innerHTML = '地圖載入成功！請從下方景點列表或地圖上選擇起點和終點。<br><span class="text-xs">若地圖未正確載入，請利用景點列表中的 <i class="fas fa-car-side text-orange-500"></i> 圖示記錄您的里程。</span>';
+         mapStatusElement.classList.remove('text-gray-600', 'text-red-600');
+         mapStatusElement.classList.add('text-green-600');
      }
      console.log("Google Map initialization complete."); // Debugging line
 }
