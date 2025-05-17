@@ -1504,7 +1504,8 @@ function downloadTourismData() {
               `;
          } else if (log.type === 'trip_calculation') { // New type for trip calculation from map
               htmlContent += `
-                  <h4>旅程計算記錄 (地圖)</h4> <p><strong>起點:</strong> ${log.startPoiName}</p>
+                  <h4>旅程計算記錄 (地圖)</h4>
+                  <p><strong>起點:</strong> ${log.startPoiName}</p>
                   <p><strong>終點:</strong> ${log.endPoiName}</p>
                   <p><strong>交通方式:</strong> ${log.transportName} (${log.transportIcon})</p>
                   <p><strong>里程:</strong> ${(log.mileageInMeters / 1000).toFixed(2)} km</p>`;
