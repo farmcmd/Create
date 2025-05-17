@@ -37,7 +37,8 @@ const pois = [
     { id: 'poi14', name: '機車貓聯盟', coords: { lat: 23.810883, lng: 120.855798 }, icon: '🍚', description: '共乘、摩托、台灣好行。營業時間 11:00–17:00。\n\n無菜單料理店，50%以上使用在地食材，任一消費金額可獲得永續與環境教育任務點數10點。', image: '', socialLink: 'https://m.facebook.com/機車貓聯盟-552637305127422/' }, // Added social link (using the one from search result)
     { id: 'poi15', name: '二坪大觀冰店', coords: { lat: 23.813627, lng: 120.859651 }, icon: '🍦', description: '共乘、摩托。\n\n在地推薦古早味枝仔冰。台電員工福利社60年老店。', image: '', socialLink: 'https://www.facebook.com/2pinIce/' },
     { id: 'poi16', name: '水里里山村', coords: { lat: 23.813459, lng: 120.853787 }, icon: '🏡', description: '共乘、摩托。\n\n在地推鑑環保旅宿，任一消費金額可獲得永續與環境教育任務點數10點。', image: '', socialLink: 'https://tg-ecohotel.com/' }, // Added website link
-    { id: 'poi17', name: '水里星光市集', coords: { lat: 23.813636, lng: 120.850816 }, icon: '💡', description: '共乘、摩托。\n\n任一消費金額可獲得永續與環境教育任務點數10點。', image: '', socialLink: 'https://www.facebook.com/p/%E6%B0%B4%E9%87%8C%E9%84%89%E5%95%86%E5%9C%88%E5%89%B5%E7%94%9F%E5%85%B1%E5%A5%BD%E5%8D%94%E6%9C%83-100076220760859/?locale=zh_TW' } // 使用與打氣站相同的連結，請確認是否正確
+    // Added isNew flag and updated description for poi17
+    { id: 'poi17', name: '水里星光市集', coords: { lat: 23.813636, lng: 120.850816 }, icon: '💡', description: '共乘、摩托。\n\n任一消費金額可獲得永續與環境教育任務點數10點。\n\n本年度預計於星光市集舉辦「食農教育」活動，場次及內容請洽水里鄉商圈創生共好協會。', image: '', socialLink: 'https://www.facebook.com/p/%E6%B0%B4%E9%87%8C%E9%84%89%E5%95%86%E5%9C%88%E5%89%B5%E7%94%9F%E5%85%B1%E5%A5%BD%E5%8D%94%E6%9C%83-100076220760859/?locale=zh_TW', isNew: true, marketScheduleLink: 'YOUR_MARKET_SCHEDULE_LINK' } // Added isNew flag and marketScheduleLink
 ];
 
  // Sustainable Actions Data with points
@@ -636,11 +637,17 @@ function populatePoiList() {
         const textSpan = document.createElement('span');
         // Use the emoji icon from the poi data for the list item display
         let poiNameDisplay = `${poi.icon} ${poi.name}`;
+
+        // Add "NEW" indicator if isNew flag is true
+        if (poi.isNew) {
+            poiNameDisplay += ' <span class="new-indicator text-red-600 font-bold text-xs ml-1">NEW</span>'; // Added NEW indicator
+        }
+
         // Add (SROI) tag if sroiInfo exists
         if (poi.sroiInfo) {
             poiNameDisplay += ' (SROI)';
         }
-        textSpan.textContent = poiNameDisplay;
+        textSpan.innerHTML = poiNameDisplay; // Use innerHTML to render the span tag for NEW
 
         // Add a click listener to the text span to show the modal
         textSpan.addEventListener('click', (event) => {
@@ -713,7 +720,25 @@ function showPoiModal(poi) {
 
     poiModalTitle.textContent = poi.name;
     // Use innerHTML to allow <br> tags from description
-    poiModalDescription.innerHTML = poi.description.replace(/\n/g, '<br>'); // Replace newline with <br>
+    let modalDescriptionHTML = poi.description.replace(/\n/g, '<br>'); // Replace newline with <br>
+
+    // Add specific content for poi17 (水里星光市集)
+    if (poi.id === 'poi17') {
+        modalDescriptionHTML += '<br><br>'; // Add some spacing
+        modalDescriptionHTML += '<p class="font-semibold text-green-800">出攤日期預告:</p>';
+        // Add link if marketScheduleLink exists
+        if (poi.marketScheduleLink) {
+            modalDescriptionHTML += `<p><a href="${poi.marketScheduleLink}" target="_blank" class="text-blue-600 hover:underline">點此查看最新出攤日期</a></p>`;
+        } else {
+             modalDescriptionHTML += '<p class="text-gray-600">出攤日期連結未提供。</p>';
+        }
+         modalDescriptionHTML += '<p class="mt-3 text-sm text-gray-700">本年度預計於星光市集舉辦「食農教育」活動，場次及內容請洽水里鄉商圈創生共好協會。</p>';
+    }
+
+
+    poiModalDescription.innerHTML = modalDescriptionHTML; // Set the updated description
+
+
      poiModalCoordinates.textContent = `座標: ${poi.coords.lat}, ${poi.coords.lng}`; // Use .lat and .lng for Google Maps coords
 
     // Handle image display (if any)
@@ -1559,7 +1584,7 @@ function downloadTourismData() {
     // Clean up
     document.body.removeChild(a);
     URL.revokeObjectURL(a.href);
-     console.log("Download link removed and object URL revoked."); // Debugging line
+     console.log("Download data removed and object URL revoked."); // Debugging line
 }
 
  // --- Taxi Info Modal ---
