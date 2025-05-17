@@ -312,6 +312,8 @@ h1 {
  .bg-orange-600 { background-color: #ef6c00; } /* Orange for log trip button */
  .hover:bg-orange-700:hover { background-color: #e65100; }
  .text-orange-700 { color: #ef6c00; } /* Orange text */
+ .bg-purple-700 { background-color: #512da8; } /* Darker purple for SROI modal title */
+
 
 /* Adjusted max-height for POI list */
 .max-h-\[600px\] {
