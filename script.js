@@ -578,6 +578,29 @@ function calculateTripMileage() {
              tripCalculationStatusElement.classList.add('text-green-600');
 
 
+            // --- Log the trip calculation result ---
+            const now = new Date();
+            const timestamp = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')} ${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
+
+            const newLogEntry = {
+                type: 'trip_calculation', // New type for trip calculation logs
+                startPoiName: selectedStartPoi.name,
+                endPoiName: selectedEndPoi.name,
+                transportName: transportData[currentTransport].name,
+                transportIcon: transportData[currentTransport].icon,
+                mileageInMeters: distanceInMeters,
+                carbonReduction: tripCarbonReduction,
+                points: scoreForThisTrip, // Score from this trip
+                timestamp: timestamp
+            };
+
+            loggedActions.push(newLogEntry); // Add new log to the array
+            saveData(); // Save updated logs
+            renderLoggedActions(); // Re-render the list
+            console.log("Logged trip calculation:", newLogEntry); // Debugging line
+            // --- End of logging ---
+
+
             saveData(); // Save data
 
             // Optionally reset selected points after calculation
@@ -1150,9 +1173,9 @@ function renderLoggedActions() {
              }
 
             } else if (log.type === 'trip_to_poi') {
-             // Render trip to POI log
+             // Render trip to POI log (from manual log trip modal)
              logContentHTML = `
-                 <p class="log-type">前往景點旅程記錄</p>
+                 <p class="log-type">前往景點旅程記錄 (手動)</p>
                  <p class="text-sm text-gray-700 mb-1">景點: ${log.poiName}</p>
                  <p class="text-sm text-gray-700 mb-1">交通方式: ${log.transportName} (${log.transportIcon})</p>
                  <p class="text-sm text-gray-700 mb-1">里程: ${(log.mileageInMeters / 1000).toFixed(2)} km</p>`;
@@ -1169,6 +1192,17 @@ function renderLoggedActions() {
                   <p class="text-sm text-gray-700 mb-1">消費金額: ${log.consumption}</p>
                   <p class="text-sm text-gray-700 mb-1">審核碼: ${log.reviewCode}</p>
               `;
+         } else if (log.type === 'trip_calculation') { // New type for trip calculation from map
+              logContentHTML = `
+                  <p class="log-type">旅程計算記錄 (地圖)</p>
+                  <p class="text-sm text-gray-700 mb-1">起點: ${log.startPoiName}</p>
+                  <p class="text-sm text-gray-700 mb-1">終點: ${log.endPoiName}</p>
+                  <p class="text-sm text-gray-700 mb-1">交通方式: ${log.transportName} (${log.transportIcon})</p>
+                  <p class="text-sm text-gray-700 mb-1">里程: ${(log.mileageInMeters / 1000).toFixed(2)} km</p>`;
+                  // Only add carbon reduction if it's greater than 0
+                  if (log.carbonReduction > 0) {
+                       logContentHTML += `<p class="text-sm text-gray-700 mb-1">估計減碳: ${log.carbonReduction.toFixed(2)} g</p>`;
+                  }
          }
 
 
@@ -1452,7 +1486,7 @@ function downloadTourismData() {
                  }
 
             } else if (log.type === 'trip_to_poi') {
-                htmlContent += '<h4>前往景點旅程記錄</h4>';
+                htmlContent += '<h4>前往景點旅程記錄 (手動)</h4>'; // Updated title
                  htmlContent += `<p><strong>景點:</strong> ${log.poiName}</p>`;
                  htmlContent += `<p><strong>交通方式:</strong> ${log.transportName} (${log.transportIcon})</p>`;
                  htmlContent += `<p><strong>里程:</strong> ${(log.mileageInMeters / 1000).toFixed(2)} km</p>`;
@@ -1468,7 +1502,18 @@ function downloadTourismData() {
                   <p><strong>消費金額:</strong> ${log.consumption}</p>
                   <p><strong>審核碼:</strong> ${log.reviewCode}</p>
               `;
+         } else if (log.type === 'trip_calculation') { // New type for trip calculation from map
+              htmlContent += `
+                  <h4>旅程計算記錄 (地圖)</h4> <p><strong>起點:</strong> ${log.startPoiName}</p>
+                  <p><strong>終點:</strong> ${log.endPoiName}</p>
+                  <p><strong>交通方式:</strong> ${log.transportName} (${log.transportIcon})</p>
+                  <p><strong>里程:</strong> ${(log.mileageInMeters / 1000).toFixed(2)} km</p>`;
+                  // Only add carbon reduction if it's greater than 0
+                  if (log.carbonReduction > 0) {
+                       htmlContent += `<p><strong>估計減碳:</strong> ${log.carbonReduction.toFixed(2)} g</p>`;
+                  }
          }
+
 
                      if (log.points !== undefined) {
                           htmlContent += `<p><strong>獲得積分:</strong> ${log.points}</p>`;
