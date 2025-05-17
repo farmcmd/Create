@@ -608,7 +608,7 @@ function calculateTripMileage() {
             // resetSelectedPoints(); // Might want to keep them selected visually
 
         } else {
-            // Handle errors, e.g., route not found
+            // Handle errors, e.e., route not found
             tripCalculationStatusElement.textContent = `計算路徑失敗: ${status}`;
             tripCalculationStatusElement.classList.remove('text-green-600', 'text-gray-700');
             tripCalculationStatusElement.classList.add('text-red-600');
