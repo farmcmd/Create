@@ -22,16 +22,16 @@ const pois = [
     // 'socialLink' property is kept for external links.
     { id: 'poi1', name: '水里永續共好聯盟打氣站', coords: { lat: 23.809799, lng: 120.849286 }, icon: '🌲', description: '營業時間上午8:00~17:00。\n\n不定期辦理活動，小尖兵們完成的永續任務的分數請在此出示，感謝您一起為地球減碳努力!\n\n本區共分為三個單位(水里鄉圖書館內):\n1. 社團法人南投縣水里鄉商圈創生共好協會 - 致力於推動水里地區商圈振興、永續農業、文化保存與地方創生行動。以多元合作模式打造出一個能共好、共學、共榮的地方創新平台。\n2. 水里溪畔驛站 - 在圖書館內的一處靜懿的景觀休憩場域，小農午餐需要事先預訂喔!\n3. 水里青農里山基地 - 是由臺大實驗林水里營林區輔導的里山餐桌團隊打造的里山及永續教育基地，由返鄉青農共同打造的農業與社區發展平台，以農村生產、生活、生態致力於推廣友善農業、食農教育及永續發展為目標。在這裡可以預約由小農開發的豐富教具進行DIY活動與食農、永續教育等活動!', image: '', socialLink: 'https://www.facebook.com/p/%E6%B0%B4%E9%87%8C%E9%84%89%E5%95%86%E5%9C%88%E5%89%B5%E7%94%9F%E5%85%B1%E5%A5%BD%E5%8D%94%E6%9C%83-100076220760859/?locale=zh_TW' },
     { id: 'poi2', name: '漫遊堤岸風光', coords: { lat: 23.808537, lng: 120.849415 }, icon: '🏞️', description: '起點：水里親水公園。終點：永興村，途中經過社子生態堤防、永興大橋、永興社區等地，路線全長約4公里，坡度平緩，適合親子及大眾。', image: '' },
-    { id: 'poi3', name: '鑫鮮菇園', coords: { lat: 23.794049, lng: 120.859407 }, icon: '🍄', description: '營業時間: 需預約。\n\n提供香菇園區種植導覽與體驗行程 (時長20分鐘)。\n香菇/袖珍菇三角飯糰食農體驗(時長90分鐘)。', image: '', socialLink: 'https://www.facebook.com/xinxianguyuan' }, // 新增鑫鮮菇園連結
+    { id: 'poi3', name: '鑫鮮菇園', coords: { lat: 23.794049, lng: 120.859407 }, icon: '🍄', description: '營業時間: 需預約。\n\n提供香菇園區種植導覽與體驗行程 (時長20分鐘)。\n香菇/袖珍菇三角飯糰食農體驗(時長90分鐘)。', image: '', socialLink: 'https://www.facebook.com/xinxianguyuan', sroiInfo: { reportLink: 'YOUR_REPORT_LINK_3', formLink: 'YOUR_FORM_LINK_3', lineId: 'YOUR_LINE_ID_3' } }, // Added sroiInfo
     { id: 'poi4', name: '永興神木', coords: { lat: 23.784127, lng: 120.862294 }, icon: '🌳', description: '社區麵包坊營業時間”上午9:00~17:00。\n\n永興神木（百年大樟樹）位於永興社區活動中心旁。樟樹群由三棵母子樹所形成，第一代木就是母樹，二代木則是母樹根系再長出的兩棵子樹，連成一體。樹齡約300年、樹圍6.2公尺、樹徑1.6公尺、樹高約26公尺、樹冠幅400平方公尺，一旁供俸老樹公及福德祠是居民的信仰中心。\n\n社區活動中心二樓設有社區麵包坊，由北海扶輪社、臺大實驗林、水里商工，共同扶持社區成立，利用當地種植的果物製作的吐司產品是新鮮別具風味的暢銷品。', image: '', socialLink: 'https://www.shli.gov.tw/story/1/6' },
     { id: 'poi5', name: '森林小白宮', coords: { lat: 23.779408, lng: 120.844019 }, icon: '🏠', description: '接駁、共乘、摩托。需預約。\n\n完成單一活動可獲得永續與環境教育任務點數10點。\n\n小白宮森林生態導覽，親子活動(彩繪/木藝/親子皮影)。', image: '', socialLink: 'https://wild-kids-studio.waca.tw/' },
     { id: 'poi6', name: '瑪路馬咖啡莊園', coords: { lat: 23.778239, lng: 120.843859 }, icon: '☕', description: '接駁、共乘、摩托。\n\n活動資訊: 咖啡座、咖啡園導覽。完成單一活動可獲得永續與環境教育任務點數10點。', image: '', socialLink: 'https://www.facebook.com/people/%E9%A6%AC%E8%B7%AF%E7%91%AA%E5%92%96%E5%95%A1%E8%8E%8A%E5%9C%92/100063961898841/' },
-    { id: 'poi7', name: '指令教育農場', coords: { lat: 23.802776, lng: 120.864715 }, icon: '👆', description: '台灣好行、共乘、摩托。\n\n活動資訊: 農場導覽、生態導覽、食農教育。完成單一活動可獲得永續與環境教育任務點數10點。', image: '', socialLink: 'https://www.facebook.com/FarmCMD/' },
-    { id: 'poi8', name: '明揚養蜂', coords: { lat: 23.803787, lng: 120.862401 }, icon: '🐝', description: '共乘、台灣好行、摩托。\n\n活動資訊: 育蜂場導覽、生態導覽、蜂蜜食農教育。完成單一活動可獲得永續與環境教育任務點數10點。', image: '', socialLink: 'https://www.facebook.com/MingYangBee/?locale=zh_TW' }, // 更正為明揚養蜂並加入連結
+    { id: 'poi7', name: '指令教育農場', coords: { lat: 23.802776, lng: 120.864715 }, icon: '👆', description: '台灣好行、共乘、摩托。\n\n活動資訊: 農場導覽、生態導覽、食農教育。完成單一活動可獲得永續與環境教育任務點數10點。', image: '', socialLink: 'https://www.facebook.com/FarmCMD/', sroiInfo: { reportLink: 'YOUR_REPORT_LINK_7', formLink: 'YOUR_FORM_LINK_7', lineId: 'YOUR_LINE_ID_7' } }, // Added sroiInfo
+    { id: 'poi8', name: '明揚養蜂', coords: { lat: 23.803787, lng: 120.862401 }, icon: '🐝', description: '共乘、台灣好行、摩托。\n\n活動資訊: 育蜂場導覽、生態導覽、蜂蜜食農教育。完成單一活動可獲得永續與環境教育任務點數10點。', image: '', socialLink: 'https://www.facebook.com/MingYangBee/?locale=zh_TW', sroiInfo: { reportLink: 'YOUR_REPORT_LINK_8', formLink: 'YOUR_FORM_LINK_8', lineId: 'YOUR_LINE_ID_8' } }, // Added sroiInfo
     { id: 'poi9', name: '蛇窯文化園區', coords: { lat: 23.801177, lng: 120.864479 }, icon: '🏺', description: '共乘、台灣好行。\n\n活動資訊: 購票入園，完成食農器皿文化參觀可獲得永續與環境教育點數10點。', image: '', socialLink: 'https://www.facebook.com/sskshop/?locale=zh_TW' },
-    { id: 'poi10', name: '雨社山下', coords: { lat: 23.790644, lng: 120.896569 }, icon: '🥒', description: '接駁、共乘、摩托。\n\n活動資訊: 農場導覽、生態導覽、食農教育。完成單一活動可獲得永續與環境教育任務點數10點。', image: '', socialLink: 'https://www.facebook.com/profile.php?id=61557727713841&locale=zh_TW' },
-    { id: 'poi11', name: '阿爾喜莊園', coords: { lat: 23.803119, lng: 120.926340 }, icon: '🍋', description: '接駁、共乘、摩托。\n\n活動資訊: 農場導覽、生態導覽、食農教育、農業循環經濟教學。完成單一活動可獲得永續與環境教育任務點數10點。', image: '', socialLink: 'https://www.facebook.com/AHEIemon?locale=zh_TW' },
-    { id: 'poi12', name: '湧健酪梨園 (湧健梅園)', coords: { lat: 23.725349, lng: 120.846123 }, icon: '🥑', description: '台灣好行、共乘、摩托。\n\n活動資訊: 農場導覽、生態導覽、食農教育。完成單一活動可獲得永續與環境教育任務點數10點。', image: '', socialLink: 'https://www.facebook.com/profile.php?id=100085673588742&locale=zh_TW' },
+    { id: 'poi10', name: '雨社山下', coords: { lat: 23.790644, lng: 120.896569 }, icon: '🥒', description: '接駁、共乘、摩托。\n\n活動資訊: 農場導覽、生態導覽、食農教育。完成單一活動可獲得永續與環境教育任務點數10點。', image: '', socialLink: 'https://www.facebook.com/profile.php?id=61557727713841&locale=zh_TW', sroiInfo: { reportLink: 'YOUR_REPORT_LINK_10', formLink: 'YOUR_FORM_LINK_10', lineId: 'YOUR_LINE_ID_10' } }, // Added sroiInfo
+    { id: 'poi11', name: '阿爾喜莊園', coords: { lat: 23.803119, lng: 120.926340 }, icon: '🍋', description: '接駁、共乘、摩托。\n\n活動資訊: 農場導覽、生態導覽、食農教育、農業循環經濟教學。完成單一活動可獲得永續與環境教育任務點數10點。', image: '', socialLink: 'https://www.facebook.com/AHEIemon?locale=zh_TW', sroiInfo: { reportLink: 'YOUR_REPORT_LINK_11', formLink: 'YOUR_FORM_LINK_11', lineId: 'YOUR_LINE_ID_11' } }, // Added sroiInfo
+    { id: 'poi12', name: '湧健酪梨園 (湧健梅園)', coords: { lat: 23.725349, lng: 120.846123 }, icon: '🥑', description: '台灣好行、共乘、摩托。\n\n活動資訊: 農場導覽、生態導覽、食農教育。完成單一活動可獲得永續與環境教育任務點數10點。', image: '', socialLink: 'https://www.facebook.com/profile.php?id=100085673588742&locale=zh_TW', sroiInfo: { reportLink: 'YOUR_REPORT_LINK_12', formLink: 'YOUR_FORM_LINK_12', lineId: 'YOUR_LINE_ID_12' } }, // Added sroiInfo
     { id: 'poi13', name: '謝家肉圓', coords: { lat: 23.817521, lng: 120.853831 }, icon: '🥟', description: '步行、摩托、台灣好行。營業時間 11:00–17:00。\n\n在地人巷內70年老店。', image: '', socialLink: 'https://www.facebook.com/profile.php?id=100054428473137&locale=zh_TW' },
     { id: 'poi14', name: '機車貓聯盟', coords: { lat: 23.810883, lng: 120.855798 }, icon: '🍚', description: '共乘、摩托、台灣好行。營業時間 11:00–17:00。\n\n無菜單料理店，50%以上使用在地食材，任一消費金額可獲得永續與環境教育任務點數10點。', image: '', socialLink: 'https://m.facebook.com/機車貓聯盟-552637305127442/' }, // Added social link (using the one from search result)
     { id: 'poi15', name: '二坪大觀冰店', coords: { lat: 23.813627, lng: 120.859651 }, icon: '🍦', description: '共乘、摩托。\n\n在地推薦古早味枝仔冰。台電員工福利社60年老店。', image: '', socialLink: 'https://www.facebook.com/2pinIce/' },
@@ -160,6 +160,12 @@ const poiReviewStatusElement = document.getElementById('poi-review-status');
 // New DOM elements for poi12 specific buttons
 const poi12ButtonsDiv = document.getElementById('poi12-buttons');
 const sroiOrderButton = document.getElementById('sroi-order-button');
+
+// New DOM elements for SROI Info Modal
+const sroiInfoModal = document.getElementById('sroi-info-modal');
+const sroiModalPoiNameElement = document.getElementById('sroi-modal-poi-name');
+const sroiModalContentBody = document.getElementById('sroi-modal-content-body');
+const showSroiInfoButton = document.getElementById('show-sroi-info-button'); // Get the new SROI button
 
 
 // --- Local Storage ---
@@ -300,9 +306,9 @@ function showMissionPage() {
          // If map is not initialized, update status to reflect this
          const missionPageMapStatus = document.getElementById('map-status');
          if (missionPageMapStatus) {
-              missionPageMapStatus.innerHTML = '地圖載入中... (等待 Google Maps API)<br><span class="text-xs">若地圖未正確載入，請利用景點列表中的 <i class="fas fa-car-side text-orange-500"></i> 圖示記錄您的里程。</span>';
-              missionPageMapStatus.classList.remove('text-green-600', 'text-red-600');
-              missionPageMapStatus.classList.add('text-gray-600');
+              mapStatusElement.innerHTML = '地圖載入中... (等待 Google Maps API)<br><span class="text-xs">若地圖未正確載入，請利用景點列表中的 <i class="fas fa-car-side text-orange-500"></i> 圖示記錄您的里程。</span>';
+              mapStatusElement.classList.remove('text-green-600', 'text-red-600');
+              mapStatusElement.classList.add('text-gray-600');
          }
     }
 
@@ -603,7 +609,13 @@ function populatePoiList() {
         // Create a span for the text content (POI name and icon)
         const textSpan = document.createElement('span');
         // Use the emoji icon from the poi data for the list item display
-        textSpan.textContent = `${poi.icon} ${poi.name}`;
+        let poiNameDisplay = `${poi.icon} ${poi.name}`;
+        // Add (SROI) tag if sroiInfo exists
+        if (poi.sroiInfo) {
+            poiNameDisplay += ' (SROI)';
+        }
+        textSpan.textContent = poiNameDisplay;
+
         // Add a click listener to the text span to show the modal
         textSpan.addEventListener('click', (event) => {
             // Prevent the click on the text span from triggering the list item's click handler
@@ -726,6 +738,18 @@ function showPoiModal(poi) {
          poi12ButtonsDiv.classList.remove('hidden'); // Show poi12 specific buttons
      } else {
          poi12ButtonsDiv.classList.add('hidden'); // Hide poi12 specific buttons
+     }
+
+     // --- Handle SROI Info Button visibility ---
+     if (poi.sroiInfo) {
+         document.getElementById('sroi-info-button-container').classList.remove('hidden'); // Show the SROI button container
+         // Store sroiInfo on the button for easy access in the event listener
+         showSroiInfoButton.sroiInfo = poi.sroiInfo;
+          showSroiInfoButton.poiName = poi.name; // Store POI name for the modal title
+     } else {
+         document.getElementById('sroi-info-button-container').classList.add('hidden'); // Hide the SROI button container
+          showSroiInfoButton.sroiInfo = null; // Clear stored info
+          showSroiInfoButton.poiName = null; // Clear stored name
      }
 
 
@@ -1127,9 +1151,12 @@ function renderLoggedActions() {
                  <p class="log-type">前往景點旅程記錄</p>
                  <p class="text-sm text-gray-700 mb-1">景點: ${log.poiName}</p>
                  <p class="text-sm text-gray-700 mb-1">交通方式: ${log.transportName} (${log.transportIcon})</p>
-                 <p class="text-sm text-gray-700 mb-1">里程: ${(log.mileageInMeters / 1000).toFixed(2)} km</p>
-                 <p class="text-sm text-gray-700 mb-1">估計減碳: ${log.carbonReduction.toFixed(2)} g</p>
-             `;
+                 <p class="text-sm text-gray-700 mb-1">里程: ${(log.mileageInMeters / 1000).toFixed(2)} km</p>`;
+                 // Only add carbon reduction if it's greater than 0
+                 if (log.carbonReduction > 0) {
+                      logContentHTML += `<p class="text-sm text-gray-700 mb-1">估計減碳: ${log.carbonReduction.toFixed(2)} g</p>`;
+                 }
+
             } else if (log.type === 'poi_review') {
              // Render POI review log
              logContentHTML = `
@@ -1425,7 +1452,10 @@ function downloadTourismData() {
                  htmlContent += `<p><strong>景點:</strong> ${log.poiName}</p>`;
                  htmlContent += `<p><strong>交通方式:</strong> ${log.transportName} (${log.transportIcon})</p>`;
                  htmlContent += `<p><strong>里程:</strong> ${(log.mileageInMeters / 1000).toFixed(2)} km</p>`;
-                 htmlContent += `<p><strong>估計減碳:</strong> ${log.carbonReduction.toFixed(2)} g</p>`;
+                 // Only add carbon reduction if it's greater than 0
+                 if (log.carbonReduction > 0) {
+                      htmlContent += `<p><strong>估計減碳:</strong> ${log.carbonReduction.toFixed(2)} g</p>`;
+                 }
             } else if (log.type === 'poi_review') {
              // Render POI review log
              htmlContent += `
@@ -1504,6 +1534,68 @@ function downloadTourismData() {
  function hideTaxiInfoModal() {
      console.log("Hiding taxi info modal.");
      taxiInfoModal.classList.add('hidden');
+ }
+
+ // --- SROI Info Modal ---
+ function showSroiInfoModal(sroiInfo, poiName) {
+      console.log("Showing SROI info modal for:", poiName);
+      sroiModalPoiNameElement.textContent = poiName; // Set the POI name in the modal
+
+      // Clear previous content
+      sroiModalContentBody.innerHTML = '';
+
+      // Add Report Link
+      if (sroiInfo.reportLink) {
+          const reportLinkElement = document.createElement('a');
+          reportLinkElement.href = sroiInfo.reportLink;
+          reportLinkElement.target = "_blank";
+          reportLinkElement.classList.add('block', 'text-blue-600', 'hover:underline', 'font-semibold');
+          reportLinkElement.innerHTML = '<i class="fas fa-file-alt mr-1"></i>農場影響力報告書';
+          sroiModalContentBody.appendChild(reportLinkElement);
+      } else {
+           const noReportElement = document.createElement('p');
+           noReportElement.classList.add('text-gray-600');
+           noReportElement.innerHTML = '<i class="fas fa-info-circle mr-1"></i>農場影響力報告書：未提供';
+           sroiModalContentBody.appendChild(noReportElement);
+      }
+
+      // Add Form Link
+      if (sroiInfo.formLink) {
+          const formLinkElement = document.createElement('a');
+          formLinkElement.href = sroiInfo.formLink;
+          formLinkElement.target = "_blank";
+          formLinkElement.classList.add('block', 'text-blue-600', 'hover:underline', 'font-semibold');
+          formLinkElement.innerHTML = '<i class="fas fa-clipboard-list mr-1"></i>採購表單';
+          sroiModalContentBody.appendChild(formLinkElement);
+      } else {
+           const noFormElement = document.createElement('p');
+           noFormElement.classList.add('text-gray-600');
+           noFormElement.innerHTML = '<i class="fas fa-info-circle mr-1"></i>採購表單：未提供';
+           sroiModalContentBody.appendChild(noFormElement);
+      }
+
+      // Add LINE ID
+      if (sroiInfo.lineId) {
+          const lineIdElement = document.createElement('p');
+          lineIdElement.classList.add('text-gray-700', 'font-semibold');
+          lineIdElement.innerHTML = `<i class="fab fa-line mr-1"></i>LINE ID: ${sroiInfo.lineId}`;
+          sroiModalContentBody.appendChild(lineIdElement);
+      } else {
+           const noLineIdElement = document.createElement('p');
+           noLineIdElement.classList.add('text-gray-600');
+           noLineIdElement.innerHTML = '<i class="fas fa-info-circle mr-1"></i>LINE ID：未提供';
+           sroiModalContentBody.appendChild(noLineIdElement);
+      }
+
+
+      sroiInfoModal.classList.remove('hidden');
+ }
+
+ function hideSroiInfoModal() {
+      console.log("Hiding SROI info modal.");
+      sroiInfoModal.classList.add('hidden');
+      sroiModalPoiNameElement.textContent = ''; // Clear POI name
+      sroiModalContentBody.innerHTML = ''; // Clear content
  }
 
 
@@ -1613,6 +1705,21 @@ document.addEventListener('DOMContentLoaded', () => {
          console.warn("SROI Order button element not found.");
      }
 
+     // New SROI Info Button listener in POI modal
+     if (showSroiInfoButton) { // Check if the element exists
+         showSroiInfoButton.addEventListener('click', () => {
+             // Pass the stored sroiInfo and poiName to the showSroiInfoModal function
+             if (showSroiInfoButton.sroiInfo && showSroiInfoButton.poiName) {
+                 showSroiInfoModal(showSroiInfoButton.sroiInfo, showSroiInfoButton.poiName);
+             } else {
+                 console.error("SROI info or POI name not available on the button.");
+             }
+         });
+         console.log("Show SROI Info button listener added.");
+     } else {
+         console.warn("Show SROI Info button element not found.");
+     }
+
 
     // Participate Activity button (Triggers the modal)
      participateActivityButton.addEventListener('click', showActivityModal);
@@ -1692,6 +1799,16 @@ document.addEventListener('DOMContentLoaded', () => {
          }
      });
      console.log("Taxi Info modal close listeners added.");
+
+     // New SROI Info Modal close button
+     sroiInfoModal.querySelector('.close-button').addEventListener('click', hideSroiInfoModal);
+      // Close modal if clicking outside content (optional)
+     sroiInfoModal.addEventListener('click', (e) => {
+         if (e.target === sroiInfoModal) {
+             hideSroiInfoModal();
+         }
+     });
+     console.log("SROI Info modal close listeners added.");
 
 
     // Initial display
