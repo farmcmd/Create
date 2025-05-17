@@ -31,8 +31,8 @@ const pois = [
     { id: 'poi9', name: '蛇窯文化園區', coords: { lat: 23.801177, lng: 120.864479 }, icon: '🏺', description: '共乘、台灣好行。\n\n活動資訊: 購票入園，完成食農器皿文化參觀可獲得永續與環境教育點數10點。', image: '', socialLink: 'https://www.facebook.com/sskshop/?locale=zh_TW' },
     { id: 'poi10', name: '雨社山下', coords: { lat: 23.790644, lng: 120.896569 }, icon: '🥒', description: '接駁、共乘、摩托。\n\n活動資訊: 農場導覽、生態導覽、食農教育。完成單一活動可獲得永續與環境教育任務點數10點。', image: '', socialLink: 'https://www.facebook.com/profile.php?id=61557727713841&locale=zh_TW', sroiInfo: { reportLink: 'YOUR_REPORT_LINK_10', formLink: 'YOUR_FORM_LINK_10', lineId: 'YOUR_LINE_ID_10' } }, // Added sroiInfo
     { id: 'poi11', name: '阿爾喜莊園', coords: { lat: 23.803119, lng: 120.926340 }, icon: '🍋', description: '接駁、共乘、摩托。\n\n活動資訊: 農場導覽、生態導覽、食農教育、農業循環經濟教學。完成單一活動可獲得永續與環境教育任務點數10點。', image: '', socialLink: 'https://www.facebook.com/AHEIemon?locale=zh_TW', sroiInfo: { reportLink: 'YOUR_REPORT_LINK_11', formLink: 'YOUR_FORM_LINK_11', lineId: 'YOUR_LINE_ID_11' } }, // Added sroiInfo
-    // Modified poi12: Removed "(湧健梅園)" from name and removed sroiInfo
-    { id: 'poi12', name: '湧健酪梨園', coords: { lat: 23.725349, lng: 120.846123 }, icon: '🥑', description: '台灣好行、共乘、摩托。\n\n活動資訊: 農場導覽、生態導覽、食農教育。完成單一活動可獲得永續與環境教育任務點數10點。', image: '', socialLink: 'https://www.facebook.com/profile.php?id=100085673588742&locale=zh_TW' },
+    // Modified poi12: Name is now just "湧健酪梨園", and sroiInfo is re-added
+    { id: 'poi12', name: '湧健酪梨園', coords: { lat: 23.725349, lng: 120.846123 }, icon: '🥑', description: '台灣好行、共乘、摩托。\n\n活動資訊: 農場導覽、生態導覽、食農教育。完成單一活動可獲得永續與環境教育任務點數10點。', image: '', socialLink: 'https://www.facebook.com/profile.php?id=100085673588742&locale=zh_TW', sroiInfo: { reportLink: 'YOUR_REPORT_LINK_12', formLink: 'YOUR_FORM_LINK_12', lineId: 'YOUR_LINE_ID_12' } }, // Re-added sroiInfo for poi12
     { id: 'poi13', name: '謝家肉圓', coords: { lat: 23.817521, lng: 120.853831 }, icon: '🥟', description: '步行、摩托、台灣好行。營業時間 11:00–17:00。\n\n在地人巷內70年老店。', image: '', socialLink: 'https://www.facebook.com/profile.php?id=100054428473137&locale=zh_TW' },
     { id: 'poi14', name: '機車貓聯盟', coords: { lat: 23.810883, lng: 120.855798 }, icon: '🍚', description: '共乘、摩托、台灣好行。營業時間 11:00–17:00。\n\n無菜單料理店，50%以上使用在地食材，任一消費金額可獲得永續與環境教育任務點數10點。', image: '', socialLink: 'https://m.facebook.com/機車貓聯盟-552637305127422/' }, // Added social link (using the one from search result)
     { id: 'poi15', name: '二坪大觀冰店', coords: { lat: 23.813627, lng: 120.859651 }, icon: '🍦', description: '共乘、摩托。\n\n在地推薦古早味枝仔冰。台電員工福利社60年老店。', image: '', socialLink: 'https://www.facebook.com/2pinIce/' },
@@ -160,7 +160,9 @@ const poiReviewStatusElement = document.getElementById('poi-review-status');
 
 // New DOM elements for poi12 specific buttons
 const poi12ButtonsDiv = document.getElementById('poi12-buttons');
-// Removed sroiOrderButton element variable as the button is removed from HTML
+// Re-added sroiOrderButton for poi12
+const sroiOrderButtonPoi12 = document.getElementById('sroi-order-button-poi12');
+
 
 // New DOM elements for SROI Info Modal
 const sroiInfoModal = document.getElementById('sroi-info-modal');
@@ -735,24 +737,24 @@ function showPoiModal(poi) {
     }
 
      // --- Handle poi12 specific buttons visibility ---
-     // poi12 now only has the game link button
+     // poi12 now has the game link button and the SROI button
      if (poi.id === 'poi12') {
          poi12ButtonsDiv.classList.remove('hidden'); // Show poi12 specific buttons
+          // The SROI button for poi12 is now handled within poi12-buttons div
+          // Ensure the main SROI button container is hidden if poi12 is selected
+          document.getElementById('sroi-info-button-container').classList.add('hidden');
      } else {
          poi12ButtonsDiv.classList.add('hidden'); // Hide poi12 specific buttons
-     }
-
-     // --- Handle SROI Info Button visibility ---
-     // Show the SROI button ONLY if sroiInfo exists AND the POI is not poi12
-     if (poi.sroiInfo && poi.id !== 'poi12') {
-         document.getElementById('sroi-info-button-container').classList.remove('hidden'); // Show the SROI button container
-         // Store sroiInfo on the button for easy access in the event listener
-         showSroiInfoButton.sroiInfo = poi.sroiInfo;
-          showSroiInfoButton.poiName = poi.name; // Store POI name for the modal title
-     } else {
-         document.getElementById('sroi-info-button-container').classList.add('hidden'); // Hide the SROI button container
-          showSroiInfoButton.sroiInfo = null; // Clear stored info
-          showSroiInfoButton.poiName = null; // Clear stored name
+         // Ensure the main SROI button container is shown if sroiInfo exists and it's not poi12
+         if (poi.sroiInfo) {
+              document.getElementById('sroi-info-button-container').classList.remove('hidden');
+              showSroiInfoButton.sroiInfo = poi.sroiInfo; // Store sroiInfo on the button
+              showSroiInfoButton.poiName = poi.name; // Store POI name
+         } else {
+              document.getElementById('sroi-info-button-container').classList.add('hidden');
+              showSroiInfoButton.sroiInfo = null; // Clear stored info
+              showSroiInfoButton.poiName = null; // Clear stored name
+         }
      }
 
 
@@ -1695,15 +1697,17 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log("Submit POI Review button listener added.");
 
      // SROI Order button listener for poi12
-     // Note: This button doesn't have a specific action defined in the prompt
-     // For now, it will just log a message. You can add functionality here later.
-     // Check if the element exists before adding listener (it's still in HTML for poi12)
-     const sroiOrderButtonElement = document.getElementById('sroi-order-button');
-     if (sroiOrderButtonElement) {
-         sroiOrderButtonElement.addEventListener('click', () => {
-             console.log("SROI生態棲地農產品訂購 button clicked (poi12).");
-             // Add functionality here, e.g., open a new tab with a link, show a message, etc.
-             alert("SROI生態棲地農產品訂購功能待開發。"); // Placeholder action
+     // Check if the element exists before adding listener
+     if (sroiOrderButtonPoi12) {
+         sroiOrderButtonPoi12.addEventListener('click', () => {
+             console.log("SROI生態棲地農產品訂購&ESG企業採購表單 button clicked (poi12).");
+             // For poi12, we now show the SROI info modal
+             const poi12Data = pois.find(p => p.id === 'poi12');
+             if (poi12Data && poi12Data.sroiInfo) {
+                 showSroiInfoModal(poi12Data.sroiInfo, poi12Data.name);
+             } else {
+                 console.error("SROI info not available for poi12.");
+             }
          });
          console.log("SROI Order button listener added for poi12.");
      } else {
@@ -1711,7 +1715,7 @@ document.addEventListener('DOMContentLoaded', () => {
      }
 
 
-     // New SROI Info Button listener in POI modal
+     // New SROI Info Button listener in POI modal (for other SROI POIs)
      if (showSroiInfoButton) { // Check if the element exists
          showSroiInfoButton.addEventListener('click', () => {
              // Pass the stored sroiInfo and poiName to the showSroiInfoModal function
