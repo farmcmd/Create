@@ -10,7 +10,7 @@ import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.22.2/firebase
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-    apiKey: "AIzaSyCEH65YbNirj_IRmtsIJZS-HNEbsRBBsSQ",
+    apiKey: "AIzaSyCEH65YbNirj_IRmtsIJZS-HNEbsRBBsSQ", // Your Firebase API Key
     authDomain: "sustainable-tourism-65025.firebaseapp.com",
     projectId: "sustainable-tourism-65025",
     storageBucket: "sustainable-tourism-65025.firebasestorage.app",
@@ -495,7 +495,7 @@ function showMissionPage() {
 }
 
 // --- Google Map Initialization and POI Markers ---
-// This function is called automatically by the Google Maps script after it loads
+// This function is called automatically by the Google Maps script's callback parameter
 function initMap() {
      console.log("initMap function called by Google Maps API."); // Debugging line
 
@@ -852,8 +852,8 @@ function populatePoiList() {
         // Add navigation link icon
         const navigationLinkElement = document.createElement('a');
         // Use Google Maps navigation URL format
-        // CORRECTED LINE BELOW
-        navigationLinkElement.href = `https://www.google.com/maps/dir/?api=1&destination=${poi.coords.lat},${poi.coords.lng}`; // Corrected navigation URL format
+        // CORRECTED LINE BELOW: Use google.navigation:q= format
+        navigationLinkElement.href = `https://www.google.com/maps/dir/?api=1&destination=${poi.coords.lat},${poi.coords.lng}`;
         navigationLinkElement.target = "_blank"; // Open in new tab (will open Google Maps app if installed)
         navigationLinkElement.classList.add('navigation-icon');
         navigationLinkElement.innerHTML = '<i class="fas fa-compass"></i>'; // Compass icon
@@ -1393,8 +1393,7 @@ function renderLoggedActions() {
               logContentHTML = `
                   <p class="log-type">旅程計算記錄 (地圖)</p>
                   <p class="text-sm text-gray-700 mb-1">起點: ${log.startPoiName}</p>
-                  <p class="text-sm text-gray-700 mb-1">終點: ${log.endPoiName}</p> 
-                  <p class="text-sm text-gray-700 mb-1">交通方式: ${log.transportName} (${log.transportIcon})</p>
+                  <p class="text-sm text-gray-700 mb-1">終點: ${log.endPoiName}</p> <p class="text-sm text-gray-700 mb-1">交通方式: ${log.transportName} (${log.transportIcon})</p>
                   <p class="text-sm text-gray-700 mb-1">里程: ${(log.mileageInMeters / 1000).toFixed(2)} km</p>
                        ${log.carbonReduction > 0 ? `<p class="text-sm text-gray-700 mb-1">估計減碳: ${log.carbonReduction.toFixed(2)} g</p>` : ''}
                   `;
