@@ -512,7 +512,7 @@ function initMap() {
          // Update map status element in mission page
          const missionPageMapStatus = document.getElementById('map-status');
          if (missionPageMapStatus) {
-              mapStatusElement.innerHTML = '地圖載入失敗，請檢查API金鑰和網路連線。<br><span class="text-xs">若地圖未正確載入，請利用景點列表中的 <i class="fas fa-car-side text-orange-500"></i> 圖示記錄您的里程。</span>';
+              mapStatusElement.innerHTML = '地圖載入失敗：API 金鑰認證失敗。請檢查您的金鑰和限制設定。<br><span class="text-xs">若地圖未正確載入，請利用景點列表中的 <i class="fas fa-car-side text-orange-500"></i> 圖示記錄您的里程。</span>';
               mapStatusElement.classList.remove('text-gray-600');
               mapStatusElement.classList.add('text-red-600');
          }
@@ -1340,7 +1340,7 @@ function renderLoggedActions() {
     // Sort logs by timestamp in descending order (most recent first)
     const sortedLogs = [...loggedActions].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 
-
+    // Iterate through sorted logs and build HTML for each item
     sortedLogs.forEach(log => {
         const logItem = document.createElement('div');
         logItem.classList.add('action-log-item');
