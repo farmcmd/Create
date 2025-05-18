@@ -404,7 +404,7 @@ async function fetchNetworkTotalCarbonReduction() {
                 // Add each player's totalCarbonReduction to the network total
                 totalCarbonAcrossNetwork += (playerData.totalCarbonReduction || 0); // Use 0 if value is missing
             });
-             console.log(`Fetched ${playersSnapshot.size} player documents.`); // Debugging line
+             console.log(`Workspaceed ${playersSnapshot.size} player documents.`); // Debugging line
         } else {
              console.log("No player data found in Firebase 'players' collection."); // Debugging line
         }
@@ -1471,15 +1471,24 @@ function handleLogTripTransportSelect() {
 // Function to submit the manual trip log
 function submitLogTrip() {
     console.log("Submit log trip button clicked.");
+
+    // Clear previous status messages
+    logTripStatusElement.textContent = '';
+    logTripStatusElement.classList.remove('text-red-600', 'text-green-600', 'text-gray-700');
+    logTripTransportStatusElement.classList.add('hidden');
+    logTripMileageStatusElement.classList.add('hidden');
+
+
     if (!currentLogTripPoi) {
         console.error("No POI selected for manual trip logging.");
+         logTripStatusElement.textContent = '發生錯誤：未選擇景點。';
+         logTripStatusElement.classList.add('text-red-600');
         return;
     }
 
     if (!selectedLogTripTransport) {
         logTripTransportStatusElement.textContent = '請選擇交通方式。';
         logTripTransportStatusElement.classList.remove('hidden');
-        logTripTransportStatusElement.classList.remove('text-green-600');
         logTripTransportStatusElement.classList.add('text-red-600');
         console.warn("No transport selected for manual log trip.");
         return;
@@ -1490,7 +1499,6 @@ function submitLogTrip() {
     if (isNaN(mileageKm) || mileageKm < 0) {
         logTripMileageStatusElement.textContent = '請輸入有效的里程數 (大於等於 0)。';
         logTripMileageStatusElement.classList.remove('hidden');
-        logTripMileageStatusElement.classList.remove('text-green-600');
         logTripMileageStatusElement.classList.add('text-red-600');
         console.warn("Invalid mileage input:", mileageKm);
         return;
@@ -1549,14 +1557,19 @@ function submitLogTrip() {
     logTripTransportOptionsDiv.querySelectorAll('.log-trip-transport-button').forEach(button => {
         button.classList.remove('selected');
     });
+
+     // --- FIX: Close the modal on successful submission ---
+     hideLogTripModal();
+     // --- End FIX ---
+
      currentLogTripPoi = null; // Clear stored POI
 
 
-    // Reset status message after a few seconds
-    setTimeout(() => {
-        logTripStatusElement.textContent = '';
-        logTripStatusElement.classList.remove('text-green-600');
-    }, 5000); // Display success message for 5 seconds
+    // Reset status message after a few seconds (optional, if you want to keep the message briefly visible before modal closes)
+    // setTimeout(() => {
+    //     logTripStatusElement.textContent = '';
+    //     logTripStatusElement.classList.remove('text-green-600');
+    // }, 5000); // Display success message for 5 seconds
 }
 
 
