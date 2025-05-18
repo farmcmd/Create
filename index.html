@@ -51,6 +51,7 @@
                         <p id="total-carbon-reduction" class="text-2xl font-bold text-green-600">0 g</p>
                     </div>
                     <div class="p-4 bg-white rounded-md shadow-sm border border-green-200">
+                        <p class="text-sm font-medium text-gray-700">永續分數</p>
                         <p id="total-score" class="text-2xl font-bold text-green-600">0</p>
                     </div>
                 </div>
@@ -220,7 +221,7 @@
                             </div>
 
                             <textarea id="sustainable-action-log" class="w-full p-3 border rounded-md focus:outline-none focus:ring focus:border-green-500 text-sm" rows="4" placeholder="請在此輸入您具體的永續行動記錄..."></textarea>
-                            <button id="log-action-button" class="mt-3 px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-all duration-300 ease-in-out text-sm"><i class="fas fa-check-circle mr-2"></i>記錄行動並獲得積分</button>
+                            <button id="log-action-button" class="mt-3 px-6 py-3 bg-green-600 text-white rounded-lg shadow hover:bg-green-700 transition-all duration-300 ease-in-out text-sm"><i class="fas fa-check-circle mr-2"></i>記錄行動並獲得積分</button>
                             <p id="action-log-status" class="mt-3 text-sm font-semibold text-gray-600"></p>
                         </div>
 
@@ -232,7 +233,7 @@
                              <ul id="activity-list" class="space-y-2 text-sm text-gray-700 mb-4">
                                  <li class="text-gray-500 text-center">載入活動中...</li>
                              </ul>
-                             <button id="participate-activity-button" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-300 ease-in-out text-sm"><i class="fas fa-calendar-check mr-2"></i>參加活動 (輸入驗證碼與內容)</button>
+                             <button id="participate-activity-button" class="px-6 py-3 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition-all duration-300 ease-in-out text-sm"><i class="fas fa-calendar-check mr-2"></i>參加活動 (輸入驗證碼與內容)</button>
                          </div>
 
                          <div class="bg-green-50 p-4 rounded-lg shadow-inner max-h-[300px] overflow-y-auto border border-green-200">
@@ -278,7 +279,7 @@
                      <label for="review-code" class="block text-sm font-medium text-gray-700 mb-1">審核碼 (3碼數字):</label>
                      <input type="text" id="review-code" class="w-full p-2 border rounded-md focus:outline-none focus:ring focus:border-green-500 text-sm" maxlength="3" placeholder="請輸入3碼數字審核碼">
                  </div>
-                 <button id="submit-poi-review" class="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-all duration-300 ease-in-out text-sm"><i class="fas fa-check-circle mr-2"></i>提交審核並獲得積分</button>
+                 <button id="submit-poi-review" class="px-6 py-3 bg-green-600 text-white rounded-lg shadow hover:bg-green-700 transition-all duration-300 ease-in-out text-sm"><i class="fas fa-check-circle mr-2"></i>提交審核並獲得積分</button>
                  <p id="poi-review-status" class="mt-3 text-sm font-semibold text-gray-600"></p>
             </div>
 
@@ -298,7 +299,7 @@
             <input type="text" id="verification-code-input" class="w-full p-3 border rounded-md mb-4 focus:outline-none focus:ring focus:border-green-500">
             <p class="mb-2 text-gray-700">請輸入活動內容或課程名稱</p>
             <textarea id="activity-content-input" class="w-full p-3 border rounded-md mb-4 focus:outline-none focus:ring focus:border-green-500" rows="3" placeholder="例如：參加了里山倡議食農下午茶講堂，學習製作香草餅乾"></textarea>
-            <button id="submit-activity-log" class="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-all duration-300 ease-in-out text-sm"><i class="fas fa-check-square mr-2"></i>記錄活動並獲得積分</button>
+            <button id="submit-activity-log" class="px-6 py-3 bg-green-600 text-white rounded-lg shadow hover:bg-green-700 transition-all duration-300 ease-in-out text-sm"><i class="fas fa-check-square mr-2"></i>記錄活動並獲得積分</button>
             <p id="activity-log-status" class="mt-4 text-sm font-semibold text-gray-700"></p>
         </div>
     </div>
@@ -1158,7 +1159,7 @@ function calculateTripMileage() {
 
             // saveData(); // Save data is already called within the logging block
 
-            // Optionally reset selected points after calculation
+            // Optional: Optionally reset selected points after calculation
             // resetSelectedPoints(); // Might want to keep them selected visually
 
         } else {
@@ -2198,7 +2199,7 @@ function downloadTourismData() {
 
     // Append to body and trigger click
     document.body.appendChild(a);
-    console.log("Triggering download."); // Debugging line
+    console.log("Download link appended to body. Triggering click."); // Debugging line
     a.click();
 
     // Clean up
