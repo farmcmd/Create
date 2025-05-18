@@ -14,9 +14,34 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore(); // Get a reference to the Firestore service
-const analytics = firebase.analytics(); // Get a reference to the Analytics service (optional)
+let app;
+let db;
+let analytics;
+
+try {
+    app = firebase.initializeApp(firebaseConfig);
+    db = firebase.firestore(); // Get a reference to the Firestore service
+    analytics = firebase.analytics(); // Get a reference to the Analytics service (optional)
+     console.log("Firebase initialized successfully."); // Debugging line
+     // Initial fetch of network total after Firebase is initialized
+     // This will now happen when loadData is called on DOMContentLoaded
+     // fetchNetworkTotalCarbonReduction();
+
+} catch (error) {
+     console.error("Error initializing Firebase:", error); // Debugging line
+     // Update network stats status on Firebase initialization error
+     const networkStatsStatusElement = document.getElementById('network-stats-status');
+      if (networkStatsStatusElement) {
+          networkStatsStatusElement.textContent = `Firebase 初始化失敗: ${error.message}. 無法載入網路統計。`;
+          networkStatsStatusElement.classList.remove('text-gray-600', 'text-green-600');
+          networkStatsStatusElement.classList.add('text-red-600');
+      }
+      const networkTotalCarbonReductionElement = document.getElementById('network-total-carbon-reduction');
+      if (networkTotalCarbonReductionElement) {
+           networkTotalCarbonReductionElement.textContent = '載入失敗';
+      }
+}
+
 
 // --- Data Definitions ---
 // Define transportData here, outside initMap, with placeholder travelMode
@@ -255,8 +280,12 @@ function loadData() {
      saveData(); // Save data including the potentially new code and initialized actions
      console.log("Data loading complete."); // Debugging line
 
-     // Fetch and display network-wide total
-     fetchNetworkTotalCarbonReduction();
+     // Fetch and display network-wide total (only if Firebase initialized successfully)
+    if (db) {
+        fetchNetworkTotalCarbonReduction();
+    } else {
+         console.warn("Firebase not initialized, cannot fetch network total.");
+    }
 }
 
 function saveData() {
@@ -276,8 +305,19 @@ function saveData() {
     localStorage.setItem(localStorageActionsKey, JSON.stringify(loggedActions));
     console.log("Saved action logs:", loggedActions); // Debugging line
 
-    // Send carbon reduction data to Firebase
-    sendCarbonReductionToFirebase(totalCarbonReduction);
+    // Send player data to Firebase (only if Firebase initialized successfully)
+    if (db && playerCode) { // Ensure playerCode exists before saving to Firebase
+       savePlayerDataToFirebase({
+           playerCode: playerCode,
+           playerName: playerNameInput.value.trim(),
+           totalMileage: totalMileage,
+           totalCarbonReduction: totalCarbonReduction,
+           totalScore: totalScore,
+           lastUpdated: firebase.firestore.FieldValue.serverTimestamp() // Add a timestamp
+       });
+    } else {
+        console.warn("Firebase not initialized or player code missing, cannot save player data.");
+    }
 }
 
 function updateStatsDisplay() {
@@ -305,72 +345,84 @@ function generateRandomCode() {
     return code;
 }
 
-// --- Firebase Integration for Network Total ---
+// --- Firebase Integration ---
 
-// Function to send user's total carbon reduction to Firebase
-async function sendCarbonReductionToFirebase(carbonReduction) {
-    console.log("Attempting to send carbon reduction to Firebase:", carbonReduction, "g"); // Debugging line
+// Function to save individual player data to Firebase
+async function savePlayerDataToFirebase(playerData) {
+    console.log("Attempting to save player data to Firebase for player:", playerData.playerCode); // Debugging line
+     // Check if db is initialized before proceeding
+     if (!db) {
+          console.error("Firebase Firestore not initialized. Cannot save player data.");
+          return;
+     }
     try {
-        // Use a fixed document ID for the total to simplify updates
-        const totalDocRef = db.collection('networkStats').doc('totalCarbon');
+        // Use playerCode as the document ID in the 'players' collection
+        const playerDocRef = db.collection('players').doc(playerData.playerCode);
 
         // Use set with merge: true to create or update the document
-        // This simple approach updates the total with the current user's total.
-        // A more robust approach would involve server-side transactions or Cloud Functions
-        // to correctly add the *change* in carbon reduction from this user.
-        await totalDocRef.set({
-            totalCarbonReduction: carbonReduction,
-            lastUpdated: firebase.firestore.FieldValue.serverTimestamp() // Add a timestamp
-        }, { merge: true });
+        await playerDocRef.set(playerData, { merge: true });
 
-        console.log("Carbon reduction data sent to Firebase successfully."); // Debugging line
-        // After saving, fetch the updated network total
+        console.log("Player data saved to Firebase successfully for player:", playerData.playerCode); // Debugging line
+        // After saving, fetch the updated network total (which sums all player data)
         fetchNetworkTotalCarbonReduction();
 
     } catch (e) {
-        console.error("Error sending carbon reduction to Firebase: ", e); // Debugging line
-        networkStatsStatusElement.textContent = '無法更新網路統計數據。';
-        networkStatsStatusElement.classList.remove('text-gray-600', 'text-green-600');
-        networkStatsStatusElement.classList.add('text-red-600');
+        console.error("Error saving player data to Firebase: ", e); // Debugging line
+        // Optional: Display an error message to the user
     }
 }
+
 
 // Function to fetch and display network-wide total carbon reduction from Firebase
 async function fetchNetworkTotalCarbonReduction() {
     console.log("Attempting to fetch network total carbon reduction from Firebase..."); // Debugging line
+     // Check if db is initialized before proceeding
+     if (!db) {
+          console.error("Firebase Firestore not initialized. Cannot fetch data.");
+          networkTotalCarbonReductionElement.textContent = '載入失敗';
+          networkStatsStatusElement.textContent = 'Firebase 未初始化。';
+          networkStatsStatusElement.classList.remove('text-gray-600', 'text-green-600');
+          networkStatsStatusElement.classList.add('text-red-600');
+          return;
+     }
+
     networkTotalCarbonReductionElement.textContent = '載入中...';
     networkStatsStatusElement.textContent = '從伺服器載入中...';
-    networkStatsStatusElement.classList.remove('text-green-600', 'text-red-600');
-    networkStatsStatusElement.classList.add('text-gray-600');
+    networkStatsStatusElement.classList.remove('text-green-600', 'text-red-600', 'text-blue-600'); // Remove all previous status colors
+    networkStatsStatusElement.classList.add('text-gray-600'); // Set to gray for loading
+
 
     try {
-        const totalDocRef = db.collection('networkStats').doc('totalCarbon');
-        const doc = await totalDocRef.get();
+        // Get all documents in the 'players' collection
+        const playersSnapshot = await db.collection('players').get();
 
-        if (doc.exists) {
-            const data = doc.data();
-            networkTotalCarbonReduction = data.totalCarbonReduction || 0;
-            console.log("Fetched network total carbon reduction:", networkTotalCarbonReduction, "g"); // Debugging line
-            networkTotalCarbonReductionElement.textContent = `${networkTotalCarbonReduction.toFixed(2)} g`;
-            networkStatsStatusElement.textContent = '網路統計數據載入成功。';
-            networkStatsStatusElement.classList.remove('text-gray-600', 'text-red-600');
-            networkStatsStatusElement.classList.add('text-green-600');
+        let totalCarbonAcrossNetwork = 0;
 
+        if (!playersSnapshot.empty) {
+            playersSnapshot.forEach(doc => {
+                const playerData = doc.data();
+                // Add each player's totalCarbonReduction to the network total
+                totalCarbonAcrossNetwork += (playerData.totalCarbonReduction || 0); // Use 0 if value is missing
+            });
+             console.log(`Fetched ${playersSnapshot.size} player documents.`); // Debugging line
         } else {
-            console.log("No network total carbon reduction data found in Firebase."); // Debugging line
-            networkTotalCarbonReduction = 0;
-            networkTotalCarbonReductionElement.textContent = '0 g';
-            networkStatsStatusElement.textContent = '網路統計數據尚未建立。';
-            networkStatsStatusElement.classList.remove('text-gray-600', 'text-red-600');
-            networkStatsStatusElement.classList.add('text-blue-600'); // Use blue for initial state
+             console.log("No player data found in Firebase 'players' collection."); // Debugging line
         }
+
+        networkTotalCarbonReduction = totalCarbonAcrossNetwork; // Update the state variable
+        networkTotalCarbonReductionElement.textContent = `${networkTotalCarbonReduction.toFixed(2)} g`;
+        networkStatsStatusElement.textContent = '網路統計數據載入成功。';
+        networkStatsStatusElement.classList.remove('text-gray-600', 'text-red-600', 'text-blue-600');
+        networkStatsStatusElement.classList.add('text-green-600');
+        console.log("Network total carbon reduction calculated and displayed:", networkTotalCarbonReduction, "g"); // Debugging line
+
 
     } catch (e) {
         console.error("Error fetching network total carbon reduction from Firebase: ", e); // Debugging line
         networkTotalCarbonReduction = 0; // Reset to 0 on error
         networkTotalCarbonReductionElement.textContent = '載入失敗';
         networkStatsStatusElement.textContent = '無法載入網路統計數據。';
-        networkStatsStatusElement.classList.remove('text-gray-600', 'text-green-600');
+        networkStatsStatusElement.classList.remove('text-gray-600', 'text-green-600', 'text-blue-600');
         networkStatsStatusElement.classList.add('text-red-600');
     }
 }
@@ -394,7 +446,11 @@ function showHomepage() {
      }
      console.log("Showing homepage."); // Debugging line
      // Ensure network total is fetched/updated when returning to homepage
-     fetchNetworkTotalCarbonReduction();
+    if (db) {
+        fetchNetworkTotalCarbonReduction();
+    } else {
+         console.warn("Firebase not initialized, cannot fetch network total on homepage.");
+    }
 }
 
 function showMissionPage() {
@@ -1326,12 +1382,10 @@ function renderLoggedActions() {
                   <p class="text-sm text-gray-700 mb-1">起點: ${log.startPoiName}</p>
                   <p class="text-sm text-gray-700 mb-1">終點: ${log.endPoiName}</p>
                   <p class="text-sm text-gray-700 mb-1">交通方式: ${log.transportName} (${log.transportIcon})</p>
-                  <p class="text-sm text-gray-700 mb-1">里程: ${(log.mileageInMeters / 1000).toFixed(2)} km</p>`;
-                  // Only add carbon reduction if it's greater than 0
-                  if (log.carbonReduction > 0) {
-                       logContentHTML += `<p class="text-sm text-gray-700 mb-1">估計減碳: ${log.carbonReduction.toFixed(2)} g</p>`;
-                  }
-         }
+                  <p class="text-sm text-gray-700 mb-1">里程: ${(log.mileageInMeters / 1000).toFixed(2)} km</p>
+                       ${log.carbonReduction > 0 ? `<p class="text-sm text-gray-700 mb-1">估計減碳: ${log.carbonReduction.toFixed(2)} g</p>` : ''}
+                  `;
+             }
 
 
         // Add points information if points are defined and greater than 0
@@ -1962,7 +2016,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // Initial display
-    showHomepage();
+    showHomepage(); // Show homepage on DOMContentLoaded
     console.log("Initial homepage display triggered."); // Debugging line
 });
 
