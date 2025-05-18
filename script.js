@@ -260,7 +260,7 @@ function loadData() {
          playerName = '';
          console.log("No data found, generated new player code and initialized stats:", playerCode); // Debugging line
          updateStatsDisplay(); // Update display with initial stats and new code
-         document.getElementById('stats-load-status').textContent = '未發現先前的旅遊數據，已建立新的玩家紀錄。'; // Update status message
+         document.getElementById('stats-load-status').textContent = '未發現先前的旅遊數據，已建立新的永續旅者紀錄。'; // Update status message
          document.getElementById('stats-load-status').classList.remove('text-gray-600');
          document.getElementById('stats-load-status').classList.add('text-blue-600');
     }
@@ -349,10 +349,10 @@ function generateRandomCode() {
 
 // Function to save individual player data to Firebase
 async function savePlayerDataToFirebase(playerData) {
-    console.log("Attempting to save player data to Firebase for player:", playerData.playerCode); // Debugging line
+    console.log("Attempting to save player data to Firebase for永續旅者:", playerData.playerCode); // Debugging line
      // Check if db is initialized before proceeding
      if (!db) {
-          console.error("Firebase Firestore not initialized. Cannot save player data.");
+          console.error("Firebase Firestore not initialized. Cannot save永續旅者data.");
           return;
      }
     try {
@@ -362,12 +362,12 @@ async function savePlayerDataToFirebase(playerData) {
         // Use set with merge: true to create or update the document
         await playerDocRef.set(playerData, { merge: true });
 
-        console.log("Player data saved to Firebase successfully for player:", playerData.playerCode); // Debugging line
+        console.log("永續旅者data saved to Firebase successfully for永續旅者:", playerData.playerCode); // Debugging line
         // After saving, fetch the updated network total (which sums all player data)
         fetchNetworkTotalCarbonReduction();
 
     } catch (e) {
-        console.error("Error saving player data to Firebase: ", e); // Debugging line
+        console.error("Error saving 永續旅者 data to Firebase: ", e); // Debugging line
         // Optional: Display an error message to the user
     }
 }
@@ -404,9 +404,9 @@ async function fetchNetworkTotalCarbonReduction() {
                 // Add each player's totalCarbonReduction to the network total
                 totalCarbonAcrossNetwork += (playerData.totalCarbonReduction || 0); // Use 0 if value is missing
             });
-             console.log(`Workspaceed ${playersSnapshot.size} player documents.`); // Debugging line
+             console.log(`Workspaceed ${playersSnapshot.size} 永續旅者documents.`); // Debugging line
         } else {
-             console.log("No player data found in Firebase 'players' collection."); // Debugging line
+             console.log("No 永續旅者data found in Firebase 'players' collection."); // Debugging line
         }
 
         networkTotalCarbonReduction = totalCarbonAcrossNetwork; // Update the state variable
@@ -1559,17 +1559,18 @@ function submitLogTrip() {
     });
 
      // --- FIX: Close the modal on successful submission ---
-     hideLogTripModal();
-     // --- End FIX ---
+     // Adding a slight delay before closing can help the user see the success message
+     setTimeout(() => {
+        hideLogTripModal();
+     }, 1500); // Close modal after 1.5 seconds
+
 
      currentLogTripPoi = null; // Clear stored POI
 
 
-    // Reset status message after a few seconds (optional, if you want to keep the message briefly visible before modal closes)
-    // setTimeout(() => {
-    //     logTripStatusElement.textContent = '';
-    //     logTripStatusElement.classList.remove('text-green-600');
-    // }, 5000); // Display success message for 5 seconds
+    // The status message display is now handled by the timeout before modal closes.
+    // Removed the separate status message timeout.
+
 }
 
 
@@ -1702,8 +1703,8 @@ function downloadTourismData() {
 
             <div class="stats">
                 <h2>您的旅遊統計</h2>
-                <p><strong>玩家姓名:</strong> ${playerNameInput.value.trim()}</p>
-                <p><strong>玩家隨機碼:</strong> ${playerCode}</p>
+                <p><strong>永續旅者姓名:</strong> ${playerNameInput.value.trim()}</p>
+                <p><strong>永續旅者隨機碼:</strong> ${playerCode}</p>
                 <p><strong>累計里程:</strong> ${(totalMileage / 1000).toFixed(2)} km</p>
                 <p><strong>減碳總量:</strong> ${totalCarbonReduction.toFixed(2)} g</p>
                 <p><strong>永續分數:</strong> ${totalScore}</p>
@@ -1823,7 +1824,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Add event listener to player name input to save data when it changes
     // Using 'input' event for more immediate saving as user types
     playerNameInput.addEventListener('input', saveData);
-    console.log("Player name input listener added (input event)."); // Debugging line
+    console.log("永續旅者name input listener added (input event)."); // Debugging line
 
 
     // Transportation option buttons
