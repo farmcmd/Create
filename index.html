@@ -382,8 +382,6 @@
 
 
 ```javascript
-// script.js
-
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
 import { getFirestore, collection, getDocs, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
@@ -1015,7 +1013,7 @@ function updatePoiListItemHighlights() {
      if (selectedEndPoi) {
          const endItem = poiListElement.querySelector(`li[data-poi-id="${selectedEndPoi.id}"]`);
          if (endItem) {
-             endItem.classList.add('poi-list-item-end');
+             item.classList.add('poi-list-item-end');
          }
      }
      console.log("POI list item highlights updated."); // Debugging line
@@ -2152,7 +2150,7 @@ function downloadTourismData() {
                   logContent = `
                       <p class="log-type">旅程計算記錄 (地圖)</p>
                       <p class="text-sm text-gray-700 mb-1">起點: ${log.startPoiName}</p>
-                      <p class="text-sm text-gray-700 mb-1">終點: ${log.endPoiName}</p>
+                      <p class="text-sm text-gray-700 mb-1">終點: ${log.endEndPoiName}</p>
                       <p class="text-sm text-gray-700 mb-1">交通方式: ${log.transportName} (${log.transportIcon})</p>
                       <p class="text-sm text-gray-700 mb-1">里程: ${(log.mileageInMeters / 1000).toFixed(2)} km</p>
                        ${log.carbonReduction > 0 ? `<p class="text-sm text-gray-700 mb-1">估計減碳: ${log.carbonReduction.toFixed(2)} g</p>` : ''}
