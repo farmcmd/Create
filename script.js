@@ -849,17 +849,6 @@ function populatePoiList() {
             iconGroup.appendChild(socialLinkElement);
         }
 
-        // Add navigation link icon
-        const navigationLinkElement = document.createElement('a');
-        // Use Google Maps navigation URL format
-        // CORRECTED LINE BELOW: Use google.navigation:q= format
-        navigationLinkElement.href = `https://www.google.com/maps/dir/?api=1&destination=${poi.coords.lat},${poi.coords.lng}`;
-        navigationLinkElement.target = "_blank"; // Open in new tab (will open Google Maps app if installed)
-        navigationLinkElement.classList.add('navigation-icon');
-        navigationLinkElement.innerHTML = '<i class="fas fa-compass"></i>'; // Compass icon
-
-        iconGroup.appendChild(navigationLinkElement);
-
         // Add Log Trip icon/button
         const logTripIcon = document.createElement('i');
         logTripIcon.classList.add('fas', 'fa-car-side', 'log-trip-icon'); // Using car icon, can change
@@ -1429,13 +1418,10 @@ function showLogTripModal(poi) {
     logTripPoiNameElement.textContent = poi.name; // Set the POI name in the modal
     logTripMileageInput.value = ''; // Clear previous mileage input
     logTripStatusElement.textContent = ''; // Clear previous status
-    logTripTransportStatusElement.classList.add('hidden'); // Hide transport status initially
-    logTripMileageStatusElement.classList.add('hidden'); // Hide mileage status initially
+    logTripTransportOptionsDiv.innerHTML = ''; // Clear previous options for transport selection
 
-    // Populate transport options in the modal
-    logTripTransportOptionsDiv.innerHTML = ''; // Clear previous options
+    // Populate transport options in the modal (excluding THSR and Taxi for manual log)
     for (const key in transportData) {
-        // Exclude THSR and Taxi from manual mileage logging
         if (key !== 'thsr_haoxing' && key !== 'taxi') {
             const transportOption = transportData[key];
             const button = document.createElement('button');
@@ -1447,6 +1433,10 @@ function showLogTripModal(poi) {
         }
     }
 
+
+    logTripTransportStatusElement.classList.add('hidden'); // Hide transport status initially
+    logTripMileageStatusElement.classList.add('hidden'); // Hide mileage status initially
+
     logTripModal.classList.remove('hidden');
 }
 
@@ -1455,6 +1445,7 @@ function hideLogTripModal() {
     console.log("Hiding log trip modal.");
     logTripModal.classList.add('hidden');
     currentLogTripPoi = null; // Clear the stored POI
+    selectedLogTripTransport = null; // Clear selected transport
     // Remove selected class from transport buttons in the modal
     logTripTransportOptionsDiv.querySelectorAll('.log-trip-transport-button').forEach(button => {
         button.classList.remove('selected');
@@ -1524,15 +1515,20 @@ function submitLogTrip() {
         const carbonReductionPerMeter = transportInfo.carbonReductionPer10km / 10000;
         tripCarbonReduction = mileageInMeters * carbonReductionPerMeter;
     }
-    totalCarbonReduction += tripCarbonReduction; // Add to total carbon reduction
 
+    // --- FIX: Add the calculated values to the total stats ---
+    totalMileage += mileageInMeters;
+    totalCarbonReduction += tripCarbonReduction;
     // Calculate score for this manual trip
     let scoreForThisTrip = 0;
      if (transportInfo && transportInfo.metersPerPoint !== Infinity) {
           const metersPerPoint = transportInfo.metersPerPoint;
           scoreForThisTrip = Math.floor(mileageInMeters / metersPerPoint);
           totalScore += scoreForThisTrip; // Add to total score
+     } else {
+         console.log("No distance-based score for this manual transport type."); // Debugging line
      }
+    // --- END FIX ---
 
 
     updateStatsDisplay(); // Update displays
