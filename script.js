@@ -416,7 +416,7 @@ async function fetchNetworkTotalCarbonReduction() {
                 // Add each player's totalCarbonReduction to the network total
                 totalCarbonAcrossNetwork += (playerData.totalCarbonReduction || 0); // Use 0 if value is missing
             });
-             console.log(`Workspaceed ${playersSnapshot.size} 永續旅者documents.`); // Debugging line
+             console.log(`Processed ${playersSnapshot.size} 永續旅者documents.`); // Debugging line
         } else {
              console.log("No 永續旅者data found in Firebase 'players' collection."); // Debugging line
         }
@@ -495,7 +495,7 @@ function showMissionPage() {
 }
 
 // --- Google Map Initialization and POI Markers ---
-// This function is called automatically by the Google Maps script's callback parameter
+// This function is called automatically by the Google Maps API script's callback parameter
 function initMap() {
      console.log("initMap function called by Google Maps API."); // Debugging line
 
@@ -512,7 +512,7 @@ function initMap() {
          // Update map status element in mission page
          const missionPageMapStatus = document.getElementById('map-status');
          if (missionPageMapStatus) {
-              mapStatusElement.innerHTML = '地圖載入失敗，請檢查API金鑰和網路連線。<br><span class="text-xs">若地圖未正確載入，請利用景點列表中的 <i class="fas fa-car-side text-orange-500"></i> 圖示記錄您的里程。</span>';
+              mapStatusElement.innerHTML = '地圖載入失敗：API 金鑰認證失敗。請檢查您的金鑰和限制設定。<br><span class="text-xs">若地圖未正確載入，請利用景點列表中的 <i class="fas fa-car-side text-orange-500"></i> 圖示記錄您的里程。</span>';
               mapStatusElement.classList.remove('text-gray-600');
               mapStatusElement.classList.add('text-red-600');
          }
