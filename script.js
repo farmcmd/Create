@@ -14,33 +14,9 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-let app;
-let db;
-let analytics;
-
-try {
-    app = firebase.initializeApp(firebaseConfig);
-    db = firebase.firestore(); // Get a reference to the Firestore service
-    analytics = firebase.analytics(); // Get a reference to the Analytics service (optional)
-     console.log("Firebase initialized successfully."); // Debugging line
-     // Initial fetch of network total after Firebase is initialized
-     fetchNetworkTotalCarbonReduction();
-
-} catch (error) {
-     console.error("Error initializing Firebase:", error); // Debugging line
-     // Update network stats status on Firebase initialization error
-     const networkStatsStatusElement = document.getElementById('network-stats-status');
-      if (networkStatsStatusElement) {
-          networkStatsStatusElement.textContent = `Firebase 初始化失敗: ${error.message}. 無法載入網路統計。`;
-          networkStatsStatusElement.classList.remove('text-gray-600', 'text-green-600');
-          networkStatsStatusElement.classList.add('text-red-600');
-      }
-      const networkTotalCarbonReductionElement = document.getElementById('network-total-carbon-reduction');
-      if (networkTotalCarbonReductionElement) {
-           networkTotalCarbonReductionElement.textContent = '載入失敗';
-      }
-}
-
+const app = firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore(); // Get a reference to the Firestore service
+const analytics = firebase.analytics(); // Get a reference to the Analytics service (optional)
 
 // --- Data Definitions ---
 // Define transportData here, outside initMap, with placeholder travelMode
@@ -279,12 +255,8 @@ function loadData() {
      saveData(); // Save data including the potentially new code and initialized actions
      console.log("Data loading complete."); // Debugging line
 
-     // Fetch and display network-wide total (only if Firebase initialized successfully)
-    if (db) {
-        fetchNetworkTotalCarbonReduction();
-    } else {
-         console.warn("Firebase not initialized, cannot fetch network total.");
-    }
+     // Fetch and display network-wide total
+     fetchNetworkTotalCarbonReduction();
 }
 
 function saveData() {
@@ -304,12 +276,8 @@ function saveData() {
     localStorage.setItem(localStorageActionsKey, JSON.stringify(loggedActions));
     console.log("Saved action logs:", loggedActions); // Debugging line
 
-    // Send carbon reduction data to Firebase (only if Firebase initialized successfully)
-    if (db) {
-       sendCarbonReductionToFirebase(totalCarbonReduction);
-    } else {
-        console.warn("Firebase not initialized, cannot send carbon reduction data.");
-    }
+    // Send carbon reduction data to Firebase
+    sendCarbonReductionToFirebase(totalCarbonReduction);
 }
 
 function updateStatsDisplay() {
@@ -342,11 +310,6 @@ function generateRandomCode() {
 // Function to send user's total carbon reduction to Firebase
 async function sendCarbonReductionToFirebase(carbonReduction) {
     console.log("Attempting to send carbon reduction to Firebase:", carbonReduction, "g"); // Debugging line
-    // Check if db is initialized before proceeding
-    if (!db) {
-        console.error("Firebase Firestore not initialized. Cannot send data.");
-        return;
-    }
     try {
         // Use a fixed document ID for the total to simplify updates
         const totalDocRef = db.collection('networkStats').doc('totalCarbon');
@@ -375,16 +338,6 @@ async function sendCarbonReductionToFirebase(carbonReduction) {
 // Function to fetch and display network-wide total carbon reduction from Firebase
 async function fetchNetworkTotalCarbonReduction() {
     console.log("Attempting to fetch network total carbon reduction from Firebase..."); // Debugging line
-     // Check if db is initialized before proceeding
-     if (!db) {
-          console.error("Firebase Firestore not initialized. Cannot fetch data.");
-          networkTotalCarbonReductionElement.textContent = '載入失敗';
-          networkStatsStatusElement.textContent = 'Firebase 未初始化。';
-          networkStatsStatusElement.classList.remove('text-gray-600', 'text-green-600');
-          networkStatsStatusElement.classList.add('text-red-600');
-          return;
-     }
-
     networkTotalCarbonReductionElement.textContent = '載入中...';
     networkStatsStatusElement.textContent = '從伺服器載入中...';
     networkStatsStatusElement.classList.remove('text-green-600', 'text-red-600');
@@ -441,11 +394,7 @@ function showHomepage() {
      }
      console.log("Showing homepage."); // Debugging line
      // Ensure network total is fetched/updated when returning to homepage
-    if (db) {
-        fetchNetworkTotalCarbonReduction();
-    } else {
-         console.warn("Firebase not initialized, cannot fetch network total on homepage.");
-    }
+     fetchNetworkTotalCarbonReduction();
 }
 
 function showMissionPage() {
@@ -1377,10 +1326,12 @@ function renderLoggedActions() {
                   <p class="text-sm text-gray-700 mb-1">起點: ${log.startPoiName}</p>
                   <p class="text-sm text-gray-700 mb-1">終點: ${log.endPoiName}</p>
                   <p class="text-sm text-gray-700 mb-1">交通方式: ${log.transportName} (${log.transportIcon})</p>
-                  <p class="text-sm text-gray-700 mb-1">里程: ${(log.mileageInMeters / 1000).toFixed(2)} km</p>
-                       ${log.carbonReduction > 0 ? `<p class="text-sm text-gray-700 mb-1">估計減碳: ${log.carbonReduction.toFixed(2)} g</p>` : ''}
-                  `;
-             }
+                  <p class="text-sm text-gray-700 mb-1">里程: ${(log.mileageInMeters / 1000).toFixed(2)} km</p>`;
+                  // Only add carbon reduction if it's greater than 0
+                  if (log.carbonReduction > 0) {
+                       logContentHTML += `<p class="text-sm text-gray-700 mb-1">估計減碳: ${log.carbonReduction.toFixed(2)} g</p>`;
+                  }
+         }
 
 
         // Add points information if points are defined and greater than 0
@@ -2011,8 +1962,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // Initial display
-    // showHomepage() is now called after Firebase initialization check in the try...catch block
-    // or directly if Firebase initialization fails.
+    showHomepage();
+    console.log("Initial homepage display triggered."); // Debugging line
 });
 
  // Ensure map resizes if window is resized
