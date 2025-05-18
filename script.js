@@ -1205,7 +1205,6 @@ function submitPoiReview() {
              activityLogStatusElement.classList.remove('text-green-600');
          }, 5000); // Display success message for 5 seconds
 
-
      } else {
          // If format is incorrect
          activityLogStatusElement.textContent = '無效的驗證碼格式。請輸入任 6 個英文字母或數字。';
