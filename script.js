@@ -1,5 +1,11 @@
 // script.js
 
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+import { getFirestore, collection, getDocs, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-analytics.js";
+
+
 // --- Firebase Configuration ---
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -19,13 +25,13 @@ let db;
 let analytics;
 
 try {
-    app = firebase.initializeApp(firebaseConfig);
-    db = firebase.firestore(); // Get a reference to the Firestore service
-    analytics = firebase.analytics(); // Get a reference to the Analytics service (optional)
+    app = initializeApp(firebaseConfig);
+    db = getFirestore(app); // Get a reference to the Firestore service using the new method
+    analytics = getAnalytics(app); // Get a reference to the Analytics service using the new method
      console.log("Firebase initialized successfully."); // Debugging line
      // Initial fetch of network total after Firebase is initialized
      // This will now happen when loadData is called on DOMContentLoaded
-     // fetchNetworkTotalCarbonReduction();
+     // fetchNetworkTotalCarbonReduction(); // This is called in loadData now
 
 } catch (error) {
      console.error("Error initializing Firebase:", error); // Debugging line
@@ -313,7 +319,7 @@ function saveData() {
            totalMileage: totalMileage,
            totalCarbonReduction: totalCarbonReduction,
            totalScore: totalScore,
-           lastUpdated: firebase.firestore.FieldValue.serverTimestamp() // Add a timestamp
+           lastUpdated: serverTimestamp() // Use the imported serverTimestamp function
        });
     } else {
         console.warn("Firebase not initialized or player code missing, cannot save player data.");
@@ -357,10 +363,14 @@ async function savePlayerDataToFirebase(playerData) {
      }
     try {
         // Use playerCode as the document ID in the 'players' collection
-        const playerDocRef = db.collection('players').doc(playerData.playerCode);
+        // Use the imported collection and doc functions
+        const playerDocRef = doc(collection(db, 'players'), playerData.playerCode);
+
 
         // Use set with merge: true to create or update the document
-        await playerDocRef.set(playerData, { merge: true });
+        // Use the imported setDoc function
+        await setDoc(playerDocRef, playerData, { merge: true });
+
 
         console.log("永續旅者data saved to Firebase successfully for永續旅者:", playerData.playerCode); // Debugging line
         // After saving, fetch the updated network total (which sums all player data)
@@ -394,7 +404,9 @@ async function fetchNetworkTotalCarbonReduction() {
 
     try {
         // Get all documents in the 'players' collection
-        const playersSnapshot = await db.collection('players').get();
+        // Use the imported collection and getDocs functions
+        const playersSnapshot = await getDocs(collection(db, 'players'));
+
 
         let totalCarbonAcrossNetwork = 0;
 
@@ -763,7 +775,7 @@ function calculateTripMileage() {
 
             // saveData(); // Save data is already called within the logging block
 
-            // Optionally reset selected points after calculation
+            // Optional: Optionally reset selected points after calculation
             // resetSelectedPoints(); // Might want to keep them selected visually
 
         } else {
