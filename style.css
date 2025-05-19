@@ -192,3 +192,16 @@ body {
  .animate-pulse-subtle {
     animation: pulse-subtle 4s infinite ease-in-out;
  }
+
+ /* Style for consumption category buttons */
+ .consumption-category-button {
+     /* Tailwind classes handle most styling, but add some custom for selected state */
+     border: 1px solid transparent; /* Default border */
+ }
+
+ .consumption-category-button.selected {
+     background-color: #81c784; /* Slightly darker green than default */
+     border-color: #388e3c; /* Dark green border */
+     font-weight: bold;
+ }
+
