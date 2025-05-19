@@ -10,7 +10,7 @@ import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.22.2/firebase
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-    apiKey: "AIzaSyCEH65YbNirj_IRmtsIJZS-HNEbsRBBsSQ", // Your Firebase API Key - REPLACE WITH YOUR ACTUAL KEY
+    apiKey: "AIzaSyCEH65YbNirj_IRmtsIJZS-HNEbsRBBsSQ", // Your Firebase API Key
     authDomain: "sustainable-tourism-65025.firebaseapp.com",
     projectId: "sustainable-tourism-65025",
     storageBucket: "sustainable-tourism-65025.firebasestorage.app",
@@ -53,22 +53,17 @@ try {
 // Define transportData here, outside initMap, with placeholder travelMode
 let transportData = {
     // Added metersPerPoint for score calculation based on distance
-    bike: { name: '腳踏車', icon: '🚲', carbonReductionPer10km: 500, travelMode: null, metersPerPoint: 10000 }, // 10km = 10000m
+    // Corrected carbon reduction values based on user feedback
+    bike: { name: '腳踏車', icon: '🚲', carbonReductionPer10km: 350, travelMode: null, metersPerPoint: 10000 }, // 10km = 10000m
     walk: { name: '步行', icon: '🚶‍♂️', carbonReductionPer10km: 400, travelMode: null, metersPerPoint: 8000 },   // 8km = 8000m
-    bus_train: { name: '共乘巴士 (公車/火車/遊覽巴士)', icon: '🚌', carbonReductionPer10km: 100, travelMode: null, metersPerPoint: 15000 }, // 15km = 15000m
-    carpool_2_moto: { name: '私家車共乘 2 人 / 摩托車', icon: '🏍️🚗', carbonReductionPer10km: 150, travelMode: null, metersPerPoint: 25000 }, // 25km = 25000m
+    bus_train: { name: '共乘巴士 (公車/火車/遊覽巴士)', icon: '🚌', carbonReductionPer10km: 300, travelMode: null, metersPerPoint: 15000 }, // 15km = 15000m
+    carpool_2_moto: { name: '私家車共乘 2 人 / 摩托車', icon: '🏍️🚗', carbonReductionPer10km: 100, travelMode: null, metersPerPoint: 25000 }, // 25km = 25000m
     carpool_3: { name: '私家車共乘 3 人', icon: '🚗', carbonReductionPer10km: 120, travelMode: null, metersPerPoint: 20000 }, // 20km = 20000m
-    carpool_4: { name: '私家車共乘 4 人', icon: '🚗', carbonReductionPer10km: 100, travelMode: null, metersPerPoint: 18000 }, // 18km = 18000m
-    carpool_5: { name: '私家車共乘 5 人', icon: '🚗', carbonReductionPer10km: 80, travelMode: null, metersPerPoint: 16000 }, // 16km = 16000m
+    carpool_4: { name: '私家車共乘 4 人', icon: '🚗', carbonReductionPer10km: 150, travelMode: null, metersPerPoint: 18000 }, // 18km = 18000m
+    carpool_5: { name: '私家車共乘 5 人', icon: '🚗', carbonReductionPer10km: 200, travelMode: null, metersPerPoint: 16000 }, // 16km = 16000m
     thsr_haoxing: { name: '高鐵假期x台灣好行', icon: '🚄🚌', carbonReductionPer10km: 0, travelMode: null, metersPerPoint: Infinity } // THSR doesn't get points from distance in this model
     // Taxi info is not included here as it's not for mileage calculation
 };
-
-// Define carbon reduction rate for consumption-based mileage (grams per virtual km)
-const CARBON_REDUCTION_PER_KM_CONSUMPTION = 10; // 10g per virtual km from consumption
-
-// Define points per virtual km for consumption mileage (points per km)
-const POINTS_PER_KM_CONSUMPTION = 1; // 1 point per virtual km from consumption
 
 
 // Points of Interest Data (Removed iconUrl for default markers)
@@ -87,9 +82,9 @@ const pois = [
     { id: 'poi10', name: '雨社山下', coords: { lat: 23.790644, lng: 120.896569 }, icon: '🥒', description: '接駁、共乘、摩托。\n\n活動資訊: 農場導覽、生態導覽、食農教育。完成單一活動可獲得永續與環境教育任務點數10點。', image: '', socialLink: 'https://www.facebook.com/profile.php?id=61557727713841&locale=zh_TW', sroiInfo: { reportLink: 'YOUR_REPORT_LINK_10', formLink: 'YOUR_FORM_LINK_10', lineId: 'YOUR_LINE_ID_10' } }, // Added sroiInfo
     { id: 'poi11', name: '阿爾喜莊園', coords: { lat: 23.803119, lng: 120.926340 }, icon: '🍋', description: '接駁、共乘、摩托。\n\n活動資訊: 農場導覽、生態導覽、食農教育、農業循環經濟教學。完成單一活動可獲得永續與環境教育任務點數10點。', image: '', socialLink: 'https://www.facebook.com/AHEIemon?locale=zh_TW', sroiInfo: { reportLink: 'YOUR_REPORT_LINK_11', formLink: 'YOUR_FORM_LINK_11', lineId: 'YOUR_LINE_ID_11' } }, // Added sroiInfo
     // Re-added sroiInfo for poi12
-    { id: 'poi12', name: '湧健酪梨園', coords: { lat: 23.725349, lng: 120.846123 }, icon: '🥑', description: '台灣好行、共乘、摩托。\n\n活動資訊: 農場導覽、生態導覽、食農教育。完成單一活動可獲得永續與環境教育任務點數10點。', image: '', socialLink: 'https://www.facebook.com/profile.php?id=100085673588742&locale=zh_TW', sroiInfo: { reportLink: 'YOUR_REPORT_LINK_12', formLink: 'YOUR_FORM_LINK_12', lineId: 'YOUR_LINE_ID_12' } }, // Re-added sroiInfo for poi12
+    { id: 'poi12', name: '湧健酪梨園', coords: { lat: 23.725349, lng: 120.846123 }, icon: '🥑', description: '台灣好行、共乘、摩托。\n\n活動資訊: 農場導覽、生態導覽、食農教育。完成單一活動可獲得永續與環境教育任務點數10點。', image: '', socialLink: 'https://www.facebook.com/profile.php?id=100085673588842&locale=zh_TW', sroiInfo: { reportLink: 'YOUR_REPORT_LINK_12', formLink: 'YOUR_FORM_LINK_12', lineId: 'YOUR_LINE_ID_12' } }, // Re-added sroiInfo for poi12
     { id: 'poi13', name: '謝家肉圓', coords: { lat: 23.817521, lng: 120.853831 }, icon: '🥟', description: '步行、摩托、台灣好行。營業時間 11:00–17:00。\n\n在地人巷內70年老店。', image: '', socialLink: 'https://www.facebook.com/profile.php?id=100054428473137&locale=zh_TW' },
-    { id: 'poi14', name: '機車貓聯盟', coords: { lat: 23.810883, lng: 120.855798 }, icon: '🍚', description: '共乘、摩托、台灣好行。營業時間 11:00–17:00。\n\n無菜單料理店，50%以上使用在地食材，任一消費金額可獲得永續與環境教育任務點數10點。', image: '', socialLink: 'https://m.facebook.com/%E6%A9%9F%E8%BB%8A%E8%B2%93%E8%81%AF%E7%9B%9F-552637305127422/' }, // Added social link (using the one from search result)
+    { id: 'poi14', name: '機車貓聯盟', coords: { lat: 23.810883, lng: 120.855798 }, icon: '🍚', description: '共乘、摩托、台灣好行。營業時間 11:00–17:00。\n\n無菜單料理店，50%以上使用在地食材，任一消費金額可獲得永續與環境教育任務點數10點。', image: '', socialLink: 'https://m.facebook.com/機車貓聯盟-552637305127422/' }, // Added social link (using the one from search result)
     { id: 'poi15', name: '二坪大觀冰店', coords: { lat: 23.813627, lng: 120.859651 }, icon: '🍦', description: '共乘、摩托。\n\n在地推薦古早味枝仔冰。台電員工福利社60年老店。', image: '', socialLink: 'https://www.facebook.com/2pinIce/' },
     { id: 'poi16', name: '水里里山村', coords: { lat: 23.813459, lng: 120.853787 }, icon: '🏡', description: '共乘、摩托。\n\n在地推鑑環保旅宿，任一消費金額可獲得永續與環境教育任務點數10點。', image: '', socialLink: 'https://tg-ecohotel.com/' }, // Added website link
     // Added isNew flag and updated description for poi17
@@ -148,10 +143,6 @@ let currentLogTripPoi = null;
 
 // New state variable for network-wide total carbon reduction
 let networkTotalCarbonReduction = 0;
-
-// New state variables for sustainable consumption feature
-let selectedConsumptionCategory = null; // Stores the selected consumption category button element
-let selectedConsumptionMileage = 0; // Stores the mileage for the selected consumption category
 
 
 // --- DOM Elements ---
@@ -236,14 +227,6 @@ const showSroiInfoButton = document.getElementById('show-sroi-info-button'); // 
 // New DOM element for network total carbon reduction display
 const networkTotalCarbonReductionElement = document.getElementById('network-total-carbon-reduction');
 const networkStatsStatusElement = document.getElementById('network-stats-status'); // Status for network stats
-
-// New DOM elements for Sustainable Consumption Section (POI17)
-const sustainableConsumptionSection = document.getElementById('sustainable-consumption-section');
-const consumptionCategoryButtons = document.querySelectorAll('.consumption-category-button');
-const consumptionInputArea = document.getElementById('consumption-input-area');
-const consumptionCodeInput = document.getElementById('consumption-code');
-const submitConsumptionCodeButton = document.getElementById('submit-consumption-code');
-const consumptionStatusElement = document.getElementById('consumption-status');
 
 
 // --- Local Storage ---
@@ -701,7 +684,7 @@ function calculateTripMileage() {
      }
 
     tripCalculationStatusElement.textContent = '正在計算路徑...'; // Added loading indicator
-    tripCalculationStatusElement.classList.remove('text-red-600', 'text-green-600');
+    tripCalculationStatusElement.classList.remove('text-red-600', 'text-gray-700');
     tripCalculationStatusElement.classList.add('text-gray-700');
     clearTripLine(); // Clear previous route
 
@@ -871,7 +854,7 @@ function populatePoiList() {
         const navigationLinkElement = document.createElement('a');
         // Use Google Maps navigation URL format
         // CORRECTED LINE BELOW: Use google.navigation:q= format
-        navigationLinkElement.href = `https://www.google.com/maps/dir/?api=1&destination=$${poi.coords.lat},${poi.coords.lng}`;
+        navigationLinkElement.href = `https://www.google.com/maps/dir/?api=1&destination=${poi.coords.lat},${poi.coords.lng}`;
         navigationLinkElement.target = "_blank"; // Open in new tab (will open Google Maps app if installed)
         navigationLinkElement.classList.add('navigation-icon');
         navigationLinkElement.innerHTML = '<i class="fas fa-compass"></i>'; // Compass icon
@@ -994,23 +977,6 @@ function showPoiModal(poi) {
          }
      }
 
-     // --- Handle Sustainable Consumption Section Visibility and Setup (POI17) ---
-     if (poi.id === 'poi17') {
-         sustainableConsumptionSection.classList.remove('hidden'); // Show the consumption section
-         // Reset consumption input area and status
-         consumptionInputArea.classList.add('hidden');
-         consumptionCodeInput.value = '';
-         consumptionStatusElement.textContent = '';
-         consumptionStatusElement.classList.remove('text-green-600', 'text-red-600');
-         // Reset selected consumption category button highlight
-         consumptionCategoryButtons.forEach(button => button.classList.remove('selected'));
-         selectedConsumptionCategory = null; // Reset selected category state
-         selectedConsumptionMileage = 0; // Reset selected mileage state
-
-     } else {
-         sustainableConsumptionSection.classList.add('hidden'); // Hide the consumption section
-     }
-
 
     poiModal.classList.remove('hidden');
 }
@@ -1019,18 +985,6 @@ function hidePoiModal() {
     console.log("Hiding POI modal."); // Debugging line
     poiModal.classList.add('hidden');
     poiModal.currentPoi = null; // Clear temporary data
-
-    // Reset state variables related to the consumption feature when modal closes
-    selectedConsumptionCategory = null;
-    selectedConsumptionMileage = 0;
-    // Hide input area and clear input field
-    consumptionInputArea.classList.add('hidden');
-    consumptionCodeInput.value = '';
-    // Clear status message
-    consumptionStatusElement.textContent = '';
-    consumptionStatusElement.classList.remove('text-green-600', 'text-red-600');
-    // Remove selected class from consumption category buttons
-    consumptionCategoryButtons.forEach(button => button.classList.remove('selected'));
 }
 
 // --- POI Review Submission ---
@@ -1430,7 +1384,7 @@ function renderLoggedActions() {
             } else if (log.type === 'poi_review') {
              // Render POI review log
              logContentHTML = `
-                  <p class="log-type">永續消費審核記錄</p>
+                  <p class="log-type">永續消費記錄</p>
                   <p class="text-sm text-gray-700 mb-1">景點: ${log.poiName}</p>
                   <p class="text-sm text-gray-700 mb-1">消費金額: ${log.consumption}</p>
                   <p class="text-sm text-gray-700 mb-1">審核碼: ${log.reviewCode}</p>
@@ -1443,15 +1397,6 @@ function renderLoggedActions() {
                   <p class="text-sm text-gray-700 mb-1">里程: ${(log.mileageInMeters / 1000).toFixed(2)} km</p>
                        ${log.carbonReduction > 0 ? `<p class="text-sm text-gray-700 mb-1">估計減碳: ${log.carbonReduction.toFixed(2)} g</p>` : ''}
                   `;
-             } else if (log.type === 'consumption') { // New type for sustainable consumption
-                 logContentHTML = `
-                     <p class="log-type">永續消費獲里程記錄</p>
-                     <p class="text-sm text-gray-700 mb-1">景點: ${log.poiName}</p>
-                     <p class="text-sm text-gray-700 mb-1">消費類別: ${log.category}</p>
-                     <p class="text-sm text-gray-700 mb-1">輸入代碼: ${log.code}</p>
-                     <p class="text-sm text-gray-700 mb-1">獲得里程: ${log.mileage} km</p>
-                     <p class="text-sm text-gray-700 mb-1">估計減碳: ${log.carbonReduction.toFixed(2)} g</p>
-                 `;
              }
 
 
@@ -1485,13 +1430,10 @@ function showLogTripModal(poi) {
     logTripPoiNameElement.textContent = poi.name; // Set the POI name in the modal
     logTripMileageInput.value = ''; // Clear previous mileage input
     logTripStatusElement.textContent = ''; // Clear previous status
-    logTripTransportStatusElement.classList.add('hidden'); // Hide transport status initially
-    logTripMileageStatusElement.classList.add('hidden'); // Hide mileage status initially
+    logTripTransportOptionsDiv.innerHTML = ''; // Clear previous options for transport selection
 
-    // Populate transport options in the modal
-    logTripTransportOptionsDiv.innerHTML = ''; // Clear previous options
+    // Populate transport options in the modal (excluding THSR and Taxi for manual log)
     for (const key in transportData) {
-        // Exclude THSR and Taxi from manual mileage logging
         if (key !== 'thsr_haoxing' && key !== 'taxi') {
             const transportOption = transportData[key];
             const button = document.createElement('button');
@@ -1503,6 +1445,10 @@ function showLogTripModal(poi) {
         }
     }
 
+
+    logTripTransportStatusElement.classList.add('hidden'); // Hide transport status initially
+    logTripMileageStatusElement.classList.add('hidden'); // Hide mileage status initially
+
     logTripModal.classList.remove('hidden');
 }
 
@@ -1511,6 +1457,7 @@ function hideLogTripModal() {
     console.log("Hiding log trip modal.");
     logTripModal.classList.add('hidden');
     currentLogTripPoi = null; // Clear the stored POI
+    selectedLogTripTransport = null; // Clear selected transport
     // Remove selected class from transport buttons in the modal
     logTripTransportOptionsDiv.querySelectorAll('.log-trip-transport-button').forEach(button => {
         button.classList.remove('selected');
@@ -1580,15 +1527,20 @@ function submitLogTrip() {
         const carbonReductionPerMeter = transportInfo.carbonReductionPer10km / 10000;
         tripCarbonReduction = mileageInMeters * carbonReductionPerMeter;
     }
-    totalCarbonReduction += tripCarbonReduction; // Add to total carbon reduction
 
+    // --- FIX: Add the calculated values to the total stats ---
+    totalMileage += mileageInMeters;
+    totalCarbonReduction += tripCarbonReduction;
     // Calculate score for this manual trip
     let scoreForThisTrip = 0;
      if (transportInfo && transportInfo.metersPerPoint !== Infinity) {
           const metersPerPoint = transportInfo.metersPerPoint;
           scoreForThisTrip = Math.floor(mileageInMeters / metersPerPoint);
           totalScore += scoreForThisTrip; // Add to total score
+     } else {
+         console.log("No distance-based score for this manual transport type."); // Debugging line
      }
+    // --- END FIX ---
 
 
     updateStatsDisplay(); // Update displays
@@ -1738,114 +1690,6 @@ function submitLogTrip() {
       sroiModalContentBody.innerHTML = ''; // Clear content
  }
 
-// --- Sustainable Consumption Feature (POI17) ---
-
-// Function to handle click on a consumption category button
-function handleConsumptionCategoryClick() {
-    console.log("Consumption category button clicked:", this.textContent);
-
-    // Remove 'selected' class from all category buttons
-    consumptionCategoryButtons.forEach(button => button.classList.remove('selected'));
-
-    // Add 'selected' class to the clicked button
-    this.classList.add('selected');
-
-    // Store the selected category button and its mileage
-    selectedConsumptionCategory = this;
-    selectedConsumptionMileage = parseInt(this.dataset.mileage, 10);
-
-    // Show the input area for the 5-digit code
-    consumptionInputArea.classList.remove('hidden');
-    consumptionCodeInput.value = ''; // Clear previous input
-    consumptionStatusElement.textContent = ''; // Clear previous status
-    consumptionStatusElement.classList.remove('text-green-600', 'text-red-600');
-
-    console.log("Selected Consumption Category:", selectedConsumptionCategory.textContent, "Mileage:", selectedConsumptionMileage);
-}
-
-// Function to submit the 5-digit consumption code
-function submitConsumptionCode() {
-    console.log("Submit consumption code button clicked.");
-
-    // Clear previous status message
-    consumptionStatusElement.textContent = '';
-    consumptionStatusElement.classList.remove('text-green-600', 'text-red-600');
-
-    if (!selectedConsumptionCategory) {
-        consumptionStatusElement.textContent = '請先選擇一個消費類別。';
-        consumptionStatusElement.classList.add('text-red-600');
-        console.warn("No consumption category selected.");
-        return;
-    }
-
-    const inputCode = consumptionCodeInput.value.trim();
-    const codeRegex = /^[0-9]{5}$/; // Regex for exactly 5 digits
-
-    if (!codeRegex.test(inputCode)) {
-        consumptionStatusElement.textContent = '請輸入有效的 5 個數字代碼。';
-        consumptionStatusElement.classList.add('text-red-600');
-        console.warn("Invalid consumption code format:", inputCode);
-        return;
-    }
-
-    // If validation passes, calculate and add mileage/carbon reduction
-    const mileageGainedKm = selectedConsumptionMileage; // Mileage is directly from the button's data-mileage
-    const mileageGainedMeters = mileageGainedKm * 1000; // Convert to meters for totalMileage
-
-    // Calculate carbon reduction based on the mileage gained from consumption
-    const carbonReductionGained = mileageGainedKm * CARBON_REDUCTION_PER_KM_CONSUMPTION;
-
-    // Calculate points based on the mileage gained from consumption
-    const pointsGained = mileageGainedKm * POINTS_PER_KM_CONSUMPTION;
-
-
-    // Update total stats
-    totalMileage += mileageGainedMeters;
-    totalCarbonReduction += carbonReductionGained;
-    totalScore += pointsGained; // Add points earned from consumption
-
-    updateStatsDisplay(); // Update the display
-    saveData(); // Save the updated data
-
-    const now = new Date();
-    const timestamp = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')} ${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
-
-    // Log the consumption action
-    const newLogEntry = {
-        type: 'consumption', // New type for consumption log
-        poiName: poiModal.currentPoi ? poiModal.currentPoi.name : '未知景點', // Get POI name from modal state
-        category: selectedConsumptionCategory.textContent.split(' ')[0], // Get just the category name
-        code: inputCode,
-        mileage: mileageGainedKm, // Log in km for readability
-        carbonReduction: carbonReductionGained,
-        points: pointsGained, // Log points earned
-        timestamp: timestamp
-    };
-
-    loggedActions.push(newLogEntry); // Add new log to the array
-    saveData(); // Save updated logs
-    renderLoggedActions(); // Re-render the list
-
-    console.log("Logged Consumption:", newLogEntry); // Debugging line
-
-    consumptionStatusElement.textContent = `永續消費記錄成功！獲得 ${mileageGainedKm} 里程, 估計減碳 ${carbonReductionGained.toFixed(2)} g, 獲得 ${pointsGained} 積分！`;
-    consumptionStatusElement.classList.remove('text-red-600');
-    consumptionStatusElement.classList.add('text-green-600');
-
-    // Reset consumption input area and selected category after successful submission
-    consumptionInputArea.classList.add('hidden');
-    consumptionCodeInput.value = '';
-    selectedConsumptionCategory.classList.remove('selected');
-    selectedConsumptionCategory = null;
-    selectedConsumptionMileage = 0;
-
-
-    // Optional: Hide the consumption section or modal after submission
-    // setTimeout(() => {
-    //     hidePoiModal(); // Hide the entire POI modal
-    // }, 3000); // Hide after 3 seconds
-}
-
 
 // --- Download Data ---
 function downloadTourismData() {
@@ -1922,7 +1766,7 @@ function downloadTourismData() {
                  `;
             } else if (log.type === 'poi_review') {
                  logContent = `
-                      <p class="log-type">永續消費審核記錄</p>
+                      <p class="log-type">永續消費記錄</p>
                       <p class="text-sm text-gray-700 mb-1">景點: ${log.poiName}</p>
                       <p class="text-sm text-gray-700 mb-1">消費金額: ${log.consumption}</p>
                       <p class="text-sm text-gray-700 mb-1">審核碼: ${log.reviewCode}</p>
@@ -1935,15 +1779,6 @@ function downloadTourismData() {
                       <p class="text-sm text-gray-700 mb-1">里程: ${(log.mileageInMeters / 1000).toFixed(2)} km</p>
                        ${log.carbonReduction > 0 ? `<p class="text-sm text-gray-700 mb-1">估計減碳: ${log.carbonReduction.toFixed(2)} g</p>` : ''}
                   `;
-             } else if (log.type === 'consumption') { // New type for sustainable consumption
-                 logContent = `
-                     <p class="log-type">永續消費獲里程記錄</p>
-                     <p class="text-sm text-gray-700 mb-1">景點: ${log.poiName}</p>
-                     <p class="text-sm text-gray-700 mb-1">消費類別: ${log.category}</p>
-                     <p class="text-sm text-gray-700 mb-1">輸入代碼: ${log.code}</p>
-                     <p class="text-sm text-gray-700 mb-1">獲得里程: ${log.mileage} km</p>
-                     <p class="text-sm text-gray-700 mb-1">估計減碳: ${log.carbonReduction.toFixed(2)} g</p>
-                 `;
              }
 
 
@@ -1952,11 +1787,6 @@ function downloadTourismData() {
              } else if (log.points === 0) {
                   pointsContent = `<p class="log-points text-gray-600">獲得積分: 0</p>`;
              }
-             // Ensure points are added if the log type has points defined, even if 0
-             else if (log.points !== undefined) {
-                  pointsContent = `<p class="log-points text-gray-600">獲得積分: ${log.points}</p>`;
-             }
-
 
             htmlContent += logContent;
             htmlContent += pointsContent;
@@ -2209,18 +2039,6 @@ document.addEventListener('DOMContentLoaded', () => {
          }
      });
      console.log("SROI Info modal close listeners added.");
-
-     // --- Sustainable Consumption Feature Event Listeners ---
-     // Add event listeners to the consumption category buttons
-     consumptionCategoryButtons.forEach(button => {
-         button.addEventListener('click', handleConsumptionCategoryClick);
-     });
-     console.log("Consumption category button listeners added.");
-
-     // Add event listener to the submit consumption code button
-     submitConsumptionCodeButton.addEventListener('click', submitConsumptionCode);
-     console.log("Submit consumption code button listener added.");
-     // --- End of Sustainable Consumption Feature Event Listeners ---
 
 
     // Initial display
