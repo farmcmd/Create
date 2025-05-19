@@ -161,6 +161,106 @@ const submitPoi17ConsumptionButton = document.getElementById('submit-poi17-consu
 const poi17ConsumptionStatusElement = document.getElementById('poi17-consumption-status');
 
 
+// --- DOM Elements ---
+const homepageSection = document.getElementById('homepage');
+const missionPageSection = document.getElementById('mission-page');
+const thsrInfoDiv = document.getElementById('thsr-info'); // This div is now unused for display, kept for reference
+const playerNameInput = document.getElementById('player-name'); // New input element for player name
+const playerCodeDisplay = document.getElementById('player-code'); // New element to display player code
+const totalMileageSpan = document.getElementById('total-mileage');
+const totalCarbonReductionSpan = document.getElementById('total-carbon-reduction');
+const totalScoreSpan = document.getElementById('total-score');
+const currentTransportDisplay = document.getElementById('current-transport-display');
+const mapElement = document.getElementById('map');
+const mapStatusElement = document.getElementById('map-status'); // Get the map status element
+// Re-added selectedPointsDisplay and calculateMileageButton
+const selectedPointsDisplay = document.getElementById('selected-points-display'); // New element for selected points
+const calculateMileageButton = document.getElementById('calculate-mileage-button'); // New button
+// Re-added tripCalculationStatusElement
+const tripCalculationStatusElement = document.getElementById('trip-calculation-status'); // New status element
+const poiListElement = document.getElementById('poi-list');
+const poiModal = document.getElementById('poi-modal');
+const poiModalTitle = document.getElementById('poi-modal-title');
+const poiModalImage = document.getElementById('poi-modal-image');
+const poiModalDescription = document.getElementById('poi-modal-description');
+const poiModalCoordinates = document.getElementById('poi-modal-coordinates');
+const poiModalSocialDiv = document.getElementById('poi-modal-social'); // New element for social links in modal
+// Re-added setAsStartButton and setAsEndButton
+const setAsStartButton = document.getElementById('set-as-start-button'); // New button in modal
+const setAsEndButton = document.getElementById('set-as-end-button'); // New button in modal
+const activityModal = document.getElementById('activity-modal'); // Activity Modal
+const selectedActivityNameElement = document.getElementById('selected-activity-name'); // Element to show selected activity name in modal
+const verificationCodeInput = document.getElementById('verification-code-input'); // Input in Activity Modal
+const activityContentInput = document.getElementById('activity-content-input'); // New input for activity content
+const submitActivityLogButton = document.getElementById('submit-activity-log'); // Button in Activity Modal (renamed from submitVerificationCode)
+const activityLogStatusElement = document.getElementById('activity-log-status'); // Status in Activity Modal (renamed from verificationStatus)
+const activityListElement = document.getElementById('activity-list');
+const participateActivityButton = document.getElementById('participate-activity-button'); // Participate button
+const sustainableActionLogTextarea = document.getElementById('sustainable-action-log');
+const logActionButton = document.getElementById('log-action-button');
+const actionLogStatusElement = document.getElementById('action-log-status'); // Status for sustainable actions
+const backToHomeButton = document.getElementById('back-to-home');
+const changeTransportButton = document.getElementById('change-transport-button'); // New button
+const loggedActionsListElement = document.getElementById('logged-actions-list'); // Element to display logged actions
+const thsrInfoModal = document.getElementById('thsr-info-modal'); // THSR Info Modal
+const selectableActionsListElement = document.getElementById('selectable-actions-list'); // Element to display selectable actions
+const downloadDataButton = document.getElementById('download-data-button'); // New download button element
+const activityModalImage = document.getElementById('activity-modal-image'); // Get the activity modal image element
+
+// New DOM elements for Log Trip Modal
+const logTripModal = document.getElementById('log-trip-modal');
+const logTripPoiNameElement = document.getElementById('log-trip-poi-name');
+const logTripTransportOptionsDiv = document.getElementById('log-trip-transport-options');
+const logTripMileageInput = document.getElementById('log-trip-mileage');
+const submitLogTripButton = document.getElementById('submit-log-trip'); // Corrected ID based on HTML
+const logTripStatusElement = document.getElementById('log-trip-status');
+const logTripTransportStatusElement = document.getElementById('log-trip-transport-status'); // Status for transport selection
+const logTripMileageStatusElement = document.getElementById('log-trip-mileage-status'); // Status for mileage input
+
+// New DOM elements for Taxi Info Modal
+const taxiInfoModal = document.getElementById('taxi-info-modal');
+const taxiInfoButton = document.getElementById('taxi-info-button'); // Button to open taxi info modal
+
+// New DOM elements for POI Review Section
+const poiReviewSection = document.getElementById('poi-review-section');
+const consumptionAmountInput = document.getElementById('consumption-amount');
+const reviewCodeInput = document.getElementById('review-code');
+const submitPoiReviewButton = document.getElementById('submit-poi-review');
+const poiReviewStatusElement = document.getElementById('poi-review-status');
+
+// New DOM elements for poi12 specific buttons
+const poi12ButtonsDiv = document.getElementById('poi12-buttons');
+// Re-added sroiOrderButton for poi12
+const sroiOrderButtonPoi12 = document.getElementById('sroi-order-button-poi12');
+
+
+// New DOM elements for SROI Info Modal
+const sroiInfoModal = document.getElementById('sroi-info-modal');
+const sroiModalPoiNameElement = document.getElementById('sroi-modal-poi-name');
+const sroiModalContentBody = document.getElementById('sroi-modal-content-body');
+const showSroiInfoButton = document.getElementById('show-sroi-info-button'); // Get the new SROI button
+
+// New DOM element for network total carbon reduction display
+const networkTotalCarbonReductionElement = document.getElementById('network-total-carbon-reduction');
+const networkStatsStatusElement = document.getElementById('network-stats-status'); // Status for network stats
+
+// Define consumption data for poi17 with corresponding mileage in meters AND carbon reduction in grams
+const poi17ConsumptionData = {
+    農產品: { mileage: 5000, carbonReduction: 20 }, // 5 km = 5000 meters, 20g carbon reduction
+    在地小吃: { mileage: 3000, carbonReduction: 12 }, // 3 km, 12g carbon reduction
+    文創商品: { mileage: 2000, carbonReduction: 8 }, // 2 km, 8g carbon reduction
+    服務類: { mileage: 2000, carbonReduction: 8 }, // 2 km, 8g carbon reduction
+    其他: { mileage: 2000, carbonReduction: 8 } // 2 km, 8g carbon reduction
+};
+
+// New DOM elements for poi17 consumption section
+const poi17ConsumptionSection = document.getElementById('poi17-consumption-section');
+const poi17ConsumptionOptionsDiv = document.getElementById('poi17-consumption-options');
+const poi17ConsumptionCodeInput = document.getElementById('poi17-consumption-code');
+const submitPoi17ConsumptionButton = document.getElementById('submit-poi17-consumption');
+const poi17ConsumptionStatusElement = document.getElementById('poi17-consumption-status');
+
+
 // --- Local Storage ---
 const localStorageKey = 'shuilSustainableTourismData';
 const localStorageActionsKey = 'shuilSustainableTourismActions'; // New key for actions
@@ -414,7 +514,7 @@ function showMissionPage() {
          const missionPageMapStatus = document.getElementById('map-status');
          if (missionPageMapStatus) {
               mapStatusElement.innerHTML = '地圖載入中... (等待 Google Maps API)<br><span class="text-xs">若地圖未正確載入，請利用景點列表中的 <i class="fas fa-car-side text-orange-500"></i> 圖示記錄您的里程。</span>';
-              mapStatusElement.classList.remove('text-green-600', 'text-red-600');
+              mapStatusElement.classList.remove('text-gray-600', 'text-green-600');
               mapStatusElement.classList.add('text-gray-600');
          }
     }
@@ -1565,4 +1665,5 @@ function submitLogTrip() {
          <p class="mb-2"><strong>車號:</strong> TBD-5339</p>
          <p class="mb-2"><strong>駕駛人:</strong> 詹聖慈</p>
          <p class="mb-2"><strong>營業時間:</strong> 9:00~20:00</p>
-         <p class="mb-2"><strong>旅遊
+         <p class="mb-2"><strong>旅遊範圍:</strong> 水里鄉、信義鄉、日月潭</p>
+         <p class="mb-2"><strong>最大乘
