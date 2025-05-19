@@ -1665,5 +1665,4 @@ function submitLogTrip() {
          <p class="mb-2"><strong>車號:</strong> TBD-5339</p>
          <p class="mb-2"><strong>駕駛人:</strong> 詹聖慈</p>
          <p class="mb-2"><strong>營業時間:</strong> 9:00~20:00</p>
-         <p class="mb-2"><strong>旅遊範圍:</strong> 水里鄉、信義鄉、日月潭</p>
-         <p class="mb-2"><strong>最大乘
+         <p class="mb-2"><strong>旅遊
