@@ -143,8 +143,7 @@ body {
      border: 1px solid #2196f3; /* Blue border */
      font-weight: bold;
  }
-
- /* Style for the icon group in list items */
+/* Style for the icon group in list items */
  .icon-group {
      display: flex;
      align-items: center;
@@ -192,3 +191,10 @@ body {
  .animate-pulse-subtle {
     animation: pulse-subtle 4s infinite ease-in-out;
  }
+
+/* Style for selected consumption button in poi17 modal */
+.consumption-button.selected {
+    background-color: #689f38; /* Darker green */
+    color: white;
+    font-weight: bold;
+}
