@@ -266,22 +266,40 @@
                      <button id="show-sroi-info-button" class="w-full px-6 py-3 bg-purple-600 text-white font-bold rounded-lg shadow hover:bg-purple-700 transition-all duration-300 ease-in-out text-center"><i class="fas fa-leaf mr-2"></i>SROI生態棲地農產品訂購&ESG企業採購表單</button>
                  </div>
 
-                 <div id="poi17-consumption-section" class="hidden mt-6 pt-4 border-t border-gray-200">
-                     <h4 class="text-lg font-medium mb-3 text-gray-600">永續消費獲里程</h4>
-                     <div id="poi17-consumption-options" class="grid grid-cols-2 gap-3 mb-4">
-                         </div>
-                     <div class="mb-4">
-                          <label for="poi17-consumption-code" class="block text-sm font-medium text-gray-700 mb-1">請輸入驗證碼 (5碼數字):</label>
-                          <input type="text" id="poi17-consumption-code" class="w-full p-2 border rounded-md focus:outline-none focus:ring focus:border-green-500 text-sm" maxlength="5" placeholder="請輸入5碼數字驗證碼">
+                 <div id="poi17-consumption-section" class="mt-6 pt-4 border-t border-gray-200 hidden">
+                     <h4 class="text-xl font-semibold mb-4 text-green-700 text-center">【永續消費獲里程】</h4>
+                     <p class="text-sm text-gray-700 mb-4 text-center">請選擇消費類別，並輸入店家提供的5碼數字驗證碼</p>
+                     <div id="consumption-buttons" class="grid grid-cols-2 gap-3 mb-4">
+                         <button class="consumption-button px-4 py-2 bg-green-200 rounded-md hover:bg-green-300 transition-colors text-sm" data-mileage-points="5" data-label="農產品">農產品 (5里程)</button>
+                         <button class="consumption-button px-4 py-2 bg-green-200 rounded-md hover:bg-green-300 transition-colors text-sm" data-mileage-points="3" data-label="在地小吃">在地小吃 (3里程)</button>
+                         <button class="consumption-button px-4 py-2 bg-green-200 rounded-md hover:bg-green-300 transition-colors text-sm" data-mileage-points="2" data-label="文創商品">文創商品 (2里程)</button>
+                         <button class="consumption-button px-4 py-2 bg-green-200 rounded-md hover:bg-green-300 transition-colors text-sm" data-mileage-points="2" data-label="服務類">服務類 (2里程)</button>
+                         <button class="consumption-button px-4 py-2 bg-green-200 rounded-md hover:bg-green-300 transition-colors text-sm" data-mileage-points="2" data-label="其他">其他 (2里程)</button>
                      </div>
-                     <button id="submit-poi17-consumption" class="px-6 py-3 bg-green-600 text-white rounded-lg shadow hover:bg-green-700 transition-all duration-300 ease-in-out text-sm"><i class="fas fa-check-circle mr-2"></i>記錄消費並獲得里程</button>
-                     <p id="poi17-consumption-status" class="mt-3 text-sm font-semibold text-gray-600"></p>
+                      <div class="mb-4">
+                         <label for="consumption-code-input" class="block text-sm font-medium text-gray-700 mb-1">5碼數字驗證碼:</label>
+                         <input type="text" id="consumption-code-input" class="w-full p-2 border rounded-md focus:outline-none focus:ring focus:border-green-500 text-sm" maxlength="5" placeholder="請輸入5碼數字">
+                      </div>
+                     <button id="submit-consumption" class="w-full px-6 py-3 bg-green-600 text-white font-bold rounded-lg shadow hover:bg-green-700 transition-all duration-300 ease-in-out text-lg"><i class="fas fa-check-circle mr-2"></i>記錄消費並獲得里程與減碳</button>
+                     <p id="consumption-status" class="mt-3 text-sm font-semibold text-gray-600 text-center"></p>
+                 </div>
                  </div>
 
-
+            <div id="poi-review-section" class="hidden mt-6 pt-4 border-t border-gray-200">
+                 <h4 class="text-lg font-medium mb-3 text-gray-600">永續消費審核 (消費並輸入審核碼獲得積分)</h4>
+                 <div class="mb-3">
+                     <label for="consumption-amount" class="block text-sm font-medium text-gray-700 mb-1">消費金額:</label>
+                     <input type="number" id="consumption-amount" class="w-full p-2 border rounded-md focus:outline-none focus:ring focus:border-green-500 text-sm" step="1" min="0" placeholder="請輸入消費金額">
+                 </div>
+                 <div class="mb-4">
+                     <label for="review-code" class="block text-sm font-medium text-gray-700 mb-1">審核碼 (3碼數字):</label>
+                     <input type="text" id="review-code" class="w-full p-2 border rounded-md focus:outline-none focus:ring focus:border-green-500 text-sm" maxlength="3" placeholder="請輸入3碼數字審核碼">
+                 </div>
+                 <button id="submit-poi-review" class="px-6 py-3 bg-green-600 text-white rounded-lg shadow hover:bg-green-700 transition-all duration-300 ease-in-out text-sm"><i class="fas fa-check-circle mr-2"></i>提交審核並獲得積分</button>
+                 <p id="poi-review-status" class="mt-3 text-sm font-semibold text-gray-600"></p>
             </div>
 
-            <div class="mt-6 flex justify-end space-x-4">
+             <div class="mt-6 flex justify-end space-x-4">
                  <button id="set-as-start-button" class="px-6 py-3 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-all duration-300 ease-in-out"><i class="fas fa-map-marker-alt mr-2"></i>設定為起點</button>
                  <button id="set-as-end-button" class="px-6 py-3 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-all duration-300 ease-in-out"><i class="fas fa-flag-checkered mr-2"></i>設定為終點</button>
              </div>
@@ -353,4 +371,26 @@
                 <p class="mb-2"><strong>車號:</strong> TBD-5339</p>
                 <p class="mb-2"><strong>駕駛人:</strong> 詹聖慈</p>
                 <p class="mb-2"><strong>營業時間:</strong> 9:00~20:00</p>
-                <p class="mb-2"><strong>旅遊
+                <p class="mb-2"><strong>旅遊範圍:</strong> 水里鄉、信義鄉、日月潭</p>
+                <p class="mb-2"><strong>最大乘客數:</strong> 4</p>
+                <p class="mb-2"><strong>駕駛人永續旅遊導覽培訓時數:</strong> 12/時</p>
+                <p class="mb-2"><strong>預約叫車電話:</strong> 0980-015-339</p>
+                <p class="mb-2"><strong>LINE ID:</strong> 未提供</p>
+            </div>
+             <p class="mt-6 text-sm text-gray-600">若有需求請於出發一周前直接聯繫駕駛人預約及確認詳細資訊。</p>
+        </div>
+    </div>
+
+    <div id="sroi-info-modal" class="modal-overlay hidden">
+        <div class="modal-content shadow-xl">
+            <span class="close-button">×</span>
+            <h3 class="text-2xl font-bold mb-4 text-purple-700">SROI生態棲地農產品訂購&ESG企業採購資訊</h3>
+             <p class="mb-4 text-gray-700">景點：<span id="sroi-modal-poi-name" class="font-semibold text-green-800"></span></p>
+            <div id="sroi-modal-content-body" class="text-gray-700 leading-relaxed space-y-3">
+                 </div>
+        </div>
+    </div>
+
+
+    </body>
+</html>
