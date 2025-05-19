@@ -192,3 +192,10 @@ body {
  .animate-pulse-subtle {
     animation: pulse-subtle 4s infinite ease-in-out;
  }
+
+/* Style for selected consumption button in poi17 modal */
+.consumption-button.selected {
+    background-color: #689f38; /* Darker green */
+    color: white;
+    font-weight: bold;
+}
