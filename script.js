@@ -82,13 +82,13 @@ const pois = [
     { id: 'poi10', name: '雨社山下', coords: { lat: 23.790644, lng: 120.896569 }, icon: '🥒', description: '接駁、共乘、摩托。\n\n活動資訊: 農場導覽、生態導覽、食農教育。完成單一活動可獲得永續與環境教育任務點數10點。', image: '', socialLink: 'https://www.facebook.com/profile.php?id=61557727713841&locale=zh_TW', sroiInfo: { reportLink: 'YOUR_REPORT_LINK_10', formLink: 'YOUR_FORM_LINK_10', lineId: 'YOUR_LINE_ID_10' } }, // Added sroiInfo
     { id: 'poi11', name: '阿爾喜莊園', coords: { lat: 23.803119, lng: 120.926340 }, icon: '🍋', description: '接駁、共乘、摩托。\n\n活動資訊: 農場導覽、生態導覽、食農教育、農業循環經濟教學。完成單一活動可獲得永續與環境教育任務點數10點。', image: '', socialLink: 'https://www.facebook.com/AHEIemon?locale=zh_TW', sroiInfo: { reportLink: 'YOUR_REPORT_LINK_11', formLink: 'YOUR_FORM_LINK_11', lineId: 'YOUR_LINE_ID_11' } }, // Added sroiInfo
     // Re-added sroiInfo for poi12
-    { id: 'poi12', name: '湧健酪梨園', coords: { lat: 23.725349, lng: 120.846123 }, icon: '🥑', description: '台灣好行、共乘、摩托。\n\n活動資訊: 農場導覽、生態導覽、食農教育。完成單一活動可獲得永續與環境教育任務點數10點。', image: '', socialLink: 'https://www.facebook.com/profile.php?id=100085673588742&locale=zh_TW', sroiInfo: { reportLink: 'YOUR_REPORT_LINK_12', formLink: 'YOUR_FORM_LINK_12', lineId: 'YOUR_LINE_ID_12' } }, // Re-added sroiInfo for poi12
+    { id: 'poi12', name: '湧健酪梨園', coords: { lat: 23.725349, lng: 120.846123 }, icon: '🥑', description: '台灣好行、共乘、摩托。\n\n活動資訊: 農場導覽、生態導覽、食農教育。完成單一活動可獲得永續與環境教育任務點數10點。', image: '', socialLink: 'https://www.facebook.com/profile.php?id=100085673588842&locale=zh_TW', sroiInfo: { reportLink: 'YOUR_REPORT_LINK_12', formLink: 'YOUR_FORM_LINK_12', lineId: 'YOUR_LINE_ID_12' } }, // Re-added sroiInfo for poi12
     { id: 'poi13', name: '謝家肉圓', coords: { lat: 23.817521, lng: 120.853831 }, icon: '🥟', description: '步行、摩托、台灣好行。營業時間 11:00–17:00。\n\n在地人巷內70年老店。', image: '', socialLink: 'https://www.facebook.com/profile.php?id=100054428473137&locale=zh_TW' },
     { id: 'poi14', name: '機車貓聯盟', coords: { lat: 23.810883, lng: 120.855798 }, icon: '🍚', description: '共乘、摩托、台灣好行。營業時間 11:00–17:00。\n\n無菜單料理店，50%以上使用在地食材，任一消費金額可獲得永續與環境教育任務點數10點。', image: '', socialLink: 'https://m.facebook.com/機車貓聯盟-552637305127422/' }, // Added social link (using the one from search result)
     { id: 'poi15', name: '二坪大觀冰店', coords: { lat: 23.813627, lng: 120.859651 }, icon: '🍦', description: '共乘、摩托。\n\n在地推薦古早味枝仔冰。台電員工福利社60年老店。', image: '', socialLink: 'https://www.facebook.com/2pinIce/' },
     { id: 'poi16', name: '水里里山村', coords: { lat: 23.813459, lng: 120.853787 }, icon: '🏡', description: '共乘、摩托。\n\n在地推鑑環保旅宿，任一消費金額可獲得永續與環境教育任務點數10點。', image: '', socialLink: 'https://tg-ecohotel.com/' }, // Added website link
-    // Added isNew flag and updated description for poi17
-    { id: 'poi17', name: '水里星光市集', coords: { lat: 23.813636, lng: 120.850816 }, icon: '💡', description: '共乘、摩托。\n\n任一消費金額可獲得永續與環境教育任務點數10點。\n\n本年度預計於星光市集舉辦「食農教育」活動，場次及內容請洽水里鄉商圈創生共好協會。', image: '', socialLink: 'https://www.facebook.com/p/%E6%B0%B4%E9%87%8C%E9%84%89%E5%95%86%E5%9C%88%E5%89%B5%E7%94%9F%E5%85%B1%E5%A5%BD%E5%8D%94%E6%9C%83-100076220760859/?locale=zh_TW', isNew: true, marketScheduleLink: 'https://www.facebook.com/photo/?fbid=2583695705169366&set=pcb.2583696081835995' } // Added isNew flag and marketScheduleLink
+    // Added isNew flag and updated description for poi17, and added isConsumptionPOI flag
+    { id: 'poi17', name: '水里星光市集', coords: { lat: 23.813636, lng: 120.850816 }, icon: '💡', description: '共乘、摩托。\n\n任一消費金額可獲得永續與環境教育任務點數10點。\n\n本年度預計於星光市集舉辦「食農教育」活動，場次及內容請洽水里鄉商圈創生共好協會。', image: '', socialLink: 'https://www.facebook.com/p/%E6%B0%B4%E9%87%8C%E9%84%89%E5%95%86%E5%9C%88%E5%89%B5%E7%94%9F%E5%85%B1%E5%A5%BD%E5%8D%94%E6%9C%83-100076220760859/?locale=zh_TW', isNew: true, marketScheduleLink: 'https://www.facebook.com/photo/?fbid=2583695705169366&set=pcb.2583696081835995', isConsumptionPOI: true } // Added isNew flag, marketScheduleLink, and isConsumptionPOI
 ];
 
  // Sustainable Actions Data with points
@@ -144,21 +144,9 @@ let currentLogTripPoi = null;
 // New state variable for network-wide total carbon reduction
 let networkTotalCarbonReduction = 0;
 
-// Define consumption data for poi17 with corresponding mileage in meters AND carbon reduction in grams
-const poi17ConsumptionData = {
-    農產品: { mileage: 5000, carbonReduction: 20 }, // 5 km = 5000 meters, 20g carbon reduction
-    在地小吃: { mileage: 3000, carbonReduction: 12 }, // 3 km, 12g carbon reduction
-    文創商品: { mileage: 2000, carbonReduction: 8 }, // 2 km, 8g carbon reduction
-    服務類: { mileage: 2000, carbonReduction: 8 }, // 2 km, 8g carbon reduction
-    其他: { mileage: 2000, carbonReduction: 8 } // 2 km, 8g carbon reduction
-};
-
-// New DOM elements for poi17 consumption section
-const poi17ConsumptionSection = document.getElementById('poi17-consumption-section');
-const poi17ConsumptionOptionsDiv = document.getElementById('poi17-consumption-options');
-const poi17ConsumptionCodeInput = document.getElementById('poi17-consumption-code');
-const submitPoi17ConsumptionButton = document.getElementById('submit-poi17-consumption');
-const poi17ConsumptionStatusElement = document.getElementById('poi17-consumption-status');
+// New state variable for selected consumption type in poi17 modal
+let selectedConsumptionMileagePoints = null;
+let selectedConsumptionLabel = null;
 
 
 // --- DOM Elements ---
@@ -212,7 +200,7 @@ const logTripModal = document.getElementById('log-trip-modal');
 const logTripPoiNameElement = document.getElementById('log-trip-poi-name');
 const logTripTransportOptionsDiv = document.getElementById('log-trip-transport-options');
 const logTripMileageInput = document.getElementById('log-trip-mileage');
-const submitLogTripButton = document.getElementById('submit-log-trip'); // Corrected ID based on HTML
+const submitLogTripButton = document.getElementById('submit-log-trip');
 const logTripStatusElement = document.getElementById('log-trip-status');
 const logTripTransportStatusElement = document.getElementById('log-trip-transport-status'); // Status for transport selection
 const logTripMileageStatusElement = document.getElementById('log-trip-mileage-status'); // Status for mileage input
@@ -244,21 +232,12 @@ const showSroiInfoButton = document.getElementById('show-sroi-info-button'); // 
 const networkTotalCarbonReductionElement = document.getElementById('network-total-carbon-reduction');
 const networkStatsStatusElement = document.getElementById('network-stats-status'); // Status for network stats
 
-// Define consumption data for poi17 with corresponding mileage in meters AND carbon reduction in grams
-const poi17ConsumptionData = {
-    農產品: { mileage: 5000, carbonReduction: 20 }, // 5 km = 5000 meters, 20g carbon reduction
-    在地小吃: { mileage: 3000, carbonReduction: 12 }, // 3 km, 12g carbon reduction
-    文創商品: { mileage: 2000, carbonReduction: 8 }, // 2 km, 8g carbon reduction
-    服務類: { mileage: 2000, carbonReduction: 8 }, // 2 km, 8g carbon reduction
-    其他: { mileage: 2000, carbonReduction: 8 } // 2 km, 8g carbon reduction
-};
-
 // New DOM elements for poi17 consumption section
 const poi17ConsumptionSection = document.getElementById('poi17-consumption-section');
-const poi17ConsumptionOptionsDiv = document.getElementById('poi17-consumption-options');
-const poi17ConsumptionCodeInput = document.getElementById('poi17-consumption-code');
-const submitPoi17ConsumptionButton = document.getElementById('submit-poi17-consumption');
-const poi17ConsumptionStatusElement = document.getElementById('poi17-consumption-status');
+const consumptionButtonsDiv = document.getElementById('consumption-buttons');
+const consumptionCodeInput = document.getElementById('consumption-code-input');
+const submitConsumptionButton = document.getElementById('submit-consumption');
+const consumptionStatusElement = document.getElementById('consumption-status');
 
 
 // --- Local Storage ---
@@ -465,6 +444,7 @@ async function fetchNetworkTotalCarbonReduction() {
     } catch (e) {
         console.error("Error fetching network total carbon reduction from Firebase: ", e); // Debugging line
         networkTotalCarbonReduction = 0; // Reset to 0 on error
+        networkTotalCarbonReductionElement.textContent = '載入失敗';
         networkStatsStatusElement.textContent = '無法載入網路統計數據。';
         networkStatsStatusElement.classList.remove('text-gray-600', 'text-green-600', 'text-blue-600');
         networkStatsStatusElement.classList.add('text-red-600');
@@ -514,7 +494,7 @@ function showMissionPage() {
          const missionPageMapStatus = document.getElementById('map-status');
          if (missionPageMapStatus) {
               mapStatusElement.innerHTML = '地圖載入中... (等待 Google Maps API)<br><span class="text-xs">若地圖未正確載入，請利用景點列表中的 <i class="fas fa-car-side text-orange-500"></i> 圖示記錄您的里程。</span>';
-              mapStatusElement.classList.remove('text-gray-600', 'text-green-600');
+              mapStatusElement.classList.remove('text-green-600', 'text-red-600');
               mapStatusElement.classList.add('text-gray-600');
          }
     }
@@ -567,7 +547,6 @@ function initMap() {
      transportData.carpool_4.travelMode = google.maps.TravelMode.DRIVING;
      transportData.carpool_5.travelMode = google.maps.TravelMode.DRIVING;
      transportData.thsr_haoxing.travelMode = google.maps.TravelMode.TRANSIT; // Using TRANSIT mode
-
 
     // Default view centered around Shuil里 (approximate coordinates)
     const defaultCoords = { lat: 23.810, lng: 120.850 };
@@ -1009,15 +988,20 @@ function showPoiModal(poi) {
      }
 
     // --- Handle poi17 Consumption Section Visibility and Setup ---
-    if (poi.id === 'poi17') {
+    if (poi.isConsumptionPOI) { // Check if the POI has the isConsumptionPOI flag
         poi17ConsumptionSection.classList.remove('hidden'); // Show the consumption section
-        setupPoi17ConsumptionButtons(); // Populate and setup buttons
-        poi17ConsumptionCodeInput.value = ''; // Clear code input
-        poi17ConsumptionStatusElement.textContent = ''; // Clear status message
-        poi17ConsumptionStatusElement.classList.remove('text-green-600', 'text-red-600');
+        // Clear previous input values and status message
+        consumptionCodeInput.value = '';
+        consumptionStatusElement.textContent = '';
+        consumptionStatusElement.classList.remove('text-green-600', 'text-red-600');
+        // Reset selected consumption button state
+        selectedConsumptionMileagePoints = null;
+        selectedConsumptionLabel = null;
+        consumptionButtonsDiv.querySelectorAll('.consumption-button').forEach(button => {
+            button.classList.remove('selected');
+        });
     } else {
         poi17ConsumptionSection.classList.add('hidden'); // Hide the consumption section
-        poi17ConsumptionOptionsDiv.innerHTML = ''; // Clear buttons when hidden
     }
 
 
@@ -1101,6 +1085,117 @@ function submitPoiReview() {
         poiReviewStatusElement.textContent = '';
         poiReviewStatusElement.classList.remove('text-green-600');
     }, 5000); // Display success message for 5 seconds
+}
+
+
+// --- poi17 Sustainable Consumption Logic ---
+
+// Function to handle selection of consumption type in poi17 modal
+function handleConsumptionSelect() {
+    console.log("Consumption button clicked:", this.dataset.label, "Mileage Points:", this.dataset.mileagePoints);
+    // Remove selected class from all buttons in this section
+    consumptionButtonsDiv.querySelectorAll('.consumption-button').forEach(button => {
+        button.classList.remove('selected');
+    });
+
+    // Add selected class to the clicked button
+    this.classList.add('selected');
+    selectedConsumptionMileagePoints = parseInt(this.dataset.mileagePoints, 10); // Store the mileage points
+    selectedConsumptionLabel = this.dataset.label; // Store the label
+    consumptionStatusElement.textContent = ''; // Clear status message on selection
+    consumptionStatusElement.classList.remove('text-green-600', 'text-red-600');
+    consumptionCodeInput.value = ''; // Clear the input field
+    console.log("Selected consumption type:", selectedConsumptionLabel, "with mileage points:", selectedConsumptionMileagePoints);
+}
+
+// Function to submit the consumption record for poi17
+function submitConsumption() {
+    console.log("Submit consumption button clicked.");
+
+    // Clear previous status messages
+    consumptionStatusElement.textContent = '';
+    consumptionStatusElement.classList.remove('text-red-600', 'text-green-600');
+
+    if (selectedConsumptionMileagePoints === null) {
+        consumptionStatusElement.textContent = '請先選擇消費類別。';
+        consumptionStatusElement.classList.add('text-red-600');
+        console.warn("No consumption type selected.");
+        return;
+    }
+
+    const inputCode = consumptionCodeInput.value.trim();
+
+    // Check if the code is exactly 5 digits (0-9)
+    const codeRegex = /^[0-9]{5}$/;
+    if (!codeRegex.test(inputCode)) {
+        consumptionStatusElement.textContent = '請輸入有效的5碼數字驗證碼。';
+        consumptionStatusElement.classList.add('text-red-600');
+        console.warn("Invalid consumption code format:", inputCode);
+        return;
+    }
+
+    // If validation passes, calculate and add mileage, carbon reduction, and points
+    const mileageToAddInKm = selectedConsumptionMileagePoints; // Interpret points as km for mileage
+    const mileageToAddInMeters = mileageToAddInKm * 1000; // Convert to meters
+
+    // Arbitrary conversion for carbon reduction: 1 mileage point = 200g carbon reduction
+    const carbonReductionToAdd = selectedConsumptionMileagePoints * 200; // in grams
+
+    // Use mileage points directly as points earned
+    const pointsToAdd = selectedConsumptionMileagePoints;
+
+    // Add to total stats
+    totalMileage += mileageToAddInMeters;
+    totalCarbonReduction += carbonReductionToAdd;
+    totalScore += pointsToAdd;
+
+    // Update displays and save data
+    updateStatsDisplay();
+    saveData(); // Save data including updated totals and log entry
+
+    const now = new Date();
+    const timestamp = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')} ${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
+
+    const newLogEntry = {
+        type: 'consumption', // Mark this as a consumption log
+        poiName: poiModal.currentPoi.name, // Get the current POI name from the modal
+        consumptionType: selectedConsumptionLabel,
+        mileagePoints: selectedConsumptionMileagePoints,
+        mileageInMeters: mileageToAddInMeters,
+        carbonReduction: carbonReductionToAdd,
+        points: pointsToAdd,
+        verificationCode: inputCode,
+        timestamp: timestamp
+    };
+
+    loggedActions.push(newLogEntry); // Add new log to the array
+    saveData(); // Save updated logs and potentially send data to server
+    renderLoggedActions(); // Re-render the list
+
+    console.log("Logged Consumption:", newLogEntry); // Debugging line
+
+    consumptionStatusElement.textContent = `消費記錄成功！獲得 里程: ${mileageToAddInKm} km, 估計減碳: ${carbonReductionToAdd.toFixed(2)} g, 積分: ${pointsToAdd}`;
+    consumptionStatusElement.classList.remove('text-red-600');
+    consumptionStatusElement.classList.add('text-green-600');
+
+    // Clear inputs and reset state after submission
+    consumptionCodeInput.value = '';
+    selectedConsumptionMileagePoints = null;
+    selectedConsumptionLabel = null;
+    consumptionButtonsDiv.querySelectorAll('.consumption-button').forEach(button => {
+        button.classList.remove('selected');
+    });
+
+    // Reset status message after a few seconds
+    setTimeout(() => {
+        consumptionStatusElement.textContent = '';
+        consumptionStatusElement.classList.remove('text-green-600');
+    }, 5000); // Display success message for 5 seconds
+
+    // Optional: Hide the modal after successful submission
+    // setTimeout(() => {
+    //     hidePoiModal();
+    // }, 2000); // Hide modal after 2 seconds
 }
 
 
@@ -1209,7 +1304,7 @@ function submitPoiReview() {
          saveData(); // Save the updated score and potentially send data to server
 
          const now = new Date();
-         const timestamp = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')} ${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
+         const timestamp = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')}:${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
 
          const newLogEntry = {
              type: 'activity', // Mark this as an activity log
@@ -1335,7 +1430,7 @@ function logSustainableAction() {
          }
     });
 
-    totalScore += pointsEarnedFromActions; // Add points to total score
+    totalScore += pointsEarnFromActions; // Add points to total score
     updateStatsDisplay(); // Update score display
     saveData(); // Save data before logging and potentially send data to server
 
@@ -1427,7 +1522,7 @@ function renderLoggedActions() {
             } else if (log.type === 'poi_review') {
              // Render POI review log
              logContentHTML = `
-                  <p class="log-type">永續消費記錄</p>
+                  <p class="log-type">永續消費審核記錄</p>
                   <p class="text-sm text-gray-700 mb-1">景點: ${log.poiName}</p>
                   <p class="text-sm text-gray-700 mb-1">消費金額: ${log.consumption}</p>
                   <p class="text-sm text-gray-700 mb-1">審核碼: ${log.reviewCode}</p>
@@ -1440,13 +1535,14 @@ function renderLoggedActions() {
                   <p class="text-sm text-gray-700 mb-1">里程: ${(log.mileageInMeters / 1000).toFixed(2)} km</p>
                        ${log.carbonReduction > 0 ? `<p class="text-sm text-gray-700 mb-1">估計減碳: ${log.carbonReduction.toFixed(2)} g</p>` : ''}
                   `;
-             } else if (log.type === 'poi17_consumption') { // New type for poi17 consumption log
+             } else if (log.type === 'consumption') { // New type for poi17 consumption log
                  logContentHTML = `
-                     <p class="log-type">水里星光市集消費記錄</p>
-                     <p class="text-sm text-gray-700 mb-1">消費項目: ${log.consumptionType}</p>
+                     <p class="log-type">永續消費記錄 (星光市集)</p>
+                     <p class="text-sm text-gray-700 mb-1">景點: ${log.poiName}</p>
+                     <p class="text-sm text-gray-700 mb-1">消費類別: ${log.consumptionType} (${log.mileagePoints} 里程點)</p>
                      <p class="text-sm text-gray-700 mb-1">驗證碼: ${log.verificationCode}</p>
-                     <p class="text-sm text-gray-700 mb-1">獲得里程: ${(log.mileageGained / 1000).toFixed(2)} km</p>
-                     ${log.carbonReductionGained > 0 ? `<p class="text-sm text-gray-700 mb-1">估計減碳: ${log.carbonReductionGained.toFixed(2)} g</p>` : ''}
+                     <p class="text-sm text-gray-700 mb-1">新增里程: ${(log.mileageInMeters / 1000).toFixed(2)} km</p>
+                     <p class="text-sm text-gray-700 mb-1">估計減碳: ${log.carbonReduction.toFixed(2)} g</p>
                  `;
              }
 
@@ -1462,7 +1558,7 @@ function renderLoggedActions() {
 
 
         logItem.innerHTML = `
-            ${logContent}
+            ${logContentHTML}
             ${pointsText}
             <p class="timestamp">${log.timestamp}</p>
         `;
@@ -1665,4 +1761,488 @@ function submitLogTrip() {
          <p class="mb-2"><strong>車號:</strong> TBD-5339</p>
          <p class="mb-2"><strong>駕駛人:</strong> 詹聖慈</p>
          <p class="mb-2"><strong>營業時間:</strong> 9:00~20:00</p>
-         <p class="mb-2"><strong>旅遊
+         <p class="mb-2"><strong>旅遊範圍:</strong> 水里鄉、信義鄉、日月潭</p>
+         <p class="mb-2"><strong>最大乘客數:</strong> 4</p>
+         <p class="mb-2"><strong>駕駛人永續旅遊導覽培訓時數:</strong> 12/時</p>
+         <p class="mb-2"><strong>預約叫車電話:</strong> 0980-015-339</p>
+         <p class="mb-2"><strong>LINE ID:</strong> 未提供</p>
+     `;
+     taxiInfoModal.classList.remove('hidden');
+ }
+
+ function hideTaxiInfoModal() {
+     console.log("Hiding taxi info modal.");
+     taxiInfoModal.classList.add('hidden');
+ }
+
+ // --- SROI Info Modal ---
+ function showSroiInfoModal(sroiInfo, poiName) {
+      console.log("Showing SROI info modal for:", poiName);
+      sroiModalPoiNameElement.textContent = poiName; // Set the POI name in the modal
+
+      // Clear previous content
+      sroiModalContentBody.innerHTML = '';
+
+      // Add Report Link
+      if (sroiInfo.reportLink) {
+          const reportLinkElement = document.createElement('a');
+          reportLinkElement.href = sroiInfo.reportLink;
+          reportLinkElement.target = "_blank";
+          reportLinkElement.classList.add('block', 'text-blue-600', 'hover:underline', 'font-semibold');
+          reportLinkElement.innerHTML = '<i class="fas fa-file-alt mr-1"></i>農場影響力報告書';
+          sroiModalContentBody.appendChild(reportLinkElement);
+      } else {
+           const noReportElement = document.createElement('p');
+           noReportElement.classList.add('text-gray-600');
+           noReportElement.innerHTML = '<i class="fas fa-info-circle mr-1"></i>農場影響力報告書：未提供';
+           sroiModalContentBody.appendChild(noReportElement);
+      }
+
+      // Add Form Link
+      if (sroiInfo.formLink) {
+          const formLinkElement = document.createElement('a');
+          formLinkElement.href = sroiInfo.formLink;
+          formLinkElement.target = "_blank";
+          formLinkElement.classList.add('block', 'text-blue-600', 'hover:underline', 'font-semibold');
+          formLinkElement.innerHTML = '<i class="fas fa-clipboard-list mr-1"></i>採購表單';
+          sroiModalContentBody.appendChild(formLinkElement);
+      } else {
+           const noFormElement = document.createElement('p');
+           noFormElement.classList.add('text-gray-600');
+           noFormElement.innerHTML = '<i class="fas fa-info-circle mr-1"></i>採購表單：未提供';
+           sroiModalContentBody.appendChild(noFormElement);
+      }
+
+      // Add LINE ID
+      if (sroiInfo.lineId) {
+          const lineIdElement = document.createElement('p');
+          lineIdElement.classList.add('text-gray-700', 'font-semibold');
+          lineIdElement.innerHTML = `<i class="fab fa-line mr-1"></i>LINE ID: ${sroiInfo.lineId}`;
+          sroiModalContentBody.appendChild(lineIdElement);
+      } else {
+           const noLineIdElement = document.createElement('p');
+           noLineIdElement.classList.add('text-gray-600');
+           noLineIdElement.innerHTML = '<i class="fas fa-info-circle mr-1"></i>LINE ID：未提供';
+           sroiModalContentBody.appendChild(noLineIdElement);
+      }
+
+
+      sroiInfoModal.classList.remove('hidden');
+ }
+
+ function hideSroiInfoModal() {
+      console.log("Hiding SROI info modal.");
+      sroiInfoModal.classList.add('hidden');
+      sroiModalPoiNameElement.textContent = ''; // Clear POI name
+      sroiModalContentBody.innerHTML = ''; // Clear content
+ }
+
+
+// --- Download Data ---
+function downloadTourismData() {
+    console.log("Download data button clicked."); // Debugging line
+
+    // Create a simple HTML report
+    let htmlContent = `
+        <!DOCTYPE html>
+        <html lang="zh-TW">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>水里永續旅遊數據報告</title>
+            <style>
+                body { font-family: 'Noto Sans TC', sans-serif; line-height: 1.6; padding: 20px; }
+                h1, h2 { color: #1b5e20; }
+                .stats { margin-bottom: 20px; padding: 15px; border: 1px solid #a5d6a7; border-radius: 8px; background-color: #e8f5e9; }
+                .stats p { margin: 5px 0; }
+                .log-entry { border-bottom: 1px solid #eee; padding: 10px 0; }
+                .log-entry:last-child { border-bottom: none; }
+                .log-entry p { margin: 3px 0; }
+                .log-type { font-weight: bold; color: #388e3c; }
+                .timestamp { font-size: 0.8em; color: #757575; text-align: right; }
+                .log-points { font-weight: bold; color: #1b5e20; }
+            </style>
+             <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;700&display=swap" rel="stylesheet">
+        </head>
+        <body>
+            <h1>水里永續旅遊數據報告</h1>
+
+            <div class="stats">
+                <h2>您的旅遊統計</h2>
+                <p><strong>永續旅者姓名:</strong> ${playerNameInput.value.trim()}</p>
+                <p><strong>永續旅者隨機碼:</strong> ${playerCode}</p>
+                <p><strong>累計里程:</strong> ${(totalMileage / 1000).toFixed(2)} km</p>
+                <p><strong>減碳總量:</strong> ${totalCarbonReduction.toFixed(2)} g</p>
+                <p><strong>永續分數:</strong> ${totalScore}</p>
+            </div>
+
+            <h2>我的行動紀錄</h2>
+            <div>
+    `;
+
+    if (loggedActions.length === 0) {
+        htmlContent += '<p>尚無行動紀錄</p>';
+    } else {
+        // Sort logs by timestamp in descending order (most recent first)
+        const sortedLogs = [...loggedActions].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+        sortedLogs.forEach(log => {
+            htmlContent += '<div class="log-entry">';
+            let logContent = '';
+             let pointsContent = ''; // Initialize points content
+
+            if (log.type === 'action') {
+                logContent = `
+                    <p class="log-type">永續行動記錄</p>
+                    <p class="text-sm text-gray-700 mb-1">選擇的行動: ${log.actions ? log.actions.join(', ') : '無'}</p>
+                    <p>${log.text}</p>
+                `;
+            } else if (log.type === 'activity') {
+                logContent = `
+                    <p class="log-type">永續山村任務活動記錄</p>
+                    <p class="text-sm text-gray-700 mb-1">活動名稱: ${log.activityName}</p>
+                    ${log.content ? `<p>活動內容/課程名稱: ${log.content}</p>` : ''}
+                `;
+            } else if (log.type === 'trip_to_poi') {
+                 logContent = `
+                     <p class="log-type">前往景點旅程記錄 (手動)</p>
+                     <p class="text-sm text-gray-700 mb-1">景點: ${log.poiName}</p>
+                     <p class="text-sm text-gray-700 mb-1">交通方式: ${log.transportName} (${log.transportIcon})</p>
+                     <p class="text-sm text-gray-700 mb-1">里程: ${(log.mileageInMeters / 1000).toFixed(2)} km</p>
+                     ${log.carbonReduction > 0 ? `<p class="text-sm text-gray-700 mb-1">估計減碳: ${log.carbonReduction.toFixed(2)} g</p>` : ''}
+                 `;
+            } else if (log.type === 'poi_review') {
+                 logContent = `
+                      <p class="log-type">永續消費審核記錄</p>
+                      <p class="text-sm text-gray-700 mb-1">景點: ${log.poiName}</p>
+                      <p class="text-sm text-gray-700 mb-1">消費金額: ${log.consumption}</p>
+                      <p class="text-sm text-gray-700 mb-1">審核碼: ${log.reviewCode}</p>
+                  `;
+             } else if (log.type === 'trip_calculation') {
+                  logContent = `
+                      <p class="log-type">旅程計算記錄 (地圖)</p>
+                      <p class="text-sm text-gray-700 mb-1">起點: ${log.startPoiName}</p>
+                      <p class="text-sm text-gray-700 mb-1">終點: ${log.endPoiName}</p> <p class="text-sm text-gray-700 mb-1">交通方式: ${log.transportName} (${log.transportIcon})</p>
+                      <p class="text-sm text-gray-700 mb-1">里程: ${(log.mileageInMeters / 1000).toFixed(2)} km</p>
+                       ${log.carbonReduction > 0 ? `<p class="text-sm text-gray-700 mb-1">估計減碳: ${log.carbonReduction.toFixed(2)} g</p>` : ''}
+                  `;
+             } else if (log.type === 'consumption') { // New type for poi17 consumption log
+                 logContent = `
+                     <p class="log-type">永續消費記錄 (星光市集)</p>
+                     <p class="text-sm text-gray-700 mb-1">景點: ${log.poiName}</p>
+                     <p class="text-sm text-gray-700 mb-1">消費類別: ${log.consumptionType} (${log.mileagePoints} 里程點)</p>
+                     <p class="text-sm text-gray-700 mb-1">驗證碼: ${log.verificationCode}</p>
+                     <p class="text-sm text-gray-700 mb-1">新增里程: ${(log.mileageInMeters / 1000).toFixed(2)} km</p>
+                     <p class="text-sm text-gray-700 mb-1">估計減碳: ${log.carbonReduction.toFixed(2)} g</p>
+                 `;
+             }
+
+
+             if (log.points !== undefined && log.points > 0) {
+                  pointsContent = `<p class="log-points">獲得積分: ${log.points}</p>`;
+             } else if (log.points === 0) {
+                  pointsContent = `<p class="log-points text-gray-600">獲得積分: 0</p>`;
+             }
+             // For consumption logs, points are always equal to mileagePoints, so we don't need a separate pointsContent if we include it in logContentHTML
+             if (log.type !== 'consumption') {
+                 htmlContent += pointsContent;
+             }
+
+
+            htmlContent += logContent;
+
+            htmlContent += `<p class="timestamp">${log.timestamp}</p>`;
+            htmlContent += '</div>'; // Close log-entry div
+        });
+    }
+
+    htmlContent += `
+            </div>
+        </body>
+        </html>
+    `;
+
+    // Create a Blob with explicit UTF-8 charset and HTML type
+    const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
+    console.log("Blob created with UTF-8 charset and HTML type:", blob); // Debugging line
+
+
+    // Create a download link
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = '水里永續旅遊數據.html'; // Change filename extension to .html
+    console.log("Download link created:", a.href, "Filename:", a.download); // Debugging line
+
+
+    // Append to body and trigger click
+    document.body.appendChild(a);
+    console.log("Triggering download."); // Debugging line
+    a.click();
+
+    // Clean up
+    document.body.removeChild(a);
+    URL.revokeObjectURL(a.href);
+     console.log("Download data removed and object URL revoked."); // Debugging line
+}
+
+ // --- Event Listeners ---
+document.addEventListener('DOMContentLoaded', () => {
+    console.log("DOMContentLoaded event fired. Loading data and setting up listeners."); // Debugging line
+    loadData(); // Load data when the page loads
+    populatePoiList(); // Populate POI list
+    populateActivityList(); // Populate Activity list
+    populateSelectableActionsList(); // Populate selectable actions list
+    // renderLoggedActions is called within loadData now
+
+    // Add event listener to player name input to save data when it changes
+    // Using 'input' event for more immediate saving as user types
+    playerNameInput.addEventListener('input', saveData);
+    console.log("永續旅者name input listener added (input event)."); // Debugging line
+
+
+    // Transportation option buttons
+    document.querySelectorAll('.transport-option').forEach(button => {
+        button.addEventListener('click', () => {
+            const transportType = button.dataset.transport;
+            console.log("Transport option button clicked:", transportType); // Debugging line
+
+
+            // Handle THSR option separately
+            if (transportType === 'thsr_haoxing') {
+                showThsrInfoModal(); // Show THSR info modal
+                // Do NOT proceed to mission page for THSR
+                return;
+            }
+
+            // For other transport options, proceed to mission page
+            console.log("Proceeding to mission page with transport:", transportType); // Debugging line
+            // Remove selected class from all buttons
+            document.querySelectorAll('.transport-option').forEach(btn => btn.classList.remove('selected'));
+            // Add selected class to the clicked button
+            button.classList.add('selected');
+
+            currentTransport = transportType;
+            console.log('Selected transport:', currentTransport); // Debugging line
+
+            // Hide THSR info div on mission page if not THSR (this div is now unused anyway)
+            thsrInfoDiv.classList.add('hidden');
+
+
+            // Navigate to mission page
+            showMissionPage();
+        });
+    });
+    console.log("Transport option button listeners added."); // Debugging line
+
+
+    // Calculate Mileage button (for map route)
+    calculateMileageButton.addEventListener('click', calculateTripMileage);
+    console.log("Calculate mileage button listener added.");
+
+
+    // POI Modal close button
+    poiModal.querySelector('.close-button').addEventListener('click', hidePoiModal);
+    // Close modal if clicking outside content (optional)
+    poiModal.addEventListener('click', (e) => {
+        if (e.target === poiModal) {
+            hidePoiModal();
+        }
+    });
+    console.log("POI modal listeners added."); // Debugging line
+
+
+    // Set as Start/End buttons in POI modal
+    setAsStartButton.addEventListener('click', () => {
+        if (poiModal.currentPoi) {
+            selectedStartPoi = poiModal.currentPoi;
+            updateSelectedPointsDisplay();
+            hidePoiModal();
+             console.log('起點設定為:', selectedStartPoi.name); // Debugging line
+        }
+    });
+    console.log("Set as start button listener added.");
+
+
+    setAsEndButton.addEventListener('click', () => {
+        if (poiModal.currentPoi) {
+            selectedEndPoi = poiModal.currentPoi;
+            updateSelectedPointsDisplay();
+            hidePoiModal();
+             console.log('終點設定為:', selectedEndPoi.name); // Debugging line
+        }
+    });
+    console.log("Set as end button listener added.");
+
+    // Submit POI Review button
+    submitPoiReviewButton.addEventListener('click', submitPoiReview);
+    console.log("Submit POI Review button listener added.");
+
+     // SROI Order button listener for poi12
+     // Check if the element exists before adding listener
+     if (sroiOrderButtonPoi12) {
+         sroiOrderButtonPoi12.addEventListener('click', () => {
+             console.log("SROI生態棲地農產品訂購&ESG企業採購表單 button clicked (poi12).");
+             // For poi12, we now show the SROI info modal
+             const poi12Data = pois.find(p => p.id === 'poi12');
+             if (poi12Data && poi12Data.sroiInfo) {
+                 showSroiInfoModal(poi12Data.sroiInfo, poi12Data.name);
+             } else {
+                 console.error("SROI info not available for poi12.");
+             }
+         });
+         console.log("SROI Order button listener added for poi12.");
+     } else {
+         console.warn("SROI Order button element not found (for poi12).");
+     }
+
+
+     // New SROI Info Button listener in POI modal (for other SROI POIs)
+     if (showSroiInfoButton) { // Check if the element exists
+         showSroiInfoButton.addEventListener('click', () => {
+             // Pass the stored sroiInfo and poiName to the showSroiInfoModal function
+             if (showSroiInfoButton.sroiInfo && showSroiInfoButton.poiName) {
+                 showSroiInfoModal(showSroiInfoButton.sroiInfo, showSroiInfoButton.poiName);
+             } else {
+                 console.error("SROI info or POI name not available on the button.");
+             }
+         });
+         console.log("Show SROI Info button listener added.");
+     } else {
+         console.warn("Show SROI Info button element not found.");
+     }
+
+    // --- poi17 Consumption Section Event Listeners ---
+    // Add event listeners to the consumption buttons
+    consumptionButtonsDiv.querySelectorAll('.consumption-button').forEach(button => {
+        button.addEventListener('click', handleConsumptionSelect);
+    });
+    console.log("Consumption button listeners added.");
+
+    // Add event listener to the submit consumption button
+    submitConsumptionButton.addEventListener('click', submitConsumption);
+    console.log("Submit consumption button listener added.");
+
+
+    // Participate Activity button (Triggers the modal)
+     participateActivityButton.addEventListener('click', showActivityModal);
+     console.log("Participate activity button listener added."); // Debugging line
+
+
+    // Activity Verification Modal close button
+    activityModal.querySelector('.close-button').addEventListener('click', hideActivityModal);
+     // Close modal if clicking outside content (optional)
+    activityModal.addEventListener('click', (e) => {
+        if (e.target === activityModal) {
+            hideActivityModal();
+         }
+    });
+    console.log("Activity modal listeners added."); // Debugging line
+
+
+    // Submit Activity Log button (renamed)
+    submitActivityLogButton.addEventListener('click', logActivity);
+    console.log("Submit activity log button listener added."); // Debugging line
+
+
+    // Log Sustainable Action button
+    logActionButton.addEventListener('click', logSustainableAction);
+    console.log("Log action button listener added."); // Debugging line
+
+
+    // Back to Home button
+    backToHomeButton.addEventListener('click', showHomepage);
+    console.log("Back to home button listener added."); // Debugging line
+
+
+    // Change Transport button
+    changeTransportButton.addEventListener('click', showHomepage);
+    console.log("Change transport button listener added."); // Debugging line
+
+
+    // THSR Info Modal close button
+    thsrInfoModal.querySelector('.close-button').addEventListener('click', hideThsrInfoModal);
+     // Close modal if clicking outside content (optional)
+    thsrInfoModal.addEventListener('click', (e) => {
+        if (e.target === thsrInfoModal) {
+            hideThsrInfoModal();
+         }
+    });
+    console.log("THSR info modal listeners added."); // Debugging line
+
+
+    // Download Data button
+    downloadDataButton.addEventListener('click', downloadTourismData);
+    console.log("Download data button listener added."); // Debugging line
+
+     // Log Trip Modal close button
+     logTripModal.querySelector('.close-button').addEventListener('click', hideLogTripModal);
+      // Close modal if clicking outside content (optional)
+     logTripModal.addEventListener('click', (e) => {
+         if (e.target === logTripModal) {
+             hideLogTripModal();
+         }
+     });
+     console.log("Log Trip modal close listeners added.");
+
+     // Submit Log Trip button
+     submitLogTripButton.addEventListener('click', submitLogTrip);
+     console.log("Submit Log Trip button listener added.");
+
+     // Taxi Info Button listener
+     taxiInfoButton.addEventListener('click', showTaxiInfoModal);
+     console.log("Taxi Info button listener added.");
+
+     // Taxi Info Modal close button
+     taxiInfoModal.querySelector('.close-button').addEventListener('click', hideTaxiInfoModal);
+      // Close modal if clicking outside content (optional)
+     taxiInfoModal.addEventListener('click', (e) => {
+         if (e.target === taxiInfoModal) {
+             hideTaxiInfoModal();
+         }
+     });
+     console.log("Taxi Info modal close listeners added.");
+
+     // New SROI Info Modal close button
+     sroiInfoModal.querySelector('.close-button').addEventListener('click', hideSroiInfoModal);
+      // Close modal if clicking outside content (optional)
+     sroiInfoModal.addEventListener('click', (e) => {
+         if (e.target === sroiInfoModal) {
+             hideSroiInfoModal();
+         }
+     });
+     console.log("SROI Info modal close listeners added.");
+
+
+    // Initial display
+    showHomepage(); // Show homepage on DOMContentLoaded
+    console.log("Initial homepage display triggered."); // Debugging line
+});
+
+ // Ensure map resizes if window is resized
+ window.addEventListener('resize', () => {
+     if (map) {
+         // Google Maps handles resize automatically, but calling center can help
+         // map.setCenter(map.getCenter()); // Re-center after resize
+     }
+ });
+
+ // Global function required by Google Maps API script's callback parameter
+ // This function will be called when the API is fully loaded
+ window.initMap = initMap;
+
+ // Add a global error handler for the Google Maps API script
+ window.gm_authFailure = function() {
+     console.error("Google Maps API authentication failure. Check your API key and its restrictions.");
+     const mapStatusElement = document.getElementById('map-status');
+     if (mapStatusElement) {
+         mapStatusElement.innerHTML = '地圖載入失敗：API 金鑰認證失敗。請檢查您的金鑰和限制設定。<br><span class="text-xs">若地圖未正確載入，請利用景點列表中的 <i class="fas fa-car-side text-orange-500"></i> 圖示記錄您的里程。</span>';
+         mapStatusElement.classList.remove('text-gray-600', 'text-green-600');
+         mapStatusElement.classList.add('text-red-600');
+     }
+      const tripCalculationStatusElement = document.getElementById('trip-calculation-status');
+      if (tripCalculationStatusElement) {
+          tripCalculationStatusElement.textContent = '地圖服務未載入，無法計算路徑。';
+          tripCalculationStatusElement.classList.remove('text-green-600', 'text-gray-700');
+          tripCalculationStatusElement.classList.add('text-red-600');
+      }
+ };
