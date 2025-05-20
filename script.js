@@ -96,11 +96,11 @@ const pois = [
         marketScheduleLink: 'https://www.facebook.com/photo/?fbid=2583695705169366&set=pcb.2583696081835995',
         isConsumptionPOI: true,
         consumptionData: { // New property for consumption-specific data
-            farm_product: { mileage: 5000, carbonReduction: 20 }, // 5km = 5000m, 20g
-            local_food: { mileage: 3000, carbonReduction: 12 },   // 3km = 3000m, 12g
-            cultural_creative: { mileage: 2000, carbonReduction: 8 }, // 2km = 2000m, 8g
-            service: { mileage: 2000, carbonReduction: 8 },      // 2km = 2000m, 8g
-            other: { mileage: 2000, carbonReduction: 8 }         // 2km = 2000m, 8g
+            farm_product: { mileage: 5000, carbonReduction: 20, label: '農產品' }, // 5km = 5000m, 20g
+            local_food: { mileage: 3000, carbonReduction: 12, label: '在地小吃' },   // 3km = 3000m, 12g
+            cultural_creative: { mileage: 2000, carbonReduction: 8, label: '文創商品' }, // 2km = 2000m, 8g
+            service: { mileage: 2000, carbonReduction: 8, label: '服務類' },      // 2km = 2000m, 8g
+            other: { mileage: 2000, carbonReduction: 8, label: '其他' }         // 2km = 2000m, 8g
         }
     }
 ];
@@ -844,13 +844,8 @@ function populatePoiList() {
             poiNameDisplay += ' (SROI)';
         }
         textSpan.innerHTML = poiNameDisplay; // Use innerHTML to render the span tag for NEW
-
-        // Add a click listener to the text span to show the modal
-        // 重要修正：確保點擊文字也能觸發 modal，且不與後續圖示點擊衝突
-        textSpan.addEventListener('click', (event) => {
-            event.stopPropagation(); // 阻止事件冒泡到父層
-            showPoiModal(poi);
-        });
+        // 修正：移除 textSpan 的獨立點擊事件，讓整個 listItem 負責彈出 modal
+        // textSpan.addEventListener('click', (event) => { event.stopPropagation(); showPoiModal(poi); });
         listItem.appendChild(textSpan);
 
         // Create a container for icons (social, navigation, and log trip)
@@ -871,6 +866,8 @@ function populatePoiList() {
             } else {
                  socialLinkElement.innerHTML = '<i class="fas fa-link"></i>'; // Generic link icon
             }
+            // 修正：確保圖示點擊不會觸發父層的 modal
+            socialLinkElement.addEventListener('click', (event) => { event.stopPropagation(); });
             iconGroup.appendChild(socialLinkElement);
         }
 
@@ -881,7 +878,8 @@ function populatePoiList() {
         navigationLinkElement.target = "_blank"; // Open in new tab (will open Google Maps app if installed)
         navigationLinkElement.classList.add('navigation-icon');
         navigationLinkElement.innerHTML = '<i class="fas fa-compass"></i>'; // Compass icon
-
+        // 修正：確保圖示點擊不會觸發父層的 modal
+        navigationLinkElement.addEventListener('click', (event) => { event.stopPropagation(); });
         iconGroup.appendChild(navigationLinkElement);
 
         // Add Log Trip icon/button
@@ -901,7 +899,8 @@ function populatePoiList() {
         // Store POI data on the list item and its ID for highlighting
         listItem.poiData = poi;
         listItem.dataset.poiId = poi.id; // Store POI ID
-        // listItem.addEventListener('click', () => showPoiModal(poi)); // 移除此行，因為 textSpan 已經處理了主要點擊事件
+        // 為整個 listItem 添加點擊事件，彈出 modal
+        listItem.addEventListener('click', () => showPoiModal(poi));
         poiListElement.appendChild(listItem);
     });
      updatePoiListItemHighlights(); // Re-added updatePoiListItemHighlights
@@ -1104,16 +1103,16 @@ function submitPoiReview() {
 
 // Function to handle selection of consumption type in poi17 modal
 function handleConsumptionSelect() {
-    console.log("Consumption button clicked:", this.dataset.consumptionType, "Label:", this.textContent);
+    console.log("Consumption button clicked:", this.dataset.consumptionType, "Label:", this.dataset.label); // 修正：使用 data-label
     // Remove selected class from all buttons in this section
-    consumptionButtonsDiv.querySelectorAll('.consumption-button').forEach(button => { // 修正：確保正確選擇所有按鈕
+    consumptionButtonsDiv.querySelectorAll('.consumption-button').forEach(button => {
         button.classList.remove('selected');
     });
 
     // Add selected class to the clicked button
     this.classList.add('selected');
     selectedConsumptionType = this.dataset.consumptionType; // Store the consumption type key
-    selectedConsumptionLabel = this.textContent.trim(); // Store the full text label
+    selectedConsumptionLabel = this.dataset.label; // 修正：儲存 data-label 的純粹類別名稱
     consumptionStatusElement.textContent = ''; // Clear status message on selection
     consumptionStatusElement.classList.remove('text-green-600', 'text-red-600');
     consumptionCodeInput.value = ''; // Clear the input field
@@ -1162,7 +1161,7 @@ function submitConsumption() {
     const carbonReductionToAdd = consumptionDetails.carbonReduction; // Already in grams
 
     // Calculate points based on the provided mileage (1 point per km)
-    const pointsToAdd = Math.floor(mileageToAddInMeters / 1000); // 修正：這裡的里程是公尺，所以要除以 1000 才是公里
+    const pointsToAdd = Math.floor(mileageToAddInMeters / 1000);
 
     // Add to total stats
     totalMileage += mileageToAddInMeters;
@@ -1179,7 +1178,7 @@ function submitConsumption() {
     const newLogEntry = {
         type: 'consumption', // Mark this as a consumption log
         poiName: poiModal.currentPoi.name, // Get the current POI name from the modal
-        consumptionType: selectedConsumptionLabel, // Use the label for display
+        consumptionType: selectedConsumptionLabel, // 修正：使用純粹的類別名稱
         mileageAdded: mileageToAddInMeters, // Log mileage added in meters
         carbonReduction: carbonReductionToAdd,
         points: pointsToAdd, // Log calculated points
