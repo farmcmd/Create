@@ -72,7 +72,7 @@ const pois = [
     { id: 'poi4', name: '永興神木', coords: { lat: 23.784127, lng: 120.862294 }, icon: '🌳', description: '社區麵包坊營業時間”上午9:00~17:00。\n\n永興神木（百年大樟樹）位於永興社區活動中心旁。樟樹群由三棵母子樹所形成，第一代木就是母樹，二代木則是母樹根系再長出的兩棵子樹，連成一體。樹齡約300年、樹圍6.2公尺、樹徑1.6公尺、樹高約26公尺、樹冠幅400平方公尺，一旁供俸老樹公及福德祠是居民的信仰中心。\n\n社區活動中心二樓設有社區麵包坊，由北海扶輪社、臺大實驗林、水里商工，共同扶持社區成立，利用當地種植的果物製作的吐司產品是新鮮別具風味的暢銷品。', image: '', socialLink: 'https://www.shli.gov.tw/story/1/6' },
     { id: 'poi5', name: '森林小白宮', coords: { lat: 23.779408, lng: 120.844019 }, icon: '🏠', description: '接駁、共乘、摩托。需預約。\n\n完成單一活動可獲得永續與環境教育任務點數10點。\n\n小白宮森林生態導覽，親子活動(彩繪/木藝/親子皮影)。', image: '', socialLink: 'https://wild-kids-studio.waca.tw/' },
     { id: 'poi6', name: '瑪路馬咖啡莊園', coords: { lat: 23.778239, lng: 120.843859 }, icon: '☕', description: '接駁、共乘、摩托。\n\n活動資訊: 咖啡座、咖啡園導覽。完成單一活動可獲得永續與環境教育任務點數10點。', image: '', socialLink: 'https://www.facebook.com/people/%E9%A6%AC%E8%B7%AF%E7%91%AA%E5%92%96%E5%95%A1%E8%8E%8A%E5%9C%92/100063961898841/' },
-    { id: 'poi7', name: '指令教育農場', coords: { lat: 23.802776, lng: 120.864715 }, icon: '👆', description: '台灣好行、共乘、摩托。\n\n活動資訊: 農場導覽、生態導覽、食農教育。完成單一活動可獲得永續與環境教育任務點數10點。', image: '', socialLink: 'https://www.facebook.com/FarmCMD/', sroiInfo: { reportLink: 'YOUR_REPORT_LINK_7', formLink: 'YOUR_FORM_LINK_7', lineId: 'YOUR_LINE_ID_7' } }, // Added sroiInfo
+    { id: 'poi7', name: '指令教育農場', coords: { lat: 23.802776, lng: 120.864715 }, icon: '👆', description: '台灣好行、共乘、摩托。\n\n活動資訊: 農場導覽、生態導覽、食農教育。完成單一活動可獲得永續與環境教育任務點數10點。', image: '', socialLink: 'https://www.facebook.com/FarmCMD/', sroiInfo: { reportLink: 'YOUR_REPORT_LINK_7', formLink: 'YOUR_FORM_LINK_7', lineId: 'https://line.me/ti/g2/HFRcE4eII1eQ761y0Zs3QEvs70saIQ-dHYbYgA?utm_source=invitation&utm_medium=link_copy&utm_campaign=default' } }, // Updated LINE ID
     { id: 'poi8', name: '明揚養蜂', coords: { lat: 23.803787, lng: 120.862401 }, icon: '🐝', description: '共乘、台灣好行、摩托。\n\n活動資訊: 育蜂場導覽、生態導覽、蜂蜜食農教育。完成單一活動可獲得永續與環境教育任務點數10點。', image: '', socialLink: 'https://www.facebook.com/MingYangBee/?locale=zh_TW', sroiInfo: { reportLink: 'YOUR_REPORT_LINK_8', formLink: 'YOUR_FORM_LINK_8', lineId: 'YOUR_LINE_ID_8' } }, // Added sroiInfo
     { id: 'poi9', name: '蛇窯文化園區', coords: { lat: 23.801177, lng: 120.864479 }, icon: '🏺', description: '共乘、台灣好行。\n\n活動資訊: 購票入園，完成食農器皿文化參觀可獲得永續與環境教育點數10點。', image: '', socialLink: 'https://www.facebook.com/sskshop/?locale=zh_TW' },
     { id: 'poi10', name: '雨社山下', coords: { lat: 23.790644, lng: 120.896569 }, icon: '🥒', description: '接駁、共乘、摩托。\n\n活動資訊: 農場導覽、生態導覽、食農教育。完成單一活動可獲得永續與環境教育任務點數10點。', image: '', socialLink: 'https://www.facebook.com/profile.php?id=61557727713841&locale=zh_TW', sroiInfo: { reportLink: 'YOUR_REPORT_LINK_10', formLink: 'YOUR_FORM_LINK_10', lineId: 'YOUR_LINE_ID_10' } }, // Added sroiInfo
@@ -1668,12 +1668,16 @@ function submitLogTrip() {
            sroiModalContentBody.appendChild(noFormElement);
       }
 
-      // Add LINE ID
+      // Add LINE ID - Check if it's a URL or just an ID
       if (sroiInfo.lineId) {
-          const lineIdElement = document.createElement('p');
-          lineIdElement.classList.add('text-gray-700', 'font-semibold', 'mt-2'); // Added mt-2
-          lineIdElement.innerHTML = `<i class="fab fa-line mr-1"></i>LINE ID: ${sroiInfo.lineId}`;
-          sroiModalContentBody.appendChild(lineIdElement);
+        const lineDisplayElement = document.createElement('p');
+        lineDisplayElement.classList.add('text-gray-700', 'font-semibold', 'mt-2');
+        if (sroiInfo.lineId.startsWith('https://line.me/')) { // Check if it's a LINE URL
+            lineDisplayElement.innerHTML = `<i class="fab fa-line mr-1"></i><a href="${sroiInfo.lineId}" target="_blank" class="text-blue-600 hover:underline">加入LINE群組/好友</a>`;
+        } else { // Assume it's an ID
+            lineDisplayElement.innerHTML = `<i class="fab fa-line mr-1"></i>LINE ID: ${sroiInfo.lineId}`;
+        }
+        sroiModalContentBody.appendChild(lineDisplayElement);
       } else {
            const noLineIdElement = document.createElement('p');
            noLineIdElement.classList.add('text-gray-600', 'mt-2'); // Added mt-2
