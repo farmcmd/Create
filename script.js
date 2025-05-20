@@ -83,8 +83,8 @@ const pois = [
     { id: 'poi14', name: '機車貓聯盟', coords: { lat: 23.810883, lng: 120.855798 }, icon: '🍚', description: '共乘、摩托、台灣好行。營業時間 11:00–17:00。\n\n無菜單料理店，50%以上使用在地食材，任一消費金額可獲得永續與環境教育任務點數10點。', image: '', socialLink: 'https://m.facebook.com/機車貓聯盟-552637305127422/' }, // Added social link (using the one from search result)
     { id: 'poi15', name: '二坪大觀冰店', coords: { lat: 23.813627, lng: 120.859651 }, icon: '🍦', description: '共乘、摩托。\n\n在地推薦古早味枝仔冰。台電員工福利社60年老店。', image: '', socialLink: 'https://www.facebook.com/2pinIce/' },
     { id: 'poi16', name: '水里里山村', coords: { lat: 23.813459, lng: 120.853787 }, icon: '🏡', description: '共乘、摩托。\n\n在地推鑑環保旅宿，任一消費金額可獲得永續與環境教育任務點數10點。', image: '', socialLink: 'https://tg-ecohotel.com/' }, // Added website link
-    // Updated description for poi17
-    { id: 'poi17', name: '水里星光市集', coords: { lat: 23.813636, lng: 120.850816 }, icon: '💡', description: '參加”逛市集增里程”地產地銷最減碳，獲得減碳量。\n\n本年度預計於星光市集舉辦「食農教育」活動，場次及內容請洽水里鄉商圈創生共好協會。', image: '', socialLink: 'https://www.facebook.com/p/%E6%B0%B4%E9%87%8C%E9%84%89%E5%95%86%E5%9C%88%E5%89%B5%E7%94%9F%E5%85%B1%E5%A5%BD%E5%8D%94%E6%9C%83-100076220760859/?locale=zh_TW', isNew: true, marketScheduleLink: 'https://www.facebook.com/photo/?fbid=2583695705169366&set=pcb.2583695981835995', isMarketDirect: true } // Added isMarketDirect flag
+    // Updated description for poi17 and removed isMarketDirect
+    { id: 'poi17', name: '水里星光市集', coords: { lat: 23.813636, lng: 120.850816 }, icon: '💡', description: '參加”逛市集增里程”地產地銷最減碳，支持在地消費獲得減碳量。\n\n本年度預計於星光市集舉辦「食農教育」活動，場次及內容請洽水里鄉商圈創生共好協會。', image: '', socialLink: 'https://www.facebook.com/p/%E6%B0%B4%E9%87%8C%E9%84%89%E5%95%86%E5%9C%88%E5%89%B5%E7%94%9F%E5%85%B1%E5%A5%BD%E5%8D%94%E6%9C%83-100076220760859/?locale=zh_TW', isNew: true, marketScheduleLink: 'https://www.facebook.com/photo/?fbid=2583695705169366&set=pcb.2583695981835995' }
 ];
 
  // Sustainable Actions Data with points
@@ -611,11 +611,11 @@ function initMap() {
 
         // Add click listener to marker
         marker.addListener('click', function() {
-            if (this.poiData.isMarketDirect) { // Check for the new flag
-                showMarketSelectionModal();
-            } else {
-                showPoiModal(this.poiData);
-            }
+            // For poi17 (水里星光市集), clicking the marker will now open the standard POI modal.
+            // The option to go to the market mileage feature will be within its description or a button in the modal if desired.
+            // Or, if the user wants clicking the marker for poi17 to *still* go to market modal, we'd re-add `isMarketDirect` logic here.
+            // Based on "請恢復景點列表>水里星光市集原有的景點視窗功能", we show poiModal.
+            showPoiModal(this.poiData);
         });
 
         poiMarkers.push(marker); // Store marker object
@@ -854,11 +854,10 @@ function populatePoiList() {
         // Add a click listener to the text span to show the modal OR market modal
         textSpan.addEventListener('click', (event) => {
             event.stopPropagation();
-            if (poi.isMarketDirect) { // Check for the new flag
-                showMarketSelectionModal();
-            } else {
-                showPoiModal(poi);
-            }
+            // If it's the special market POI and we want a direct market modal, handle it.
+            // Otherwise, show the standard POI modal.
+            // For this version, poi17 (水里星光市集) should open its standard POI modal.
+            showPoiModal(poi);
         });
         listItem.appendChild(textSpan);
 
@@ -910,14 +909,8 @@ function populatePoiList() {
         // Store POI data on the list item and its ID for highlighting
         // listItem.poiData = poi; // Already done by marker
         // Add click listener to the list item for selecting start/end points (still useful)
-        // If it's a marketDirect POI, clicking the list item itself (outside the textSpan) will also open the market modal.
-        listItem.addEventListener('click', () => {
-            if (poi.isMarketDirect) {
-                showMarketSelectionModal();
-            } else {
-                showPoiModal(poi);
-            }
-        });
+        // Clicking the list item (outside the textSpan or icons) will show the POI modal.
+        listItem.addEventListener('click', () => showPoiModal(poi));
         poiListElement.appendChild(listItem);
     });
      updatePoiListItemHighlights(); // Re-added updatePoiListItemHighlights
@@ -933,7 +926,8 @@ function showPoiModal(poi) {
     // Use innerHTML to allow <br> tags from description
     let modalDescriptionHTML = poi.description.replace(/\n/g, '<br>'); // Replace newline with <br>
 
-    // Add specific content for poi17 (水里星光市集)
+    // Add specific content for poi17 (水里星光市集) - this is now part of its main description
+    // but we can still add extra dynamic elements if needed.
     if (poi.id === 'poi17') {
         // The main description is already updated. We can add the schedule link here if needed.
         modalDescriptionHTML += '<br><br>'; // Add some spacing
@@ -942,7 +936,7 @@ function showPoiModal(poi) {
              modalDescriptionHTML += `<p class="font-semibold text-green-800">出攤日期預告:</p>`;
             modalDescriptionHTML += `<p><a href="${poi.marketScheduleLink}" target="_blank" class="text-blue-600 hover:underline">點此查看最新出攤日期</a></p>`;
         }
-         modalDescriptionHTML += '<p class="mt-3 text-sm text-gray-700">本年度預計於星光市集舉辦「食農教育」活動，場次及內容請洽水里鄉商圈創生共好協會。</p>';
+         // The second part of the description for poi17 is already included in its `description` field.
     }
 
 
