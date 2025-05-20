@@ -117,7 +117,7 @@ const activities = [
 
 // New Market Data
 const marketTypes = [
-    { id: 'starlight_market', name: '水星光市集', icon: '🌟' },
+    { id: 'starlight_market', name: '水里星光市集', icon: '🌟' }, // Updated name
     { id: 'farmers_market', name: '小農市集', icon: '🧑‍🌾' },
     { id: 'festival_market', name: '其他節慶市集', icon: '🎉' }
 ];
@@ -255,6 +255,7 @@ const productTypeOptionsDiv = document.getElementById('product-type-options');
 const submitMarketActivityButton = document.getElementById('submit-market-activity-button');
 const marketActivityStatusElement = document.getElementById('market-activity-status');
 const backToMarketTypeButton = document.getElementById('back-to-market-type-button');
+const marketStoreCodeInput = document.getElementById('market-store-code'); // Added for store code
 
 
 // --- Local Storage ---
@@ -1418,6 +1419,7 @@ function renderLoggedActions() {
                     <p class="text-sm text-gray-700 mb-1">消費項目: ${log.productName} (${log.productIcon})</p>
                     <p class="text-sm text-gray-700 mb-1">增加里程: ${(log.mileageInMeters / 1000).toFixed(2)} km</p>
                     <p class="text-sm text-gray-700 mb-1">估計減碳: ${log.carbonReduction.toFixed(2)} g</p>
+                    ${log.storeCode ? `<p class="text-sm text-gray-700 mb-1">商店碼: ${log.storeCode}</p>` : ''}
                 `;
                 break;
         }
@@ -1725,7 +1727,7 @@ function downloadTourismData() {
                 <div class="stats">
                     <h2>您的旅遊統計</h2>
                     <p><strong>永續旅者姓名:</strong> ${playerNameInput.value.trim() || '未提供'}</p>
-                    <p><strong>永續旅者隨機碼:</strong> ${playerCode}</p>
+                    <p><strong>永續旅者或集團企業員工隨機碼:</strong> ${playerCode}</p>
                     <p><strong>累計里程:</strong> ${(totalMileage / 1000).toFixed(2)} km</p>
                     <p><strong>減碳總量:</strong> ${totalCarbonReduction.toFixed(2)} g</p>
                     <p><strong>永續分數:</strong> ${totalScore}</p>
@@ -1763,7 +1765,7 @@ function downloadTourismData() {
                       logDetail = `<p class="log-type">旅程計算記錄 (地圖)</p><p>起點: ${log.startPoiName}</p><p>終點: ${log.endPoiName}</p><p>交通方式: ${log.transportName} (${log.transportIcon})</p><p>里程: ${(log.mileageInMeters / 1000).toFixed(2)} km</p>${log.carbonReduction > 0 ? `<p>估計減碳: ${log.carbonReduction.toFixed(2)} g</p>` : ''}`;
                     break;
                 case 'market_visit':
-                    logDetail = `<p class="log-type">逛市集增里程記錄</p><p>市集類型: ${log.marketTypeName}</p><p>消費項目: ${log.productName} (${log.productIcon})</p><p>增加里程: ${(log.mileageInMeters / 1000).toFixed(2)} km</p><p>估計減碳: ${log.carbonReduction.toFixed(2)} g</p>`;
+                    logDetail = `<p class="log-type">逛市集增里程記錄</p><p>市集類型: ${log.marketTypeName}</p><p>消費項目: ${log.productName} (${log.productIcon})</p><p>增加里程: ${(log.mileageInMeters / 1000).toFixed(2)} km</p><p>估計減碳: ${log.carbonReduction.toFixed(2)} g</p>${log.storeCode ? `<p>商店碼: ${log.storeCode}</p>` : ''}`;
                     break;
             }
             htmlContent += `${logDetail}${pointsContent}<p class="timestamp">${log.timestamp}</p></div>`;
@@ -1808,6 +1810,7 @@ function showMarketSelectionModal() {
     submitMarketActivityButton.disabled = true;
     marketActivityStatusElement.textContent = '';
     marketActivityStatusElement.className = 'mt-4 text-sm font-semibold text-gray-700'; // Reset class
+    if(marketStoreCodeInput) marketStoreCodeInput.value = ''; // Clear store code input
     selectedMarketType = null;
     selectedMarketProduct = null;
     populateMarketTypeOptions();
@@ -1848,6 +1851,8 @@ function handleMarketTypeSelect(market) {
     selectedMarketTypeDisplay.textContent = market.name;
     populateProductOptions();
     submitMarketActivityButton.disabled = true; // Require product selection
+    if(marketStoreCodeInput) marketStoreCodeInput.value = ''; // Clear store code when changing market type
+    marketActivityStatusElement.textContent = ''; // Clear status message
 }
 
 function populateProductOptions() {
@@ -1880,6 +1885,7 @@ function handleMarketProductSelect(productKey) {
         }
     });
     submitMarketActivityButton.disabled = false; // Enable submit button
+    marketActivityStatusElement.textContent = ''; // Clear status message
 }
 
 function handleBackToMarketType() {
@@ -1890,6 +1896,7 @@ function handleBackToMarketType() {
     selectedMarketProduct = null;
     submitMarketActivityButton.disabled = true;
     marketActivityStatusElement.textContent = '';
+    if(marketStoreCodeInput) marketStoreCodeInput.value = ''; // Clear store code
     // Clear product selection highlight
     productTypeOptionsDiv.querySelectorAll('.product-option-button.selected').forEach(btn => {
         btn.classList.remove('selected', 'bg-purple-600', 'text-white', 'ring-2', 'ring-purple-700'); // Tailwind for selection
@@ -1899,8 +1906,17 @@ function handleBackToMarketType() {
 
 function submitMarketActivity() {
     console.log("Submitting market activity.");
+    const storeCode = marketStoreCodeInput ? marketStoreCodeInput.value.trim() : '';
+    const storeCodeRegex = /^[0-9]{5}$/; // Regex for exactly 5 digits
+
     if (!selectedMarketType || !selectedMarketProduct) {
         marketActivityStatusElement.textContent = '請選擇市集類型和消費商品。';
+        marketActivityStatusElement.className = 'mt-4 text-sm font-semibold text-red-600'; // Use className
+        return;
+    }
+
+    if (!storeCodeRegex.test(storeCode)) {
+        marketActivityStatusElement.textContent = '請輸入有效的5位數字商店碼。';
         marketActivityStatusElement.className = 'mt-4 text-sm font-semibold text-red-600'; // Use className
         return;
     }
@@ -1922,14 +1938,18 @@ function submitMarketActivity() {
         mileageInMeters: selectedMarketProduct.mileage,
         carbonReduction: selectedMarketProduct.carbonReduction,
         points: selectedMarketProduct.points,
+        storeCode: storeCode, // Save the store code
         timestamp: timestamp
     };
     loggedActions.push(newLogEntry);
     saveData();
     renderLoggedActions();
 
-    marketActivityStatusElement.textContent = `已記錄於 ${selectedMarketType.name} 消費 ${selectedMarketProduct.name}！獲得 +${selectedMarketProduct.points} 積分。`;
+    marketActivityStatusElement.textContent = `已記錄於 ${selectedMarketType.name} 消費 ${selectedMarketProduct.name} (商店碼: ${storeCode})！獲得 +${selectedMarketProduct.points} 積分。`;
     marketActivityStatusElement.className = 'mt-4 text-sm font-semibold text-green-600'; // Use className
+
+    // Clear store code input
+    if(marketStoreCodeInput) marketStoreCodeInput.value = '';
 
     // Reset selections for next entry
     selectedMarketType = null;
@@ -1938,12 +1958,13 @@ function submitMarketActivity() {
     marketTypeOptionsDiv.querySelectorAll('.market-option-button.selected').forEach(btn => btn.classList.remove('selected', 'bg-purple-600', 'text-white', 'ring-2', 'ring-purple-700'));
     productTypeOptionsDiv.querySelectorAll('.product-option-button.selected').forEach(btn => btn.classList.remove('selected', 'bg-purple-600', 'text-white', 'ring-2', 'ring-purple-700'));
 
+
     // Go back to market type selection after a short delay, allowing user to see the message
     setTimeout(() => {
         handleBackToMarketType(); // This will clear the product selection and hide the product step
         marketActivityStatusElement.textContent = '您可以記錄下一筆消費，或關閉此視窗。';
         marketActivityStatusElement.className = 'mt-4 text-sm font-semibold text-gray-700'; // Neutral status
-    }, 2500); // 2.5 seconds delay
+    }, 3000); // 3 seconds delay
 }
 
 
