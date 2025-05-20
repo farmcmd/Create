@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD3nputPciVexm3dQrBM-LH8cH-fexbDvQ&libraries=geometry,routes&callback=initMap"></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAwNfK9p-tYV9iR7OGjr0um8ZvJ9Hr49cM&libraries=geometry,routes&callback=initMap"></script>
     <script type="module" src="script.js"></script>
 </head>
 <body class="bg-gray-100 text-gray-800 font-sans">
@@ -31,7 +31,7 @@
                         <input type="text" id="player-name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring focus:ring-green-200 focus:ring-opacity-50 text-center text-base p-2" placeholder="請輸入您的姓名">
                     </div>
                     <div class="p-4 bg-white rounded-md shadow-sm border border-green-200 text-center flex flex-col justify-center">
-                        <p class="text-sm font-medium text-gray-700">您的隨機碼:</p>
+                        <p class="text-sm font-medium text-gray-700">永續旅者或集團企業員工隨機碼:</p>
                         <p id="player-code" class="mt-1 text-2xl font-bold text-green-600">生成中...</p>
                     </div>
                 </div>
@@ -379,7 +379,7 @@
     <div id="market-selection-modal" class="modal-overlay hidden">
         <div class="modal-content shadow-xl w-full max-w-lg">
             <span class="close-button">×</span>
-            <h3 class="text-2xl font-bold mb-6 text-purple-700 text-center">記錄您的市集消費</h3>
+            <h3 class="text-2xl font-bold mb-6 text-purple-700 text-center">地產地銷最減碳</h3>
 
             <div id="market-type-selection-step">
                 <h4 class="text-lg font-semibold mb-3 text-gray-700">步驟 1: 選擇市集類型</h4>
@@ -392,6 +392,10 @@
                 <p class="text-sm text-gray-600 mb-3">您在 <span id="selected-market-type-display" class="font-semibold text-purple-600"></span> 消費了什麼？</p>
                 <div id="product-type-options" class="space-y-3 mb-6">
                     </div>
+                 <div class="mt-4">
+                    <label for="market-store-code" class="block text-sm font-medium text-gray-700 mb-1">商店碼 (5位數字):</label>
+                    <input type="text" id="market-store-code" class="w-full p-3 border rounded-md focus:outline-none focus:ring focus:border-purple-500 text-sm" maxlength="5" placeholder="請輸入5位數字商店碼">
+                </div>
             </div>
 
             <div class="mt-6 text-center">
