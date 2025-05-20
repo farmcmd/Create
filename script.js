@@ -28,24 +28,21 @@ try {
     app = initializeApp(firebaseConfig);
     db = getFirestore(app); // Get a reference to the Firestore service using the new method
     analytics = getAnalytics(app); // Get a reference to the Analytics service using the new method
-     console.log("Firebase initialized successfully."); // Debugging line
-     // Initial fetch of network total after Firebase is initialized
-     // This will now happen when loadData is called on DOMContentLoaded
-     // fetchNetworkTotalCarbonReduction(); // This is called in loadData now
+    console.log("Firebase initialized successfully."); // Debugging line
 
 } catch (error) {
-     console.error("Error initializing Firebase:", error); // Debugging line
-     // Update network stats status on Firebase initialization error
-     const networkStatsStatusElement = document.getElementById('network-stats-status');
-      if (networkStatsStatusElement) {
-          networkStatsStatusElement.textContent = `Firebase 初始化失敗: ${error.message}. 無法載入網路統計。`;
-          networkStatsStatusElement.classList.remove('text-gray-600', 'text-green-600');
-          networkStatsStatusElement.classList.add('text-red-600');
-      }
-      const networkTotalCarbonReductionElement = document.getElementById('network-total-carbon-reduction');
-      if (networkTotalCarbonReductionElement) {
-           networkTotalCarbonReductionElement.textContent = '載入失敗';
-      }
+    console.error("Error initializing Firebase:", error); // Debugging line
+    // Update network stats status on Firebase initialization error
+    const networkStatsStatusElement = document.getElementById('network-stats-status');
+    if (networkStatsStatusElement) {
+        networkStatsStatusElement.textContent = `Firebase 初始化失敗: ${error.message}. 無法載入網路統計。`;
+        networkStatsStatusElement.classList.remove('text-gray-600', 'text-green-600');
+        networkStatsStatusElement.classList.add('text-red-600');
+    }
+    const networkTotalCarbonReductionElement = document.getElementById('network-total-carbon-reduction');
+    if (networkTotalCarbonReductionElement) {
+        networkTotalCarbonReductionElement.textContent = '載入失敗';
+    }
 }
 
 
@@ -1940,20 +1937,18 @@ function downloadTourismData() {
 
         // Add points information if points are defined and greater than 0
         if (log.points !== undefined && log.points > 0) {
-             pointsText = `<p class="log-points text-sm font-bold text-green-700">獲得積分: ${log.points}</p>`;
+             pointsContent = `<p class="log-points">獲得積分: ${log.points}</p>`;
         } else if (log.points === 0) {
-             pointsText = `<p class="log-points text-sm font-bold text-gray-600">獲得積分: 0</p>`;
-        } else {
-             pointsText = ''; // No points info if not applicable
+             pointsContent = `<p class="log-points text-gray-600">獲得積分: 0</p>`;
         }
-
-
-        logItem.innerHTML = `
+        
+        // This is a correction: pointsContent should be part of the logContentHTML, not appended separately later.
+        // Also, for consumption logs, mileagePoints are already included in logContentHTML.
+        htmlContent += `<div class="log-entry">
             ${logContent}
-            ${pointsText}
+            ${pointsContent}
             <p class="timestamp">${log.timestamp}</p>
-        `;
-        htmlContent += logItem.outerHTML; // Append the outer HTML of the created element
+        </div>`;
         });
     }
 
