@@ -29,16 +29,13 @@ try {
     db = getFirestore(app); // Get a reference to the Firestore service using the new method
     analytics = getAnalytics(app); // Get a reference to the Analytics service using the new method
     console.log("Firebase initialized successfully."); // Debugging line
-    // Initial fetch of network total after Firebase is initialized
-    // This will now happen when loadData is called on DOMContentLoaded
-    // fetchNetworkTotalCarbonReduction(); // This is called in loadData now
 
 } catch (error) {
     console.error("Error initializing Firebase:", error); // Debugging line
     // Update network stats status on Firebase initialization error
     const networkStatsStatusElement = document.getElementById('network-stats-status');
     if (networkStatsStatusElement) {
-        networkStatsStatusElement.textContent = `Firebase 初始化失敗: ${error.message}. 無法載入網路統計。`;
+        networkStatsStatusElement.textContent = `Firebase 初始化失敗: ${error.message}. 無法載入網路統計。請檢查 console 錯誤訊息。`;
         networkStatsStatusElement.classList.remove('text-gray-600', 'text-green-600');
         networkStatsStatusElement.classList.add('text-red-600');
     }
@@ -272,8 +269,9 @@ function loadData() {
         console.log("Loaded from localStorage:", {totalMileage, totalCarbonReduction, totalScore, playerName, playerCode}); // Debugging
 
         if (!playerCode) {
+            // If playerCode is missing from loaded data (e.g., old data format or corrupted), generate new
             playerCode = generateRandomCode();
-            console.log("No playerCode found, generated new:", playerCode); // Debugging
+            console.log("playerCode missing in loaded data, generated new:", playerCode); // Debugging
         } else {
             console.log("PlayerCode loaded:", playerCode); // Debugging
         }
@@ -1812,136 +1810,3 @@ document.addEventListener('DOMContentLoaded', () => {
             hidePoiModal();
         }
     });
-
-    setAsStartButton.addEventListener('click', () => {
-        if (poiModal.currentPoi) {
-            selectedStartPoi = poiModal.currentPoi;
-            updateSelectedPointsDisplay();
-            hidePoiModal();
-            console.log('起點設定為:', selectedStartPoi.name); // Debugging
-        }
-    });
-
-    setAsEndButton.addEventListener('click', () => {
-        if (poiModal.currentPoi) {
-            selectedEndPoi = poiModal.currentPoi;
-            updateSelectedPointsDisplay();
-            hidePoiModal();
-            console.log('終點設定為:', selectedEndPoi.name); // Debugging
-        }
-    });
-
-    submitPoiReviewButton.addEventListener('click', submitPoiReview);
-
-    if (sroiOrderButtonPoi12) {
-        sroiOrderButtonPoi12.addEventListener('click', () => {
-            console.log("SROI生態棲地農產品訂購&ESG企業採購表單 button clicked (poi12)."); // Debugging
-            const poi12Data = pois.find(p => p.id === 'poi12');
-            if (poi12Data && poi12Data.sroiInfo) {
-                showSroiInfoModal(poi12Data.sroiInfo, poi12Data.name);
-            } else {
-                console.error("SROI info not available for poi12."); // Debugging
-            }
-        });
-    }
-
-    if (showSroiInfoButton) {
-        showSroiInfoButton.addEventListener('click', () => {
-            console.log("Show SROI Info button clicked."); // Debugging
-            if (showSroiInfoButton.sroiInfo && showSroiInfoButton.poiName) {
-                showSroiInfoModal(showSroiInfoButton.sroiInfo, showSroiInfoButton.poiName);
-            } else {
-                console.error("SROI info or POI name not available on the button."); // Debugging
-            }
-        });
-    }
-
-    consumptionButtonsDiv.querySelectorAll('.consumption-button').forEach(button => {
-        button.addEventListener('click', handleConsumptionSelect);
-    });
-
-    submitConsumptionButton.addEventListener('click', submitConsumption);
-
-    participateActivityButton.addEventListener('click', showActivityModal);
-
-    activityModal.querySelector('.close-button').addEventListener('click', hideActivityModal);
-    activityModal.addEventListener('click', (e) => {
-        if (e.target === activityModal) {
-            hideActivityModal();
-        }
-    });
-
-    submitActivityLogButton.addEventListener('click', logActivity);
-
-    logActionButton.addEventListener('click', logSustainableAction);
-
-    backToHomeButton.addEventListener('click', showHomepage);
-
-    changeTransportButton.addEventListener('click', showHomepage);
-
-    thsrInfoModal.querySelector('.close-button').addEventListener('click', hideThsrInfoModal);
-    thsrInfoModal.addEventListener('click', (e) => {
-        if (e.target === thsrInfoModal) {
-            hideThsrInfoModal();
-        }
-    });
-
-    downloadDataButton.addEventListener('click', downloadTourismData);
-
-    logTripModal.querySelector('.close-button').addEventListener('click', hideLogTripModal);
-    logTripModal.addEventListener('click', (e) => {
-        if (e.target === logTripModal) {
-            hideLogTripModal();
-        }
-    });
-
-    submitLogTripButton.addEventListener('click', submitLogTrip);
-
-    // 修正：確保 taxiInfoButton 的點擊事件能被正確捕捉
-    if (taxiInfoButton) {
-        taxiInfoButton.addEventListener('click', showTaxiInfoModal);
-        console.log("Taxi Info button listener added."); // Debugging
-    } else {
-        console.warn("Taxi Info button element not found on DOMContentLoaded."); // Debugging
-    }
-
-    taxiInfoModal.querySelector('.close-button').addEventListener('click', hideTaxiInfoModal);
-    taxiInfoModal.addEventListener('click', (e) => {
-        if (e.target === taxiInfoModal) {
-            hideTaxiInfoModal();
-        }
-    });
-
-    sroiInfoModal.querySelector('.close-button').addEventListener('click', hideSroiInfoModal);
-    sroiInfoModal.addEventListener('click', (e) => {
-        if (e.target === sroiInfoModal) {
-            hideSroiInfoModal();
-        }
-    });
-
-    showHomepage();
-});
-
-window.addEventListener('resize', () => {
-    if (map) {
-        // map.setCenter(map.getCenter()); // Google Maps handles resize automatically, but calling center can help
-    }
-});
-
-window.initMap = initMap;
-
-window.gm_authFailure = function() {
-    console.error("Google Maps API authentication failure. Check your API key and its restrictions."); // Debugging
-    const mapStatusElement = document.getElementById('map-status');
-    if (mapStatusElement) {
-        mapStatusElement.innerHTML = '地圖載入失敗：API 金鑰認證失敗。請檢查您的金鑰和限制設定。<br><span class="text-xs">若地圖未正確載入，請利用景點列表中的 <i class="fas fa-car-side text-orange-500"></i> 圖示記錄您的里程。</span>';
-        mapStatusElement.classList.remove('text-gray-600', 'text-green-600');
-        mapStatusElement.classList.add('text-red-600');
-    }
-    const tripCalculationStatusElement = document.getElementById('trip-calculation-status');
-    if (tripCalculationStatusElement) {
-        tripCalculationStatusElement.textContent = '地圖服務未載入，無法計算路徑。';
-        tripCalculationStatusElement.classList.remove('text-green-600', 'text-gray-700');
-        tripCalculationStatusElement.classList.add('text-red-600');
-    }
-};
