@@ -34,18 +34,29 @@ body {
     justify-content: center;
     align-items: center;
     z-index: 1000; /* Ensure modal is on top */
+    padding: 1rem; /* Add padding for smaller screens */
 }
 
 .modal-content {
     background-color: #fff;
-    padding: 30px;
+    padding: 20px; /* Default padding */
     border-radius: 10px;
+    width: 100%; /* Full width on small screens */
     max-width: 90%; /* Max width for responsiveness */
-    max-height: 90%; /* Max height */
+    max-height: 90vh; /* Max height relative to viewport */
     overflow-y: auto; /* Enable scrolling if content overflows */
     position: relative;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
+
+/* Adjust padding for larger screens */
+@media (min-width: 640px) { /* sm breakpoint */
+    .modal-content {
+        padding: 30px;
+        max-width: 600px; /* Example max-width for larger modals */
+    }
+}
+
 
 .modal-content .close-button {
     position: absolute;
@@ -54,6 +65,7 @@ body {
     font-size: 24px;
     cursor: pointer;
     color: #aaa;
+    line-height: 1; /* Ensure proper alignment */
 }
 
 .modal-content .close-button:hover {
@@ -79,7 +91,8 @@ body {
 }
 
 /* Style for selected transport option */
-.transport-option.selected {
+.transport-option.selected,
+#market-mileage-button.selected { /* Added for market button if needed */
     background-color: #a5d6a7; /* Lighter green */
     border: 2px solid #388e3c; /* Darker green border */
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
@@ -93,7 +106,7 @@ body {
     border-radius: 5px;
     margin-bottom: 5px;
     background-color: #fff;
-    transition: background-color 0.2s ease-in-out;
+    transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
 }
 
 .selectable-action-item:hover {
@@ -109,14 +122,15 @@ body {
 /* Style for logged action items */
 .action-log-item {
     background-color: #e8f5e9; /* Very light green */
-    padding: 10px;
-    border-radius: 5px;
-    margin-bottom: 10px;
-    border-left: 4px solid #4caf50; /* Green left border */
+    padding: 12px; /* Increased padding */
+    border-radius: 6px; /* Slightly more rounded */
+    margin-bottom: 12px; /* Increased margin */
+    border-left: 5px solid #4caf50; /* Green left border, slightly thicker */
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05); /* Subtle shadow */
 }
 
 .action-log-item p {
-    margin-bottom: 5px;
+    margin-bottom: 6px; /* Adjusted margin */
 }
 
 .action-log-item p:last-child {
@@ -126,19 +140,25 @@ body {
 .action-log-item .log-type {
     font-weight: bold;
     color: #1b5e20; /* Dark green */
-    margin-bottom: 5px;
+    margin-bottom: 6px; /* Adjusted margin */
+    font-size: 0.95em; /* Slightly adjusted font size */
 }
 
 .action-log-item .timestamp {
     font-size: 0.8em;
     color: #757575; /* Gray */
     text-align: right;
-    margin-top: 5px;
+    margin-top: 8px; /* Increased margin */
+}
+.action-log-item .log-points {
+    font-weight: bold;
+    color: #2e7d32; /* Slightly different green for points */
+    font-size: 0.9em;
 }
 
 
 /* Style for selected activity item in the list */
-.activity-list-item.selected-activity-item {
+.activity-list-item.selected-activity-item { /* Assuming this class is from previous CSS */
      background-color: #bbdefb; /* Light blue */
      border: 1px solid #2196f3; /* Blue border */
      font-weight: bold;
@@ -192,3 +212,41 @@ body {
  .animate-pulse-subtle {
     animation: pulse-subtle 4s infinite ease-in-out;
  }
+
+ /* Styles for the new Market Selection Modal */
+.market-option-button, .product-option-button {
+    /* Base styles are applied via Tailwind, this is for custom states or overrides */
+    transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, transform 0.1s ease-in-out;
+}
+
+.market-option-button.selected, .product-option-button.selected {
+    background-color: #c9b2ec !important; /* A lighter purple */
+    border-color: #805ad5 !important; /* Tailwind purple-600 */
+    color: #44337a !important; /* Darker purple text for contrast */
+    font-weight: bold;
+    transform: scale(1.02); /* Slight scale effect */
+}
+/* Ensure Tailwind's focus rings are visible if needed, or add custom focus */
+.market-option-button:focus, .product-option-button:focus {
+    outline: 2px solid #9f7aea; /* Tailwind purple-500 focus outline */
+    outline-offset: 2px;
+}
+
+/* Styling for POI list item highlights */
+.poi-list-item-start {
+    background-color: #fffde7 !important; /* Light yellow for start */
+    border-left: 4px solid #fbc02d !important; /* Yellow border */
+}
+
+.poi-list-item-end {
+    background-color: #e8f5e9 !important; /* Light green for end */
+    border-left: 4px solid #4caf50 !important; /* Green border */
+}
+
+/* Styling for Log Trip Modal transport buttons */
+.log-trip-transport-button.selected {
+    background-color: #fdba74 !important; /* Tailwind orange-300 */
+    border-color: #f97316 !important; /* Tailwind orange-600 */
+    color: #7c2d12 !important; /* Tailwind orange-900 */
+    font-weight: bold;
+}
