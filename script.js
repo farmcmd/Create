@@ -478,15 +478,13 @@ function showMissionPage() {
     homepageSection.style.display = 'none';
     missionPageSection.style.display = 'block';
 
-    // Trigger map resize and recenter after the container becomes visible
-    // This helps the map render correctly if it was initialized while hidden
-    if (map) {
-         console.log("Map exists, triggering resize and recenter."); // Debugging line
-         google.maps.event.trigger(map, 'resize');
-         map.setCenter({ lat: 23.810, lng: 120.850 }); // Re-center to default location
-         console.log("Map container is now visible. Triggered resize and recenter."); // Debugging line
-    } else {
-         console.log("Map not initialized yet when showing mission page."); // Debugging line
+    // Only trigger map resize and recenter if map is initialized and not already visible
+    if (map && missionPageSection.style.display === 'block') { // Check if map is initialized AND section is about to be visible
+        console.log("Map exists and mission page is now visible, triggering resize and recenter.");
+        google.maps.event.trigger(map, 'resize');
+        map.setCenter({ lat: 23.810, lng: 120.850 }); // Re-center to default location
+    } else if (!map) {
+         console.log("Map not initialized yet when showing mission page.");
          // If map is not initialized, update status to reflect this
          const missionPageMapStatus = document.getElementById('map-status');
          if (missionPageMapStatus) {
@@ -1937,16 +1935,16 @@ function downloadTourismData() {
 
         // Add points information if points are defined and greater than 0
         if (log.points !== undefined && log.points > 0) {
-             pointsContent = `<p class="log-points">獲得積分: ${log.points}</p>`;
+             pointsText = `<p class="log-points text-sm font-bold text-green-700">獲得積分: ${log.points}</p>`;
         } else if (log.points === 0) {
-             pointsContent = `<p class="log-points text-gray-600">獲得積分: 0</p>`;
+             pointsText = `<p class="log-points text-sm font-bold text-gray-600">獲得積分: 0</p>`;
         }
         
         // This is a correction: pointsContent should be part of the logContentHTML, not appended separately later.
         // Also, for consumption logs, mileagePoints are already included in logContentHTML.
         htmlContent += `<div class="log-entry">
             ${logContent}
-            ${pointsContent}
+            ${pointsText}
             <p class="timestamp">${log.timestamp}</p>
         </div>`;
         });
