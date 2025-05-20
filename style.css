@@ -1,91 +1,201 @@
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap');
-
-:root {
-  --green-500: #10B981;
-  --green-700: #047857;
-  --gray-200: #E5E7EB;
-  --gray-700: #374151;
-}
-
-* {
-  box-sizing: border-box;
-}
+/* style.css */
 
 body {
-  font-family: 'Noto Sans TC', sans-serif;
-  line-height: 1.6;
-  margin: 0;
-  padding: 0;
-  background: #fafafa;
+    font-family: 'Noto Sans TC', sans-serif;
+    line-height: 1.6;
 }
 
-/* 隱藏／顯示頁面區塊 */
 .page-section {
-  display: none;
+    display: none; /* Hidden by default */
 }
+
 .page-section.block {
-  display: block;
+    display: block; /* Shown when active */
 }
 
-/* 地圖容器 */
+/* Custom styles for map container */
 #map {
-  height: 500px;
-  min-height: 300px;
-  width: 100%;
-  border-radius: 0.5rem;
-  z-index: 1;
+    height: 500px; /* Adjust height as needed */
+    min-height: 300px; /* Ensure a minimum height on smaller screens */
+    width: 100%;
+    border-radius: 0.5rem; /* Rounded corners */
+    z-index: 1; /* Ensure map is below modals */
 }
 
-/* Modal */
-.modal {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: rgba(0,0,0,0.4);
-  display: none;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem;
+/* Style for modals */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7); /* Dim background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Ensure modal is on top */
 }
-.modal.active {
-  display: flex;
-}
+
 .modal-content {
-  background: #fff;
-  border-radius: 0.5rem;
-  max-width: 600px;
-  width: 100%;
-  padding: 1.5rem;
-  position: relative;
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    max-width: 90%; /* Max width for responsiveness */
+    max-height: 90%; /* Max height */
+    overflow-y: auto; /* Enable scrolling if content overflows */
+    position: relative;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
-/* 按鈕 */
-button {
-  cursor: pointer;
-  border: 1px solid var(--gray-200);
-  background: #fff;
-  transition: background 0.2s;
-}
-button:hover {
-  background: var(--gray-200);
-}
-button.selected {
-  background: var(--green-500);
-  color: #fff;
+.modal-content .close-button {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 24px;
+    cursor: pointer;
+    color: #aaa;
 }
 
-/* 動畫 */
-@keyframes pulse-subtle {
-  0%,100% { opacity: 1; }
-  50% { opacity: .6; }
-}
-.animate-pulse-subtle {
-  animation: pulse-subtle 2s infinite;
+.modal-content .close-button:hover {
+    color: #777;
 }
 
-/* 其他元件 */
-.record-log {
-  max-height: 200px;
-  overflow-y: auto;
-  font-size: 0.875rem;
+/* Style for clickable list items */
+.clickable-list-item {
+    cursor: pointer;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    display: flex; /* Use flexbox for layout */
+    justify-content: space-between; /* Space out text and icons */
+    align-items: center; /* Vertically align items */
+}
+
+.clickable-list-item:last-child {
+    border-bottom: none;
+}
+
+.clickable-list-item:hover {
+    background-color: #f5f5f5;
+}
+
+/* Style for selected transport option */
+.transport-option.selected {
+    background-color: #a5d6a7; /* Lighter green */
+    border: 2px solid #388e3c; /* Darker green border */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Style for selected sustainable action item */
+.selectable-action-item {
+    cursor: pointer;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    background-color: #fff;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.selectable-action-item:hover {
+    background-color: #e0e0e0;
+}
+
+.selectable-action-item.selected {
+    background-color: #a5d6a7; /* Lighter green */
+    border-color: #388e3c; /* Darker green */
+    font-weight: bold;
+}
+
+/* Style for logged action items */
+.action-log-item {
+    background-color: #e8f5e9; /* Very light green */
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    border-left: 4px solid #4caf50; /* Green left border */
+}
+
+.action-log-item p {
+    margin-bottom: 5px;
+}
+
+.action-log-item p:last-child {
+    margin-bottom: 0;
+}
+
+.action-log-item .log-type {
+    font-weight: bold;
+    color: #1b5e20; /* Dark green */
+    margin-bottom: 5px;
+}
+
+.action-log-item .timestamp {
+    font-size: 0.8em;
+    color: #757575; /* Gray */
+    text-align: right;
+    margin-top: 5px;
+}
+
+
+/* Style for selected activity item in the list */
+.activity-list-item.selected-activity-item {
+     background-color: #bbdefb; /* Light blue */
+     border: 1px solid #2196f3; /* Blue border */
+     font-weight: bold;
+ }
+
+ /* Style for the icon group in list items */
+ .icon-group {
+     display: flex;
+     align-items: center;
+     gap: 10px; /* Space between icons */
+ }
+
+ .icon-group .social-icon,
+ .icon-group .navigation-icon,
+ .icon-group .log-trip-icon {
+     color: #4a5568; /* Tailwind gray-700 */
+     font-size: 1.1em;
+     transition: color 0.2s ease-in-out;
+ }
+
+ .icon-group .social-icon:hover {
+     color: #3b82f6; /* Tailwind blue-500 */
+ }
+
+ .icon-group .navigation-icon:hover {
+      color: #10b981; /* Tailwind emerald-500 */
+ }
+
+ .icon-group .log-trip-icon:hover {
+      color: #f97316; /* Tailwind orange-500 */
+ }
+
+ /* Style for the NEW indicator */
+ .new-indicator {
+     animation: pulse-subtle 2s infinite ease-in-out;
+ }
+
+ @keyframes pulse-subtle {
+     0%, 100% { opacity: 1; }
+     50% { opacity: 0.6; }
+ }
+
+ /* Style for map labels (optional, if you want to customize the text labels on markers) */
+ .map-label {
+     /* Add custom CSS for marker labels here if needed */
+     /* For example: */
+     /* text-shadow: 1px 1px 2px rgba(0,0,0,0.5); */
+ }
+
+ /* Animation for the tip text */
+ .animate-pulse-subtle {
+    animation: pulse-subtle 4s infinite ease-in-out;
+ }
+
+/* Style for selected consumption button in poi17 modal */
+.consumption-button.selected {
+    background-color: #689f38; /* Darker green */
+    color: white;
+    font-weight: bold;
 }
