@@ -53,13 +53,14 @@ try {
 // Define transportData here, outside initMap, with placeholder travelMode
 let transportData = {
     // Added metersPerPoint for score calculation based on distance
-    bike: { name: '腳踏車', icon: '🚲', carbonReductionPer10km: 500, travelMode: null, metersPerPoint: 10000 }, // 10km = 10000m
+    // Corrected carbon reduction values based on user feedback
+    bike: { name: '腳踏車', icon: '🚲', carbonReductionPer10km: 350, travelMode: null, metersPerPoint: 10000 }, // 10km = 10000m
     walk: { name: '步行', icon: '🚶‍♂️', carbonReductionPer10km: 400, travelMode: null, metersPerPoint: 8000 },   // 8km = 8000m
-    bus_train: { name: '共乘巴士 (公車/火車/遊覽巴士)', icon: '🚌', carbonReductionPer10km: 100, travelMode: null, metersPerPoint: 15000 }, // 15km = 15000m
-    carpool_2_moto: { name: '私家車共乘 2 人 / 摩托車', icon: '🏍️🚗', carbonReductionPer10km: 150, travelMode: null, metersPerPoint: 25000 }, // 25km = 25000m
+    bus_train: { name: '共乘巴士 (公車/火車/遊覽巴士)', icon: '🚌', carbonReductionPer10km: 300, travelMode: null, metersPerPoint: 15000 }, // 15km = 15000m
+    carpool_2_moto: { name: '私家車共乘 2 人 / 摩托車', icon: '🏍️🚗', carbonReductionPer10km: 100, travelMode: null, metersPerPoint: 25000 }, // 25km = 25000m
     carpool_3: { name: '私家車共乘 3 人', icon: '🚗', carbonReductionPer10km: 120, travelMode: null, metersPerPoint: 20000 }, // 20km = 20000m
-    carpool_4: { name: '私家車共乘 4 人', icon: '🚗', carbonReductionPer10km: 100, travelMode: null, metersPerPoint: 18000 }, // 18km = 18000m
-    carpool_5: { name: '私家車共乘 5 人', icon: '🚗', carbonReductionPer10km: 80, travelMode: null, metersPerPoint: 16000 }, // 16km = 16000m
+    carpool_4: { name: '私家車共乘 4 人', icon: '🚗', carbonReductionPer10km: 150, travelMode: null, metersPerPoint: 18000 }, // 18km = 18000m
+    carpool_5: { name: '私家車共乘 5 人', icon: '🚗', carbonReductionPer10km: 200, travelMode: null, metersPerPoint: 16000 }, // 16km = 16000m
     thsr_haoxing: { name: '高鐵假期x台灣好行', icon: '🚄🚌', carbonReductionPer10km: 0, travelMode: null, metersPerPoint: Infinity } // THSR doesn't get points from distance in this model
     // Taxi info is not included here as it's not for mileage calculation
 };
@@ -81,7 +82,7 @@ const pois = [
     { id: 'poi10', name: '雨社山下', coords: { lat: 23.790644, lng: 120.896569 }, icon: '🥒', description: '接駁、共乘、摩托。\n\n活動資訊: 農場導覽、生態導覽、食農教育。完成單一活動可獲得永續與環境教育任務點數10點。', image: '', socialLink: 'https://www.facebook.com/profile.php?id=61557727713841&locale=zh_TW', sroiInfo: { reportLink: 'YOUR_REPORT_LINK_10', formLink: 'YOUR_FORM_LINK_10', lineId: 'YOUR_LINE_ID_10' } }, // Added sroiInfo
     { id: 'poi11', name: '阿爾喜莊園', coords: { lat: 23.803119, lng: 120.926340 }, icon: '🍋', description: '接駁、共乘、摩托。\n\n活動資訊: 農場導覽、生態導覽、食農教育、農業循環經濟教學。完成單一活動可獲得永續與環境教育任務點數10點。', image: '', socialLink: 'https://www.facebook.com/AHEIemon?locale=zh_TW', sroiInfo: { reportLink: 'YOUR_REPORT_LINK_11', formLink: 'YOUR_FORM_LINK_11', lineId: 'YOUR_LINE_ID_11' } }, // Added sroiInfo
     // Re-added sroiInfo for poi12
-    { id: 'poi12', name: '湧健酪梨園', coords: { lat: 23.725349, lng: 120.846123 }, icon: '🥑', description: '台灣好行、共乘、摩托。\n\n活動資訊: 農場導覽、生態導覽、食農教育。完成單一活動可獲得永續與環境教育任務點數10點。', image: '', socialLink: 'https://www.facebook.com/profile.php?id=100085673588742&locale=zh_TW', sroiInfo: { reportLink: 'YOUR_REPORT_LINK_12', formLink: 'YOUR_FORM_LINK_12', lineId: 'YOUR_LINE_ID_12' } }, // Re-added sroiInfo for poi12
+    { id: 'poi12', name: '湧健酪梨園', coords: { lat: 23.725349, lng: 120.846123 }, icon: '🥑', description: '台灣好行、共乘、摩托。\n\n活動資訊: 農場導覽、生態導覽、食農教育。完成單一活動可獲得永續與環境教育任務點數10點。', image: '', socialLink: 'https://www.facebook.com/profile.php?id=100085673588842&locale=zh_TW', sroiInfo: { reportLink: 'YOUR_REPORT_LINK_12', formLink: 'YOUR_FORM_LINK_12', lineId: 'YOUR_LINE_ID_12' } }, // Re-added sroiInfo for poi12
     { id: 'poi13', name: '謝家肉圓', coords: { lat: 23.817521, lng: 120.853831 }, icon: '🥟', description: '步行、摩托、台灣好行。營業時間 11:00–17:00。\n\n在地人巷內70年老店。', image: '', socialLink: 'https://www.facebook.com/profile.php?id=100054428473137&locale=zh_TW' },
     { id: 'poi14', name: '機車貓聯盟', coords: { lat: 23.810883, lng: 120.855798 }, icon: '🍚', description: '共乘、摩托、台灣好行。營業時間 11:00–17:00。\n\n無菜單料理店，50%以上使用在地食材，任一消費金額可獲得永續與環境教育任務點數10點。', image: '', socialLink: 'https://m.facebook.com/機車貓聯盟-552637305127422/' }, // Added social link (using the one from search result)
     { id: 'poi15', name: '二坪大觀冰店', coords: { lat: 23.813627, lng: 120.859651 }, icon: '🍦', description: '共乘、摩托。\n\n在地推薦古早味枝仔冰。台電員工福利社60年老店。', image: '', socialLink: 'https://www.facebook.com/2pinIce/' },
@@ -683,7 +684,7 @@ function calculateTripMileage() {
      }
 
     tripCalculationStatusElement.textContent = '正在計算路徑...'; // Added loading indicator
-    tripCalculationStatusElement.classList.remove('text-red-600', 'text-green-600');
+    tripCalculationStatusElement.classList.remove('text-red-600', 'text-gray-700');
     tripCalculationStatusElement.classList.add('text-gray-700');
     clearTripLine(); // Clear previous route
 
@@ -1429,13 +1430,10 @@ function showLogTripModal(poi) {
     logTripPoiNameElement.textContent = poi.name; // Set the POI name in the modal
     logTripMileageInput.value = ''; // Clear previous mileage input
     logTripStatusElement.textContent = ''; // Clear previous status
-    logTripTransportStatusElement.classList.add('hidden'); // Hide transport status initially
-    logTripMileageStatusElement.classList.add('hidden'); // Hide mileage status initially
+    logTripTransportOptionsDiv.innerHTML = ''; // Clear previous options for transport selection
 
-    // Populate transport options in the modal
-    logTripTransportOptionsDiv.innerHTML = ''; // Clear previous options
+    // Populate transport options in the modal (excluding THSR and Taxi for manual log)
     for (const key in transportData) {
-        // Exclude THSR and Taxi from manual mileage logging
         if (key !== 'thsr_haoxing' && key !== 'taxi') {
             const transportOption = transportData[key];
             const button = document.createElement('button');
@@ -1447,6 +1445,10 @@ function showLogTripModal(poi) {
         }
     }
 
+
+    logTripTransportStatusElement.classList.add('hidden'); // Hide transport status initially
+    logTripMileageStatusElement.classList.add('hidden'); // Hide mileage status initially
+
     logTripModal.classList.remove('hidden');
 }
 
@@ -1455,6 +1457,7 @@ function hideLogTripModal() {
     console.log("Hiding log trip modal.");
     logTripModal.classList.add('hidden');
     currentLogTripPoi = null; // Clear the stored POI
+    selectedLogTripTransport = null; // Clear selected transport
     // Remove selected class from transport buttons in the modal
     logTripTransportOptionsDiv.querySelectorAll('.log-trip-transport-button').forEach(button => {
         button.classList.remove('selected');
@@ -1524,15 +1527,20 @@ function submitLogTrip() {
         const carbonReductionPerMeter = transportInfo.carbonReductionPer10km / 10000;
         tripCarbonReduction = mileageInMeters * carbonReductionPerMeter;
     }
-    totalCarbonReduction += tripCarbonReduction; // Add to total carbon reduction
 
+    // --- FIX: Add the calculated values to the total stats ---
+    totalMileage += mileageInMeters;
+    totalCarbonReduction += tripCarbonReduction;
     // Calculate score for this manual trip
     let scoreForThisTrip = 0;
      if (transportInfo && transportInfo.metersPerPoint !== Infinity) {
           const metersPerPoint = transportInfo.metersPerPoint;
           scoreForThisTrip = Math.floor(mileageInMeters / metersPerPoint);
           totalScore += scoreForThisTrip; // Add to total score
+     } else {
+         console.log("No distance-based score for this manual transport type."); // Debugging line
      }
+    // --- END FIX ---
 
 
     updateStatsDisplay(); // Update displays
