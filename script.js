@@ -260,6 +260,10 @@ const marketActivityStatusElement = document.getElementById('market-activity-sta
 const backToMarketTypeButton = document.getElementById('back-to-market-type-button');
 const marketStoreCodeInput = document.getElementById('market-store-code'); // Added for store code
 
+// New Photo Album Modal DOM Elements
+const photoAlbumPromoButton = document.getElementById('photo-album-promo-button');
+const photoAlbumModal = document.getElementById('photo-album-modal');
+
 
 // --- Local Storage ---
 const localStorageKey = 'shuilSustainableTourismData_v2.2'; // Updated key for versioning
@@ -1989,6 +1993,21 @@ function submitMarketActivity() {
     }, 3000); // 3 seconds delay
 }
 
+// --- Photo Album Modal Functions ---
+function showPhotoAlbumModal() {
+    console.log("Showing photo album modal.");
+    if (photoAlbumModal) {
+        photoAlbumModal.classList.remove('hidden');
+    }
+}
+
+function hidePhotoAlbumModal() {
+    console.log("Hiding photo album modal.");
+    if (photoAlbumModal) {
+        photoAlbumModal.classList.add('hidden');
+    }
+}
+
 
 // --- Event Listeners ---
 document.addEventListener('DOMContentLoaded', () => {
@@ -2032,6 +2051,15 @@ document.addEventListener('DOMContentLoaded', () => {
     if (backToMarketTypeButton) {
         backToMarketTypeButton.addEventListener('click', handleBackToMarketType);
         console.log("Back to market type button listener added.");
+    }
+
+    // Photo Album Promo Button Listener
+    if (photoAlbumPromoButton) {
+        photoAlbumPromoButton.addEventListener('click', showPhotoAlbumModal);
+    }
+    if (photoAlbumModal) {
+        photoAlbumModal.querySelector('.close-button').addEventListener('click', hidePhotoAlbumModal);
+        photoAlbumModal.addEventListener('click', (e) => { if (e.target === photoAlbumModal) hidePhotoAlbumModal(); });
     }
 
 
