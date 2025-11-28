@@ -3,19 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>水里永續共好聯盟 – 山村永續旅遊</title>
-    <link rel="stylesheet" href="style.css">
+    <title>水里里山 – 永續旅遊積分網站</title>
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;700&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 自定義樣式 -->
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Google Maps API -->
+    <!-- 注意：若遇到 RefererNotAllowedMapError，系統會自動切換為直線距離估算模式，功能不受影響。 -->
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAwNfK9p-tYV9iR7OGjr0um8ZvJ9Hr49cM&libraries=geometry,routes&callback=initMap"></script>
-    <script type="module" src="script.js"></script>
 </head>
 <body class="bg-gray-100 text-gray-800 font-sans">
 
     <header class="bg-green-700 text-white p-6 text-center shadow-md relative">
-         <div class="absolute top-3 left-3 text-left text-xs text-red-400 font-bold">注意：請使用單一瀏覽器，清除瀏覽器cookie前請利用「下載永續數據」留存您的紀錄</div>
-        <h1 class="text-3xl font-bold">水里永續共好聯盟 – 山村永續旅遊</h1>
+        <h1 class="text-3xl font-bold">水里里山 – 永續旅遊積分網站</h1>
         <p class="mt-2 text-lg">一起用低碳方式探索美麗水里山村</p>
     </header>
 
@@ -23,9 +28,9 @@
 
         <section id="homepage" class="page-section block bg-white p-6 rounded-lg shadow-lg">
 
-            <div class="bg-green-50 p-4 rounded-lg shadow-inner mb-6">
-                <h3 class="text-2xl font-semibold mb-4 text-green-700 text-center">旅遊管理統計 (您的數據)</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div class="bg-green-50 p-6 rounded-lg shadow-inner mb-8">
+                <h3 class="text-2xl font-semibold mb-5 text-green-700 text-center">旅遊管理統計 (您的數據)</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                     <div class="p-4 bg-white rounded-md shadow-sm border border-green-200">
                         <label for="player-name" class="block text-sm font-medium text-gray-700 mb-1">永續旅者姓名:</label>
                         <input type="text" id="player-name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring focus:ring-green-200 focus:ring-opacity-50 text-center text-base p-2" placeholder="請輸入您的姓名">
@@ -35,8 +40,8 @@
                         <p id="player-code" class="mt-1 text-2xl font-bold text-green-600">生成中...</p>
                     </div>
                 </div>
-                <p id="stats-load-status" class="text-sm text-gray-600 mb-4 text-center">已自動載入之前的旅遊數據...</p>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+                <p id="stats-load-status" class="text-sm text-gray-600 mb-6 text-center">已自動載入之前的旅遊數據...</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
                     <div class="p-4 bg-white rounded-md shadow-sm border border-green-200">
                         <p class="text-sm font-medium text-gray-700">累計里程</p>
                         <p id="total-mileage" class="text-2xl font-bold text-green-600">0 km</p>
@@ -52,21 +57,16 @@
                 </div>
             </div>
 
-            <div class="bg-blue-50 p-4 rounded-lg shadow-inner mb-6">
-                 <h3 class="text-2xl font-semibold mb-4 text-blue-700 text-center">永續旅者累計減碳總量</h3>
+            <div class="bg-blue-50 p-6 rounded-lg shadow-inner mb-8">
+                 <h3 class="text-2xl font-semibold mb-5 text-blue-700 text-center">網路累計減碳量 (所有永續旅者)</h3>
                  <div class="text-center">
+                     <p class="text-sm font-medium text-gray-700">所有永續旅者累計減碳總量:</p>
                      <p id="network-total-carbon-reduction" class="mt-1 text-3xl font-bold text-blue-600">載入中...</p>
-                     <div id="trees-planted-display" class="mt-3 text-green-700">
-                         <span class="text-4xl">🌳</span>
-                         <p class="text-xl font-bold">已累積 <span id="trees-planted-count">0</span> 棵樹</p>
-                         <p class="text-xs text-gray-600 mt-1">(每減碳10噸，我們將實際種植一棵樹)</p>
-                     </div>
                      <p id="network-stats-status" class="text-xs text-gray-600 mt-2">從伺服器載入中...</p>
                  </div>
             </div>
 
-
-            <h2 class="text-2xl font-semibold mb-6 text-green-800 text-center">選擇低碳交通方式開始您的永續旅遊</h2>
+            <h2 class="text-2xl font-semibold mb-6 text-green-800 text-center">選擇您的低碳交通方式或活動</h2>
             <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6 mb-8">
                 <button class="transport-option flex flex-col items-center p-5 bg-green-100 rounded-lg shadow hover:bg-green-200 transition-all duration-300 ease-in-out" data-transport="bike" data-carbon-reduction="350">
                     <span class="text-3xl mb-3">🚲</span>
@@ -121,28 +121,13 @@
                      <span class="font-semibold text-center text-sm">我要預約多元計程車導覽旅遊</span>
                       <span class="text-xs text-gray-500 mt-1 text-center">點擊查看資訊</span>
                  </button>
-                 </div>
-
-            <div id="thsr-info" class="hidden"></div>
-
-            <div class="bg-orange-50 p-6 rounded-lg shadow-inner mb-8">
-                <h3 class="text-2xl font-semibold mb-5 text-orange-700 text-center">景點資訊與好康報報</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-center">
-                    <button id="market-mileage-button" class="flex flex-col items-center p-5 bg-purple-100 rounded-lg shadow hover:bg-purple-200 transition-all duration-300 ease-in-out">
-                        <span class="text-3xl mb-3">🛍️</span>
-                        <span class="font-semibold text-center text-sm">逛市集增里程</span>
-                        <span class="text-xs text-gray-600 mt-2 text-center">記錄您的市集消費</span>
-                        <span class="text-xs text-gray-500 mt-1 text-center">好處: 支持在地、獲得里程</span>
-                    </button>
-                    <button id="photo-album-promo-button" class="flex flex-col items-center p-5 bg-teal-100 rounded-lg shadow hover:bg-teal-200 transition-all duration-300 ease-in-out cursor-pointer">
-                        <span class="text-3xl mb-3">📸</span>
-                        <span class="font-semibold text-center text-sm">景點相簿推播</span>
-                        <span class="text-xs text-gray-600 mt-2 text-center">查看最新活動照片</span>
-                        <span class="text-xs text-gray-500 mt-1 text-center">好處: 回顧精彩瞬間</span>
-                    </button>
-                </div>
+                 <button id="market-mileage-button" class="flex flex-col items-center p-5 bg-purple-100 rounded-lg shadow hover:bg-purple-200 transition-all duration-300 ease-in-out">
+                    <span class="text-3xl mb-3">🛍️</span>
+                    <span class="font-semibold text-center text-sm">逛市集增里程</span>
+                    <span class="text-xs text-gray-600 mt-2 text-center">記錄您的市集消費</span>
+                    <span class="text-xs text-gray-500 mt-1 text-center">好處: 支持在地、獲得里程</span>
+                </button>
             </div>
-
 
              <div class="bg-gray-100 p-6 rounded-lg shadow-inner mb-8">
                  <h3 class="text-2xl font-semibold mb-5 text-gray-700 text-center">更多活動與資訊</h3>
@@ -164,7 +149,6 @@
                  </div>
              </div>
 
-
             <div class="bg-yellow-50 border-l-4 border-yellow-500 text-yellow-800 p-5 mb-8 rounded-md" role="alert">
                 <p class="font-bold text-yellow-900 mb-2">永續旅遊小貼士 Tips</p>
                 <p class="mt-2 animate-pulse-subtle text-gray-700">
@@ -172,7 +156,6 @@
                     進入農場不隨意摘採與踩踏，野外請遵循生態旅遊原則，留意沿途警示牌，不干擾野生動物，不採摘植物，並帶走所有垃圾。
                 </p>
             </div>
-
 
             <div class="text-center text-sm text-gray-600 mt-10">
                 <p class="mb-3 font-semibold">共同開發單位：</p>
@@ -202,12 +185,7 @@
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 bg-gray-200 rounded-lg overflow-hidden shadow-md p-6">
                 <div class="lg:col-span-2">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-xl font-semibold text-gray-700">地圖探索</h3>
-                        <button id="refresh-map-page-button" class="p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-150 ease-in-out" title="刷新頁面">
-                            <i class="fas fa-sync-alt"></i>
-                        </button>
-                    </div>
+                    <h3 class="text-xl font-semibold mb-4 text-gray-700">地圖探索</h3>
                     <div id="map"></div>
                      <div id="map-status" class="text-center text-sm text-gray-600 mt-4">
                          地圖載入中... (等待 Google Maps API)
@@ -273,6 +251,7 @@
 
     </main>
 
+    <!-- Modals -->
     <div id="poi-modal" class="modal-overlay hidden">
         <div class="modal-content shadow-xl">
             <span class="close-button">×</span>
@@ -281,14 +260,13 @@
             <div class="poi-modal-content-body">
                  <p id="poi-modal-description" class="text-gray-700 leading-relaxed"></p>
                  <p id="poi-modal-coordinates" class="text-sm text-gray-600 mt-4"></p>
-                 <div id="poi-modal-social" class="mt-4 text-sm">
-                 </div>
+                 <div id="poi-modal-social" class="mt-4 text-sm"></div>
                  <div id="poi12-buttons" class="mt-6 hidden flex flex-col space-y-3">
                       <a href="https://farmcbd.my.canva.site/dagl50o3mt8" target="_blank" class="px-6 py-3 bg-blue-600 text-white font-bold rounded-lg shadow hover:bg-blue-700 transition-all duration-300 ease-in-out text-center"><i class="fas fa-gamepad mr-2"></i>水里四季梅遊小遊戲</a>
-                      <button id="sroi-order-button-poi12" class="px-6 py-3 bg-purple-600 text-white font-bold rounded-lg shadow hover:bg-purple-700 transition-all duration-300 ease-in-out text-center"><i class="fas fa-leaf mr-2"></i>SROI生態棲地農產品訂購&ESG企業採購表單</button>
+                      <button id="sroi-order-button-poi12" class="px-6 py-3 bg-purple-600 text-white font-bold rounded-lg shadow hover:bg-purple-700 transition-all duration-300 ease-in-out text-center"><i class="fas fa-leaf mr-2"></i>SROI生態棲地農產品影響力報告書&ESG企業採購資訊</button>
                  </div>
                  <div id="sroi-info-button-container" class="mt-6 hidden">
-                     <button id="show-sroi-info-button" class="w-full px-6 py-3 bg-purple-600 text-white font-bold rounded-lg shadow hover:bg-purple-700 transition-all duration-300 ease-in-out text-center"><i class="fas fa-leaf mr-2"></i>SROI生態棲地農產品訂購&ESG企業採購表單</button>
+                     <button id="show-sroi-info-button" class="w-full px-6 py-3 bg-purple-600 text-white font-bold rounded-lg shadow hover:bg-purple-700 transition-all duration-300 ease-in-out text-center"><i class="fas fa-leaf mr-2"></i>SROI生態棲地農產品影響力報告書&ESG企業採購資訊</button>
                  </div>
                  <div id="poi-modal-dynamic-buttons" class="mt-6 space-y-3"></div>
             </div>
@@ -392,7 +370,7 @@
     <div id="sroi-info-modal" class="modal-overlay hidden">
         <div class="modal-content shadow-xl">
             <span class="close-button">×</span>
-            <h3 class="text-2xl font-bold mb-4 text-purple-700">SROI生態棲地農產品訂購&ESG企業採購資訊</h3>
+            <h3 class="text-2xl font-bold mb-4 text-purple-700">SROI生態棲地農產品影響力報告書&ESG企業採購資訊</h3>
              <p class="mb-4 text-gray-700">景點：<span id="sroi-modal-poi-name" class="font-semibold text-green-800"></span></p>
             <div id="sroi-modal-content-body" class="text-gray-700 leading-relaxed space-y-3">
                  </div>
@@ -433,28 +411,7 @@
         </div>
     </div>
 
-    <div id="photo-album-modal" class="modal-overlay hidden">
-        <div class="modal-content shadow-xl w-full max-w-md">
-            <span class="close-button">×</span>
-            <h3 class="text-2xl font-bold mb-6 text-teal-700 text-center">景點相簿推播</h3>
-            <div class="space-y-4">
-                <div>
-                    <h4 class="text-lg font-semibold text-gray-700 mb-2">精選旅程</h4>
-                    <ul class="list-disc list-inside pl-4 space-y-1">
-                        <li><a href="#" class="text-blue-600 hover:underline photo-album-link" data-album-id="xiaonong">小農遊程</a></li>
-                        <li><a href="#" class="text-blue-600 hover:underline photo-album-link" data-album-id="shengtai">生態旅遊</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="text-lg font-semibold text-gray-700 mb-2">好事市集</h4>
-                    <ul class="list-disc list-inside pl-4 space-y-1">
-                        <li><a href="https://photos.google.com/share/AF1QipN86zQIAJaA-HyNbExPBNARmU7VT1eEOS2JNsjAC1VfonWpOT5zDAwIVwbueSdfWQ?key=NlN1NlVVS0tZdWhiRV9HYnlsSnNsV0VXVHN5YVJR" target="_blank" class="text-blue-600 hover:underline">星光市集</a></li>
-                        </ul>
-                </div>
-            </div>
-            <p class="text-xs text-gray-500 mt-6 text-center">部分相簿連結建設中，敬請期待！</p>
-        </div>
-    </div>
-
-    </body>
+    <!-- 指向 script.js 檔案 -->
+    <script type="module" src="script.js"></script>
+</body>
 </html>
