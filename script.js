@@ -1,11 +1,11 @@
-// --- 引入 Firebase SDK (保留 CDN 引用，但增加容錯機制) ---
+// --- 引入 Firebase SDK ---
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
 import { getFirestore, collection, getDocs, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-analytics.js";
 
 // --- Firebase Configuration ---
 const firebaseConfig = {
-    apiKey: "AIzaSyCEH65YbNirj_IRmtsIJZS-HNEbsRBBsSQ", // Your Firebase API Key
+    apiKey: "AIzaSyCEH65YbNirj_IRmtsIJZS-HNEbsRBBsSQ", // Firebase API Key
     authDomain: "sustainable-tourism-65025.firebaseapp.com",
     projectId: "sustainable-tourism-65025",
     storageBucket: "sustainable-tourism-65025.firebasestorage.app",
@@ -21,16 +21,14 @@ let analytics;
 
 try {
     app = initializeApp(firebaseConfig);
-    db = getFirestore(app); // Get a reference to the Firestore service using the new method
-    analytics = getAnalytics(app); // Get a reference to the Analytics service using the new method
-    console.log("Firebase initialized successfully."); // Debugging line
+    db = getFirestore(app);
+    analytics = getAnalytics(app);
+    console.log("Firebase initialized successfully.");
 } catch (error) {
-    console.error("Error initializing Firebase:", error); // Debugging line
-    // Update network stats status on Firebase initialization error
+    console.error("Error initializing Firebase:", error);
     const networkStatsStatusElement = document.getElementById('network-stats-status');
     if (networkStatsStatusElement) {
-        networkStatsStatusElement.textContent = `Firebase 初始化失敗 (預覽模式): 無法載入網路統計。`;
-        networkStatsStatusElement.classList.remove('text-gray-600', 'text-green-600');
+        networkStatsStatusElement.textContent = `Firebase 初始化失敗: 無法載入網路統計。`;
         networkStatsStatusElement.classList.add('text-red-600');
     }
     const networkTotalCarbonReductionElement = document.getElementById('network-total-carbon-reduction');
@@ -41,29 +39,29 @@ try {
 
 // --- Data Definitions ---
 let transportData = {
-    bike: { name: '腳踏車', icon: '🚲', carbonReductionPer10km: 350, travelMode: null, metersPerPoint: 10000 }, // 10km = 10000m
-    walk: { name: '步行', icon: '🚶‍♂️', carbonReductionPer10km: 400, travelMode: null, metersPerPoint: 8000 },   // 8km = 8000m
-    bus_train: { name: '共乘巴士 (公車/火車/遊覽巴士)', icon: '🚌', carbonReductionPer10km: 300, travelMode: null, metersPerPoint: 15000 }, // 15km = 15000m
-    carpool_2_moto: { name: '私家車共乘 2 人 / 摩托車', icon: '🏍️🚗', carbonReductionPer10km: 100, travelMode: null, metersPerPoint: 25000 }, // 25km = 25000m
-    carpool_3: { name: '私家車共乘 3 人', icon: '🚗', carbonReductionPer10km: 120, travelMode: null, metersPerPoint: 20000 }, // 20km = 20000m
-    carpool_4: { name: '私家車共乘 4 人', icon: '🚗', carbonReductionPer10km: 150, travelMode: null, metersPerPoint: 18000 }, // 18km = 18000m
-    carpool_5: { name: '私家車共乘 5 人', icon: '🚗', carbonReductionPer10km: 200, travelMode: null, metersPerPoint: 16000 }, // 16km = 16000m
+    bike: { name: '腳踏車', icon: '🚲', carbonReductionPer10km: 350, travelMode: null, metersPerPoint: 10000 },
+    walk: { name: '步行', icon: '🚶‍♂️', carbonReductionPer10km: 400, travelMode: null, metersPerPoint: 8000 },
+    bus_train: { name: '共乘巴士', icon: '🚌', carbonReductionPer10km: 300, travelMode: null, metersPerPoint: 15000 },
+    carpool_2_moto: { name: '私家車共乘 2 人 / 摩托車', icon: '🏍️🚗', carbonReductionPer10km: 100, travelMode: null, metersPerPoint: 25000 },
+    carpool_3: { name: '私家車共乘 3 人', icon: '🚗', carbonReductionPer10km: 120, travelMode: null, metersPerPoint: 20000 },
+    carpool_4: { name: '私家車共乘 4 人', icon: '🚗', carbonReductionPer10km: 150, travelMode: null, metersPerPoint: 18000 },
+    carpool_5: { name: '私家車共乘 5 人', icon: '🚗', carbonReductionPer10km: 200, travelMode: null, metersPerPoint: 16000 },
     thsr_haoxing: { name: '高鐵假期x台灣好行', icon: '🚄🚌', carbonReductionPer10km: 0, travelMode: null, metersPerPoint: Infinity } 
 };
 
 const pois = [
     { id: 'poi1', name: '水里永續共好聯盟打氣站', coords: { lat: 23.809799, lng: 120.849286 }, icon: '🌲', description: '營業時間上午8:00~17:00。\n\n不定期辦理活動，小尖兵們完成的永續任務的分數請在此出示，感謝您一起為地球減碳努力!\n\n本區共分為三個單位(水里鄉圖書館內):\n1. 社團法人南投縣水里鄉商圈創生共好協會 - 致力於推動水里地區商圈振興、永續農業、文化保存與地方創生行動。以多元合作模式打造出一個能共好、共學、共榮的地方創新平台。\n2. 水里溪畔驛站 - 在圖書館內的一處靜懿的景觀休憩場域，小農午餐需要事先預訂喔!\n3. 水里青農里山基地 - 是由臺大實驗林水里營林區輔導的里山餐桌團隊打造的里山及永續教育基地，由返鄉青農共同打造的農業與社區發展平台，以農村生產、生活、生態致力於推廣友善農業、食農教育及永續發展為目標。在這裡可以預約由小農開發的豐富教具進行DIY活動與食農、永續教育等活動!', image: '', socialLink: 'https://www.facebook.com/p/%E6%B0%B4%E9%87%8C%E9%84%89%E5%95%86%E5%9C%88%E5%89%B5%E7%94%9F%E5%85%B1%E5%A5%BD%E5%8D%94%E6%9C%83-100076220760859/?locale=zh_TW' },
     { id: 'poi2', name: '漫遊堤岸風光', coords: { lat: 23.808537, lng: 120.849415 }, icon: '🏞️', description: '起點：水里親水公園。終點：永興村，途中經過社子生態堤防、永興大橋、永興社區等地，路線全長約4公里，坡度平緩，適合親子及大眾。', image: '' },
-    { id: 'poi3', name: '鑫鮮菇園', coords: { lat: 23.794049, lng: 120.859407 }, icon: '🍄', description: '營業時間: 需預約。\n\n提供香菇園區種植導覽與體驗行程 (時長20分鐘)。\n香菇/袖珍菇三角飯糰食農體驗(時長90分鐘)。', image: '', socialLink: 'https://www.facebook.com/xinxianguyuan', sroiInfo: { reportLink: 'YOUR_REPORT_LINK_3', formLink: 'YOUR_FORM_LINK_3', lineId: 'YOUR_LINE_ID_3' } },
-    { id: 'poi4', name: '永興神木', coords: { lat: 23.784127, lng: 120.862294 }, icon: '🌳', description: '社區麵包坊營業時間”上午9:00~17:00。\n\n永興神木（百年大樟樹）位於永興社區活動中心旁。樟樹群由三棵母子樹所形成，第一代木就是母樹，二代木則是母樹根系再長出的兩棵子樹，連成一體。樹齡約300年、樹圍6.2公尺、樹徑1.6公尺、樹高約26公尺、樹冠幅400平方公尺，一旁供俸老樹公及福德祠是居民的信仰中心。\n\n社區活動中心二樓設有社區麵包坊，由北海扶輪社、臺大實驗林、水里商工，共同扶持社區成立，利用當地種植的果物製作的吐司產品是新鮮別具風味的暢銷品。', image: '', socialLink: 'https://www.shli.gov.tw/story/1/6' },
+    { id: 'poi3', name: '鑫鮮菇園', coords: { lat: 23.794049, lng: 120.859407 }, icon: '🍄', description: '營業時間: 需預約。\n\n提供香菇園區種植導覽與體驗行程 (時長20分鐘)。\n香菇/袖珍菇三角飯糰食農體驗(時長90分鐘)。', image: '', socialLink: 'https://www.facebook.com/xinxianguyuan', sroiInfo: { reportLink: '#', formLink: '#', lineId: 'TestID' } },
+    { id: 'poi4', name: '永興神木', coords: { lat: 23.784127, lng: 120.862294 }, icon: '🌳', description: '社區麵包坊營業時間”上午9:00~17:00。\n\n永興神木（百年大樟樹）位於永興社區活動中心旁。樟樹群由三棵母子樹所形成，第一代木就是母樹，二代木則是母樹根系再長出的兩棵子樹，連成一體。樹齡約300年、樹圍6.2公尺、樹徑1.6公尺、樹高約26公尺、樹冠幅400平方公尺，一旁供俸老樹公及福德祠是居民的信仰中心。', image: '', socialLink: 'https://www.shli.gov.tw/story/1/6' },
     { id: 'poi5', name: '森林小白宮', coords: { lat: 23.779408, lng: 120.844019 }, icon: '🏠', description: '接駁、共乘、摩托。需預約。\n\n完成單一活動可獲得永續與環境教育任務點數10點。\n\n小白宮森林生態導覽，親子活動(彩繪/木藝/親子皮影)。', image: '', socialLink: 'https://wild-kids-studio.waca.tw/' },
     { id: 'poi6', name: '瑪路馬咖啡莊園', coords: { lat: 23.778239, lng: 120.843859 }, icon: '☕', description: '接駁、共乘、摩托。\n\n活動資訊: 咖啡座、咖啡園導覽。完成單一活動可獲得永續與環境教育任務點數10點。', image: '', socialLink: 'https://www.facebook.com/people/%E9%A6%AC%E8%B7%AF%E7%91%AA%E5%92%96%E5%95%A1%E8%8E%8A%E5%9C%92/100063961898841/' },
-    { id: 'poi7', name: '指令教育農場', coords: { lat: 23.802776, lng: 120.864715 }, icon: '👆', description: '台灣好行、共乘、摩托。\n\n活動資訊: 農場導覽、生態導覽、食農教育。完成單一活動可獲得永續與環境教育任務點數10點。', image: '', socialLink: 'https://www.facebook.com/FarmCMD/', sroiInfo: { reportLink: 'YOUR_REPORT_LINK_7', formLink: 'YOUR_FORM_LINK_7', lineId: 'https://line.me/ti/g2/HFRcE4eII1eQ761y0Zs3QEvs70saIQ-dHYbYgA?utm_source=invitation&utm_medium=link_copy&utm_campaign=default' } },
-    { id: 'poi8', name: '明揚養蜂', coords: { lat: 23.803787, lng: 120.862401 }, icon: '🐝', description: '共乘、台灣好行、摩托。\n\n活動資訊: 育蜂場導覽、生態導覽、蜂蜜食農教育。完成單一活動可獲得永續與環境教育任務點數10點。', image: '', socialLink: 'https://www.facebook.com/MingYangBee/?locale=zh_TW', sroiInfo: { reportLink: 'YOUR_REPORT_LINK_8', formLink: 'YOUR_FORM_LINK_8', lineId: 'https://line.me/ti/g2/VuGeDsA2K8tPEJ9JOElK70LbUmGk8dW_7Q2zxA?utm_source=invitation&utm_medium=link_copy&utm_campaign=default' } },
+    { id: 'poi7', name: '指令教育農場', coords: { lat: 23.802776, lng: 120.864715 }, icon: '👆', description: '台灣好行、共乘、摩托。\n\n活動資訊: 農場導覽、生態導覽、食農教育。完成單一活動可獲得永續與環境教育任務點數10點。', image: '', socialLink: 'https://www.facebook.com/FarmCMD/', sroiInfo: { reportLink: '#', formLink: '#', lineId: 'TestID' } },
+    { id: 'poi8', name: '明揚養蜂', coords: { lat: 23.803787, lng: 120.862401 }, icon: '🐝', description: '共乘、台灣好行、摩托。\n\n活動資訊: 育蜂場導覽、生態導覽、蜂蜜食農教育。完成單一活動可獲得永續與環境教育任務點數10點。', image: '', socialLink: 'https://www.facebook.com/MingYangBee/?locale=zh_TW', sroiInfo: { reportLink: '#', formLink: '#', lineId: 'TestID' } },
     { id: 'poi9', name: '蛇窯文化園區', coords: { lat: 23.801177, lng: 120.864479 }, icon: '🏺', description: '共乘、台灣好行。\n\n活動資訊: 購票入園，完成食農器皿文化參觀可獲得永續與環境教育點數10點。', image: '', socialLink: 'https://www.facebook.com/sskshop/?locale=zh_TW' },
-    { id: 'poi10', name: '雨社山下', coords: { lat: 23.790644, lng: 120.896569 }, icon: '🥒', description: '接駁、共乘、摩托。\n\n活動資訊: 農場導覽、生態導覽、食農教育。完成單一活動可獲得永續與環境教育任務點數10點。', image: '', socialLink: 'https://www.facebook.com/profile.php?id=61557727713841&locale=zh_TW', sroiInfo: { reportLink: 'YOUR_REPORT_LINK_10', formLink: 'YOUR_FORM_LINK_10', lineId: 'https://line.me/ti/g2/ltdgi_rY8K-frnjS9Q0n0n2vGSO8uw8m5uGUWA?utm_source=invitation&utm_medium=link_copy&utm_campaign=default' } },
-    { id: 'poi11', name: '阿爾喜莊園', coords: { lat: 23.803119, lng: 120.926340 }, icon: '🍋', description: '接駁、共乘、摩托。\n\n活動資訊: 農場導覽、生態導覽、食農教育、農業循環經濟教學。完成單一活動可獲得永續與環境教育任務點數10點。', image: '', socialLink: 'https://www.facebook.com/AHEIemon?locale=zh_TW', sroiInfo: { reportLink: 'YOUR_REPORT_LINK_11', formLink: 'YOUR_FORM_LINK_11', lineId: 'https://line.me/ti/g2/f2JhyAIKmKvProOMzM2z4Mb-6ogaJOOsPT0jug?utm_source=invitation&utm_medium=link_copy&utm_campaign=default' } },
-    { id: 'poi12', name: '湧健酪梨園', coords: { lat: 23.725349, lng: 120.846123 }, icon: '🥑', description: '台灣好行、共乘、摩托。\n\n活動資訊: 農場導覽、生態導覽、食農教育。完成單一活動可獲得永續與環境教育任務點數10點。', image: '', socialLink: 'https://www.facebook.com/profile.php?id=100085673588842&locale=zh_TW', sroiInfo: { reportLink: 'YOUR_REPORT_LINK_12', formLink: 'YOUR_FORM_LINK_12', lineId: 'https://line.me/ti/g2/PIlIHjGJgO-mmn3JvqgCJ9_mPY7Aoeqg8VOEDg?utm_source=invitation&utm_medium=link_copy&utm_campaign=default' } },
+    { id: 'poi10', name: '雨社山下', coords: { lat: 23.790644, lng: 120.896569 }, icon: '🥒', description: '接駁、共乘、摩托。\n\n活動資訊: 農場導覽、生態導覽、食農教育。完成單一活動可獲得永續與環境教育任務點數10點。', image: '', socialLink: 'https://www.facebook.com/profile.php?id=61557727713841&locale=zh_TW', sroiInfo: { reportLink: '#', formLink: '#', lineId: 'TestID' } },
+    { id: 'poi11', name: '阿爾喜莊園', coords: { lat: 23.803119, lng: 120.926340 }, icon: '🍋', description: '接駁、共乘、摩托。\n\n活動資訊: 農場導覽、生態導覽、食農教育、農業循環經濟教學。完成單一活動可獲得永續與環境教育任務點數10點。', image: '', socialLink: 'https://www.facebook.com/AHEIemon?locale=zh_TW', sroiInfo: { reportLink: '#', formLink: '#', lineId: 'TestID' } },
+    { id: 'poi12', name: '湧健酪梨園', coords: { lat: 23.725349, lng: 120.846123 }, icon: '🥑', description: '台灣好行、共乘、摩托。\n\n活動資訊: 農場導覽、生態導覽、食農教育。完成單一活動可獲得永續與環境教育任務點數10點。', image: '', socialLink: 'https://www.facebook.com/profile.php?id=100085673588842&locale=zh_TW', sroiInfo: { reportLink: '#', formLink: '#', lineId: 'TestID' } },
     { id: 'poi13', name: '謝家肉圓', coords: { lat: 23.817521, lng: 120.853831 }, icon: '🥟', description: '步行、摩托、台灣好行。營業時間 11:00–17:00。\n\n在地人巷內70年老店。', image: '', socialLink: 'https://www.facebook.com/profile.php?id=100054428473137&locale=zh_TW' },
     { id: 'poi14', name: '機車貓聯盟', coords: { lat: 23.810883, lng: 120.855798 }, icon: '🍚', description: '共乘、摩托、台灣好行。營業時間 11:00–17:00。\n\n無菜單料理店，50%以上使用在地食材，任一消費金額可獲得永續與環境教育任務點數10點。', image: '', socialLink: 'https://m.facebook.com/機車貓聯盟-552637305127422/' },
     { id: 'poi15', name: '二坪大觀冰店', coords: { lat: 23.813627, lng: 120.859651 }, icon: '🍦', description: '共乘、摩托。\n\n在地推薦古早味枝仔冰。台電員工福利社60年老店。', image: '', socialLink: 'https://www.facebook.com/2pinIce/' },
@@ -134,6 +132,7 @@ let currentLogTripPoi = null;
 let networkTotalCarbonReduction = 0;
 let selectedMarketType = null;
 let selectedMarketProduct = null;
+let mapLoaded = false;
 
 // --- DOM Elements ---
 const homepageSection = document.getElementById('homepage');
@@ -146,6 +145,7 @@ const totalScoreSpan = document.getElementById('total-score');
 const currentTransportDisplay = document.getElementById('current-transport-display');
 const mapElement = document.getElementById('map');
 const mapStatusElement = document.getElementById('map-status');
+const mapOverlay = document.getElementById('map-overlay');
 const selectedPointsDisplay = document.getElementById('selected-points-display');
 const calculateMileageButton = document.getElementById('calculate-mileage-button');
 const tripCalculationStatusElement = document.getElementById('trip-calculation-status');
@@ -222,7 +222,7 @@ const enterpriseModal = document.getElementById('enterprise-modal');
 const govBtn = document.getElementById('gov-version-btn');
 const govModal = document.getElementById('gov-modal');
 
-// New Green Consumption DOM Elements
+// Green Consumption DOM Elements
 const openGreenEvalBtn = document.getElementById('open-green-eval-btn');
 const greenConsumptionModal = document.getElementById('green-consumption-modal');
 const displayGreenProcure = document.getElementById('display-green-procurement');
@@ -256,7 +256,6 @@ const projectAmountInput = document.getElementById('project-amount');
 const logProjectBtn = document.getElementById('log-project-btn');
 const totalProjectDisplay = document.getElementById('total-project-display');
 
-
 const localStorageKey = 'shuilSustainableTourismData_v2.2';
 const localStorageActionsKey = 'shuilSustainableTourismActions_v2.2';
 
@@ -269,8 +268,6 @@ function loadData() {
         totalScore = parsedData.totalScore || 0;
         playerName = parsedData.playerName || '';
         playerCode = parsedData.playerCode || '';
-        
-        // Load new green consumption data
         greenProcurementTotal = parsedData.greenProcurementTotal || 0;
         sroiProcurementTotal = parsedData.sroiProcurementTotal || 0;
         projectProcurementTotal = parsedData.projectProcurementTotal || 0;
@@ -280,7 +277,7 @@ function loadData() {
         }
 
         updateStatsDisplay();
-        updateGreenConsumptionDisplay(); // Update new section
+        updateGreenConsumptionDisplay();
         document.getElementById('stats-load-status').textContent = '已成功載入之前的旅遊數據。';
         document.getElementById('stats-load-status').classList.remove('text-gray-600');
         document.getElementById('stats-load-status').classList.add('text-green-600');
@@ -291,7 +288,6 @@ function loadData() {
         totalCarbonReduction = 0;
         totalScore = 0;
         playerName = '';
-        // Init new data
         greenProcurementTotal = 0;
         sroiProcurementTotal = 0;
         projectProcurementTotal = 0;
@@ -312,10 +308,7 @@ function loadData() {
         loggedActionsListElement.innerHTML = '<p class="text-gray-500 text-center">尚無行動紀錄</p>';
     }
     saveData();
-    
-    if (db) {
-        fetchNetworkTotalCarbonReduction();
-    }
+    if (db) fetchNetworkTotalCarbonReduction();
 }
 
 function saveData() {
@@ -325,14 +318,12 @@ function saveData() {
         totalScore: totalScore,
         playerName: playerNameInput.value.trim(),
         playerCode: playerCode,
-        // Save new data
         greenProcurementTotal: greenProcurementTotal,
         sroiProcurementTotal: sroiProcurementTotal,
         projectProcurementTotal: projectProcurementTotal
     };
     localStorage.setItem(localStorageKey, JSON.stringify(dataToSave));
     localStorage.setItem(localStorageActionsKey, JSON.stringify(loggedActions));
-
     if (db && playerCode) {
        savePlayerDataToFirebase({
            playerCode: playerCode,
@@ -340,7 +331,6 @@ function saveData() {
            totalMileage: totalMileage,
            totalCarbonReduction: totalCarbonReduction,
            totalScore: totalScore,
-           // Add to firebase if needed, currently kept local for simplicity
            lastUpdated: serverTimestamp()
        });
     }
@@ -354,17 +344,12 @@ function updateStatsDisplay() {
     playerCodeDisplay.textContent = playerCode;
 }
 
-// New: Update Green Consumption Display
 function updateGreenConsumptionDisplay() {
     displayGreenProcure.textContent = `$${greenProcurementTotal}`;
     displaySroiProcure.textContent = `$${sroiProcurementTotal.toFixed(0)}`;
     displayProjectProcure.textContent = `$${projectProcurementTotal}`;
-    
-    // Grand total calculation
     const grandTotal = greenProcurementTotal + sroiProcurementTotal + projectProcurementTotal;
     displayGrandTotalGreen.textContent = `$${grandTotal.toFixed(0)}`;
-    
-    // Also update modal internal displays
     totalGreenProcureDisplay.textContent = `$${greenProcurementTotal}`;
     totalSroiDisplay.textContent = `$${sroiProcurementTotal.toFixed(0)}`;
     totalProjectDisplay.textContent = `$${projectProcurementTotal}`;
@@ -412,7 +397,6 @@ async function fetchNetworkTotalCarbonReduction() {
         networkTotalCarbonReduction = totalCarbonAcrossNetwork;
         networkTotalCarbonReductionElement.textContent = `${networkTotalCarbonReduction.toFixed(2)} g`;
         networkStatsStatusElement.textContent = '網路統計數據載入成功。';
-        
         const gramsPerTree = 10000000; 
         const treesPlanted = Math.floor(networkTotalCarbonReduction / gramsPerTree);
         if (treesPlantedCountElement) {
@@ -437,24 +421,34 @@ function showMissionPage() {
     homepageSection.style.display = 'none';
     missionPageSection.style.display = 'block';
 
-    if (map) {
+    if (mapLoaded && map) {
          google.maps.event.trigger(map, 'resize');
          map.setCenter({ lat: 23.810, lng: 120.850 });
-    } else {
-         if (mapStatusElement) {
-              mapStatusElement.innerHTML = '地圖載入中... (等待 Google Maps API)';
-         }
     }
+    
     currentTransportDisplay.textContent = currentTransport && transportData[currentTransport] ? transportData[currentTransport].name : '未選擇';
     updateSelectedPointsDisplay();
+}
+
+// Haversine algorithm for distance calculation (Fallback)
+function haversineDistance(lat1, lon1, lat2, lon2) {
+    const R = 6371; // Earth's radius in km
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+              Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+              Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c * 1000; // Return in meters
 }
 
 function initMap() {
      if (typeof google === 'undefined' || typeof google.maps === 'undefined') {
          console.error("Google Maps API not loaded.");
-         if (mapStatusElement) {
-              mapStatusElement.innerHTML = '地圖載入失敗：API 金鑰認證失敗。<br><span class="text-xs">請利用手動記錄功能。</span>';
-              mapStatusElement.classList.add('text-red-600');
+         mapStatusElement.innerHTML = '地圖載入失敗。<br><span class="text-xs">啟用離線計算模式，您仍可計算里程。</span>';
+         mapStatusElement.className = 'text-center text-red-600 font-bold';
+         if(mapOverlay) {
+             mapOverlay.classList.add('hidden');
          }
          return;
      }
@@ -470,42 +464,75 @@ function initMap() {
 
     const defaultCoords = { lat: 23.810, lng: 120.850 };
 
-    map = new google.maps.Map(mapElement, {
-        center: defaultCoords,
-        zoom: 13,
-         mapTypeControl: false,
-         streetViewControl: false
-    });
-
-    directionsService = new google.maps.DirectionsService();
-    directionsRenderer = new google.maps.DirectionsRenderer({ map: map, suppressMarkers: true });
-
-    pois.forEach(poi => {
-        const marker = new google.maps.Marker({
-            position: poi.coords,
-            map: map,
-            title: poi.name,
-             label: {
-                text: poi.name,
-                color: '#000000',
-                fontSize: '12px',
-                fontWeight: 'bold',
-                className: 'map-label'
-            }
+    try {
+        map = new google.maps.Map(mapElement, {
+            center: defaultCoords,
+            zoom: 13,
+            mapTypeControl: false,
+            streetViewControl: false
         });
-        marker.poiData = poi;
-        marker.addListener('click', function() {
-            showPoiModal(this.poiData);
-        });
-        poiMarkers.push(marker);
-    });
 
-     if (mapStatusElement) {
-         mapStatusElement.innerHTML = '地圖載入成功！';
-         mapStatusElement.classList.add('text-green-600');
-     }
+        directionsService = new google.maps.DirectionsService();
+        directionsRenderer = new google.maps.DirectionsRenderer({ map: map, suppressMarkers: true });
+
+        pois.forEach(poi => {
+            const marker = new google.maps.Marker({
+                position: poi.coords,
+                map: map,
+                title: poi.name,
+                label: {
+                    text: poi.name,
+                    color: '#000000',
+                    fontSize: '12px',
+                    fontWeight: 'bold',
+                    className: 'map-label'
+                }
+            });
+            marker.poiData = poi;
+            marker.addListener('click', function() {
+                showPoiModal(this.poiData);
+            });
+            poiMarkers.push(marker);
+        });
+
+        mapLoaded = true;
+        // Hide loading overlay
+        if(mapOverlay) mapOverlay.classList.add('opacity-0');
+        setTimeout(() => { if(mapOverlay) mapOverlay.classList.add('hidden'); }, 500);
+
+    } catch (e) {
+        console.error("Map init error:", e);
+        mapStatusElement.textContent = "地圖初始化錯誤，已啟用離線計算模式。";
+        if(mapOverlay) mapOverlay.classList.add('hidden');
+    }
 }
 window.initMap = initMap;
+
+// Global map script load failure handler (Network blocking)
+window.mapScriptLoadError = function() {
+    console.error("Google Maps Script failed to load (Network blocked?)");
+    const statusEl = document.getElementById('map-status');
+    if (statusEl) {
+        statusEl.innerHTML = '無法連線至 Google 地圖伺服器。<br><span class="text-xs text-red-600">已自動切換至離線計算模式。</span>';
+        statusEl.className = 'text-center text-gray-700 font-bold';
+    }
+    // Hide overlay so users can see the fallback text or interact with other elements
+    if(mapOverlay) mapOverlay.classList.add('hidden');
+    // Ensure offline mode works by setting google undefined (just in case)
+    if(typeof google !== 'undefined') mapLoaded = false;
+};
+
+// Global auth failure handler (API Key invalid)
+window.gm_authFailure = function() {
+     console.error("Google Maps Auth Failure");
+     const statusEl = document.getElementById('map-status');
+     if (statusEl) {
+         statusEl.innerHTML = '地圖 API 金鑰驗證失敗。<br><span class="text-xs text-red-600">已自動切換至離線計算模式。</span>';
+         statusEl.className = 'text-center text-gray-700 font-bold';
+     }
+     if(mapOverlay) mapOverlay.classList.add('hidden');
+     mapLoaded = false; 
+};
 
 function updateSelectedPointsDisplay() {
     const startName = selectedStartPoi ? selectedStartPoi.name : '未選擇';
@@ -536,83 +563,100 @@ function resetSelectedPoints() {
 }
 
 function calculateTripMileage() {
-    if (!directionsService) {
-        tripCalculationStatusElement.textContent = '地圖服務尚未載入。';
-        return;
-    }
     if (!selectedStartPoi || !selectedEndPoi) {
         tripCalculationStatusElement.textContent = '請先選擇起點和終點！';
         return;
     }
-     if (selectedStartPoi.id === selectedEndPoi.id) {
-         tripCalculationStatusElement.textContent = '起點和終點不能相同！';
-         return;
-     }
-     if (currentTransport === null) {
-          tripCalculationStatusElement.textContent = '請先選擇交通方式！';
-          return;
-     }
+    if (selectedStartPoi.id === selectedEndPoi.id) {
+        tripCalculationStatusElement.textContent = '起點和終點不能相同！';
+        return;
+    }
+    if (currentTransport === null) {
+        tripCalculationStatusElement.textContent = '請先選擇交通方式！';
+        return;
+    }
 
     tripCalculationStatusElement.textContent = '正在計算路徑...';
     clearTripLine();
 
-    let travelMode = google.maps.TravelMode.DRIVING;
-     const selectedTransportData = transportData[currentTransport];
-     if (selectedTransportData && selectedTransportData.travelMode) {
-         travelMode = selectedTransportData.travelMode;
-     }
-
-    const request = {
-        origin: selectedStartPoi.coords,
-        destination: selectedEndPoi.coords,
-        travelMode: travelMode
-    };
-
-    directionsService.route(request, (response, status) => {
-        if (status === 'OK') {
-            directionsRenderer.setDirections(response);
-            const route = response.routes[0];
-            const leg = route.legs[0];
-            const distanceInMeters = leg.distance.value;
-            totalMileage += distanceInMeters;
-
-            let tripCarbonReduction = 0;
-             if (currentTransport && transportData[currentTransport].carbonReductionPer10km > 0) {
-                 const carbonReductionPerMeter = transportData[currentTransport].carbonReductionPer10km / 10000;
-                 tripCarbonReduction = distanceInMeters * carbonReductionPerMeter;
-                 totalCarbonReduction += tripCarbonReduction;
-             }
-
-            let scoreForThisTrip = 0;
-            if (currentTransport && transportData[currentTransport].metersPerPoint !== Infinity) {
-                 const metersPerPoint = transportData[currentTransport].metersPerPoint;
-                 scoreForThisTrip = Math.floor(distanceInMeters / metersPerPoint);
-                 totalScore += scoreForThisTrip;
-            }
-
-            updateStatsDisplay();
-            tripCalculationStatusElement.textContent = `本次旅程: ${(distanceInMeters / 1000).toFixed(2)} km, 減碳: ${tripCarbonReduction.toFixed(2)} g. 獲得分數: ${scoreForThisTrip}`;
-
-            const now = new Date();
-            const timestamp = now.toLocaleString();
-            const newLogEntry = {
-                type: 'trip_calculation',
-                startPoiName: selectedStartPoi.name,
-                endPoiName: selectedEndPoi.name,
-                transportName: transportData[currentTransport].name,
-                transportIcon: transportData[currentTransport].icon,
-                mileageInMeters: distanceInMeters,
-                carbonReduction: tripCarbonReduction,
-                points: scoreForThisTrip,
-                timestamp: timestamp
-            };
-            loggedActions.push(newLogEntry);
-            saveData();
-            renderLoggedActions();
-        } else {
-            tripCalculationStatusElement.textContent = `計算失敗: ${status}`;
+    // Try Google Maps API first
+    if (mapLoaded && directionsService && typeof google !== 'undefined') {
+        let travelMode = google.maps.TravelMode.DRIVING;
+        const selectedTransportData = transportData[currentTransport];
+        if (selectedTransportData && selectedTransportData.travelMode) {
+            travelMode = selectedTransportData.travelMode;
         }
-    });
+
+        const request = {
+            origin: selectedStartPoi.coords,
+            destination: selectedEndPoi.coords,
+            travelMode: travelMode
+        };
+
+        directionsService.route(request, (response, status) => {
+            if (status === 'OK') {
+                directionsRenderer.setDirections(response);
+                const route = response.routes[0];
+                const leg = route.legs[0];
+                const distanceInMeters = leg.distance.value;
+                processTripResult(distanceInMeters, 'Google Maps');
+            } else {
+                console.warn("Google Directions failed, using fallback:", status);
+                useFallbackCalculation();
+            }
+        });
+    } else {
+        // Fallback if map not loaded or API missing
+        useFallbackCalculation();
+    }
+}
+
+function useFallbackCalculation() {
+    const dist = haversineDistance(
+        selectedStartPoi.coords.lat, selectedStartPoi.coords.lng,
+        selectedEndPoi.coords.lat, selectedEndPoi.coords.lng
+    );
+    // Estimate road distance as 1.3x straight line distance
+    const estimatedMeters = Math.round(dist * 1.3);
+    processTripResult(estimatedMeters, '直線距離估算');
+}
+
+function processTripResult(distanceInMeters, method) {
+    totalMileage += distanceInMeters;
+
+    let tripCarbonReduction = 0;
+    if (currentTransport && transportData[currentTransport].carbonReductionPer10km > 0) {
+        const carbonReductionPerMeter = transportData[currentTransport].carbonReductionPer10km / 10000;
+        tripCarbonReduction = distanceInMeters * carbonReductionPerMeter;
+        totalCarbonReduction += tripCarbonReduction;
+    }
+
+    let scoreForThisTrip = 0;
+    if (currentTransport && transportData[currentTransport].metersPerPoint !== Infinity) {
+        const metersPerPoint = transportData[currentTransport].metersPerPoint;
+        scoreForThisTrip = Math.floor(distanceInMeters / metersPerPoint);
+        totalScore += scoreForThisTrip;
+    }
+
+    updateStatsDisplay();
+    tripCalculationStatusElement.innerHTML = `計算成功 (${method})<br>里程: ${(distanceInMeters / 1000).toFixed(2)} km, 減碳: ${tripCarbonReduction.toFixed(2)} g. 獲得分數: ${scoreForThisTrip}`;
+
+    const now = new Date();
+    const timestamp = now.toLocaleString();
+    const newLogEntry = {
+        type: 'trip_calculation',
+        startPoiName: selectedStartPoi.name,
+        endPoiName: selectedEndPoi.name,
+        transportName: transportData[currentTransport].name,
+        transportIcon: transportData[currentTransport].icon,
+        mileageInMeters: distanceInMeters,
+        carbonReduction: tripCarbonReduction,
+        points: scoreForThisTrip,
+        timestamp: timestamp
+    };
+    loggedActions.push(newLogEntry);
+    saveData();
+    renderLoggedActions();
 }
 
 function clearTripLine() {
@@ -1308,11 +1352,3 @@ document.addEventListener('DOMContentLoaded', () => {
 
     showHomepage();
 });
-
-window.gm_authFailure = function() {
-     const mapStatusElement = document.getElementById('map-status');
-     if (mapStatusElement) {
-         mapStatusElement.innerHTML = '地圖 API 認證失敗 (預覽模式限制)。<br><span class="text-xs">請利用手動記錄功能。</span>';
-         mapStatusElement.classList.add('text-red-600');
-     }
-};
