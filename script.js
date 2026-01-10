@@ -1,6 +1,6 @@
 // --- 引入 Firebase SDK ---
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-import { getFirestore, collection, getDocs, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+import { getFirestore, collection, getDocs, doc, setDoc, updateDoc, increment, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-analytics.js";
 
 // --- Firebase Configuration ---
@@ -19,21 +19,29 @@ let app;
 let db;
 let analytics;
 
+// Define Global Stats References
+let globalStatsRef;
+let greenStatsDocRef;
+let pageViewsDocRef;
+
 try {
     app = initializeApp(firebaseConfig);
     db = getFirestore(app);
     analytics = getAnalytics(app);
+    
+    // Init refs
+    globalStatsRef = collection(db, 'global_stats');
+    greenStatsDocRef = doc(db, 'global_stats', 'green_consumption');
+    pageViewsDocRef = doc(db, 'global_stats', 'page_views');
+    
     console.log("Firebase initialized successfully.");
 } catch (error) {
     console.error("Error initializing Firebase:", error);
+    // 處理錯誤顯示
     const networkStatsStatusElement = document.getElementById('network-stats-status');
     if (networkStatsStatusElement) {
-        networkStatsStatusElement.textContent = `Firebase 初始化失敗: 無法載入網路統計。`;
+        networkStatsStatusElement.textContent = `預覽模式: 無法連線至資料庫。`;
         networkStatsStatusElement.classList.add('text-red-600');
-    }
-    const networkTotalCarbonReductionElement = document.getElementById('network-total-carbon-reduction');
-    if (networkTotalCarbonReductionElement) {
-        networkTotalCarbonReductionElement.textContent = '載入失敗';
     }
 }
 
@@ -71,15 +79,15 @@ const pois = [
 ];
 
 const sustainableActions = [
-        { name: '支持在地飲食', points: 5 },
-        { name: '減少剩食', points: 5 },
-        { name: '自備環保用品', points: 5 },
-        { name: '回收分類', points: 5 },
-        { name: '保育行為', points: 10 },
-        { name: '導覽參加', points: 10 },
-        { name: '不破壞棲地', points: 10 },
-        { name: '支持小農', points: 5 },
-        { name: '遵守營火', points: 5 }
+    { name: '支持在地飲食', points: 5 },
+    { name: '減少剩食', points: 5 },
+    { name: '自備環保用品', points: 5 },
+    { name: '回收分類', points: 5 },
+    { name: '保育行為', points: 10 },
+    { name: '導覽參加', points: 10 },
+    { name: '不破壞棲地', points: 10 },
+    { name: '支持小農', points: 5 },
+    { name: '遵守營火', points: 5 }
 ];
 
 const activities = [
@@ -113,12 +121,9 @@ let totalCarbonReduction = 0;
 let totalScore = 0;
 let playerName = '';
 let playerCode = '';
-
-// New State Variables for Green Consumption
 let greenProcurementTotal = 0;
 let sroiProcurementTotal = 0;
 let projectProcurementTotal = 0;
-
 let map = null;
 let directionsService = null;
 let directionsRenderer = null;
@@ -215,37 +220,27 @@ const backToMarketTypeButton = document.getElementById('back-to-market-type-butt
 const marketStoreCodeInput = document.getElementById('market-store-code');
 const photoAlbumPromoButton = document.getElementById('photo-album-promo-button');
 const photoAlbumModal = document.getElementById('photo-album-modal');
-
-// Modal 相關 DOM
 const enterpriseBtn = document.getElementById('enterprise-version-btn');
 const enterpriseModal = document.getElementById('enterprise-modal');
 const govBtn = document.getElementById('gov-version-btn');
 const govModal = document.getElementById('gov-modal');
-
-// Green Consumption DOM Elements
 const openGreenEvalBtn = document.getElementById('open-green-eval-btn');
 const greenConsumptionModal = document.getElementById('green-consumption-modal');
 const displayGreenProcure = document.getElementById('display-green-procurement');
 const displaySroiProcure = document.getElementById('display-sroi-procurement');
 const displayProjectProcure = document.getElementById('display-project-procurement');
 const displayGrandTotalGreen = document.getElementById('display-grand-total-green');
-
-// Green Procure Elements
 const greenQtyInput = document.getElementById('green-qty');
 const greenPriceInput = document.getElementById('green-price');
 const greenSubtotalSpan = document.getElementById('green-subtotal');
 const logGreenProcureBtn = document.getElementById('log-green-procure-btn');
 const totalGreenProcureDisplay = document.getElementById('total-green-procure-display');
-
-// SROI Elements
 const sroiUnitSelect = document.getElementById('sroi-unit-select');
 const sroiQtyInput = document.getElementById('sroi-qty');
 const sroiPriceInput = document.getElementById('sroi-price');
 const sroiSubtotalSpan = document.getElementById('sroi-subtotal');
 const logSroiBtn = document.getElementById('log-sroi-btn');
 const totalSroiDisplay = document.getElementById('total-sroi-display');
-
-// Project Procure Elements
 const projectPasswordInput = document.getElementById('project-password');
 const unlockProjectBtn = document.getElementById('unlock-project-btn');
 const passwordMsg = document.getElementById('password-msg');
@@ -308,7 +303,10 @@ function loadData() {
         loggedActionsListElement.innerHTML = '<p class="text-gray-500 text-center">尚無行動紀錄</p>';
     }
     saveData();
-    if (db) fetchNetworkTotalCarbonReduction();
+    if (db) {
+        fetchNetworkTotalCarbonReduction();
+        initGlobalCounters(); // Initialize global counters
+    }
 }
 
 function saveData() {
@@ -348,11 +346,55 @@ function updateGreenConsumptionDisplay() {
     displayGreenProcure.textContent = `$${greenProcurementTotal}`;
     displaySroiProcure.textContent = `$${sroiProcurementTotal.toFixed(0)}`;
     displayProjectProcure.textContent = `$${projectProcurementTotal}`;
-    const grandTotal = greenProcurementTotal + sroiProcurementTotal + projectProcurementTotal;
-    displayGrandTotalGreen.textContent = `$${grandTotal.toFixed(0)}`;
+    
+    // Grand Total Display managed by Global Listener
+    
     totalGreenProcureDisplay.textContent = `$${greenProcurementTotal}`;
     totalSroiDisplay.textContent = `$${sroiProcurementTotal.toFixed(0)}`;
     totalProjectDisplay.textContent = `$${projectProcurementTotal}`;
+}
+
+// Global Stats Logic
+async function initGlobalCounters() {
+    if (!db) return;
+
+    try {
+        // 1. Page Views Counter
+        await setDoc(pageViewsDocRef, { count: increment(1) }, { merge: true });
+        onSnapshot(pageViewsDocRef, (doc) => {
+            if (doc.exists()) {
+                const data = doc.data();
+                const count = data.count || 0;
+                const el = document.getElementById('page-view-count');
+                if(el) el.textContent = count.toLocaleString();
+            }
+        });
+
+        // 2. Global Green Consumption Listener
+        onSnapshot(greenStatsDocRef, (doc) => {
+            if (doc.exists()) {
+                const data = doc.data();
+                const total = data.totalAmount || 0;
+                const count = data.transactionCount || 0;
+
+                if(displayGrandTotalGreen) displayGrandTotalGreen.textContent = `$${total.toLocaleString()}`;
+                const countEl = document.getElementById('global-green-trans-count');
+                if(countEl) countEl.textContent = count.toLocaleString();
+            }
+        });
+    } catch (e) { 
+        console.error("Global stats init error", e); 
+    }
+}
+
+async function updateGlobalGreenStats(amount) {
+    if (!db || amount <= 0) return;
+    try {
+        await setDoc(greenStatsDocRef, {
+            totalAmount: increment(amount),
+            transactionCount: increment(1)
+        }, { merge: true });
+    } catch (e) { console.error("Global stats update error", e); }
 }
 
 function generateRandomCode() {
@@ -414,7 +456,9 @@ function showHomepage() {
     clearTripLine();
     clearSelectedActions();
     selectedActivity = null;
-    if (db) fetchNetworkTotalCarbonReduction();
+    if (db) {
+        fetchNetworkTotalCarbonReduction();
+    }
 }
 
 function showMissionPage() {
@@ -436,8 +480,8 @@ function haversineDistance(lat1, lon1, lat2, lon2) {
     const dLat = (lat2 - lat1) * Math.PI / 180;
     const dLon = (lon2 - lon1) * Math.PI / 180;
     const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-              Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-              Math.sin(dLon / 2) * Math.sin(dLon / 2);
+                      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                      Math.sin(dLon / 2) * Math.sin(dLon / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c * 1000; // Return in meters
 }
@@ -1286,6 +1330,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if(subtotal > 0) {
             greenProcurementTotal += subtotal;
             updateGreenConsumptionDisplay();
+            updateGlobalGreenStats(subtotal); // Update server global stats
             saveData();
             // Reset
             greenQtyInput.value = 1;
@@ -1304,6 +1349,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if(subtotal > 0) {
             sroiProcurementTotal += subtotal;
             updateGreenConsumptionDisplay();
+            updateGlobalGreenStats(subtotal); // Update server global stats
             saveData();
             // Reset
             sroiQtyInput.value = 1;
@@ -1320,6 +1366,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (amount > 0) {
             projectProcurementTotal += amount;
             updateGreenConsumptionDisplay();
+            updateGlobalGreenStats(amount); // Update server global stats
             saveData();
             // Reset
             projectDescInput.value = '';
