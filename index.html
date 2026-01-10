@@ -83,20 +83,25 @@
                
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-center">
                     <div class="p-3 bg-white rounded-md shadow-sm border border-emerald-100">
-                        <p class="text-xs font-medium text-gray-600">綠色採購總額</p>
+                        <p class="text-xs font-medium text-gray-600">個人-綠色採購總額</p>
                         <p id="display-green-procurement" class="text-xl font-bold text-emerald-600">$0</p>
                     </div>
                     <div class="p-3 bg-white rounded-md shadow-sm border border-emerald-100">
-                        <p class="text-xs font-medium text-gray-600">SROI 社會投資報酬</p>
+                        <p class="text-xs font-medium text-gray-600">個人-SROI 社會投資報酬</p>
                         <p id="display-sroi-procurement" class="text-xl font-bold text-emerald-600">$0</p>
                     </div>
                     <div class="p-3 bg-white rounded-md shadow-sm border border-emerald-100">
-                        <p class="text-xs font-medium text-gray-600">專案採購總額</p>
+                        <p class="text-xs font-medium text-gray-600">個人-專案採購總額</p>
                         <p id="display-project-procurement" class="text-xl font-bold text-emerald-600">$0</p>
                     </div>
-                    <div class="p-3 bg-emerald-100 rounded-md shadow-sm border border-emerald-300">
+                    <!-- 全網累積數據顯示區 -->
+                    <div class="p-3 bg-emerald-100 rounded-md shadow-sm border border-emerald-300 relative overflow-hidden">
                         <p class="text-xs font-bold text-emerald-800">累計綠色消費總額 (全民減碳版)</p>
-                        <p id="display-grand-total-green" class="text-xl font-bold text-emerald-800">$0</p>
+                        <p id="display-grand-total-green" class="text-2xl font-bold text-emerald-800 my-1">載入中...</p>
+                        <p class="text-[10px] text-emerald-700">累積響應次數: <span id="global-green-trans-count">0</span> 次</p>
+                        <div class="absolute top-0 right-0 p-1">
+                            <i class="fas fa-globe-asia text-emerald-200 text-3xl opacity-50"></i>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -230,7 +235,7 @@
                     <li>水里里山基地#<a href="https://www.facebook.com/Satoyamadining" target="_blank" class="text-green-600 hover:underline">里山餐桌</a>團隊 #水里青農</li>
                 </ul>
 
-                <p class="mb-3 mt-6 font-semibold">教學與計劃支持網絡：</p>
+                <p class="mb-3 mt-6 font-semibold">教學與計畫支持網絡：</p>
                 <ul class="list-disc list-inside mx-auto w-fit text-left mt-3 text-gray-700">
                     <li>國立臺灣大學USR#水里營林區</li>
                     <li>農業部食農教育推廣計畫</li>
@@ -244,6 +249,8 @@
                 <p class="mt-6 text-gray-700">© 2025 水里永續共好聯盟。版權所有。</p>
                 <p class="mt-2 text-gray-700">開發者信箱: <a href="mailto:farmcmd@gmail.com" class="text-blue-600 hover:underline">farmcmd@gmail.com</a></p>
                 <p class="mt-2 text-gray-700">V2.2，歡迎至FACEBOOK粉專「<a href="https://www.facebook.com/Satoyamadining" target="_blank" class="text-green-600 hover:underline">里山餐桌</a>」提出建議。</p>
+                <!-- 網頁瀏覽人次 -->
+                <p class="mt-4 text-xs text-gray-500"><i class="far fa-eye mr-1"></i>網頁瀏覽人次: <span id="page-view-count" class="font-bold text-gray-600">統計中...</span></p>
             </div>
 
         </section>
@@ -600,52 +607,6 @@
                 <p class="mb-2"><strong>LINE ID:</strong> 未提供</p>
             </div>
              <p class="mt-6 text-sm text-gray-600">若有需求請於出發一周前直接聯繫駕駛人預約及確認詳細資訊。</p>
-        </div>
-    </div>
-
-    <!-- SROI Info Modal -->
-    <div id="sroi-info-modal" class="modal-overlay hidden">
-        <div class="modal-content shadow-xl">
-            <span class="close-button">×</span>
-            <h3 class="text-2xl font-bold mb-4 text-purple-700">SROI生態棲地農產品訂購&ESG企業採購資訊</h3>
-             <p class="mb-4 text-gray-700">景點：<span id="sroi-modal-poi-name" class="font-semibold text-green-800"></span></p>
-            <div id="sroi-modal-content-body" class="text-gray-700 leading-relaxed space-y-3">
-                 </div>
-        </div>
-    </div>
-
-    <!-- Market Selection Modal -->
-    <div id="market-selection-modal" class="modal-overlay hidden">
-        <div class="modal-content shadow-xl w-full max-w-lg">
-            <span class="close-button">×</span>
-            <h3 class="text-2xl font-bold mb-6 text-purple-700 text-center">地產地銷最減碳</h3>
-
-            <div id="market-type-selection-step">
-                <h4 class="text-lg font-semibold mb-3 text-gray-700">步驟 1: 選擇市集類型</h4>
-                <div id="market-type-options" class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-                    </div>
-            </div>
-
-            <div id="product-type-selection-step" class="hidden">
-                <h4 class="text-lg font-semibold mb-1 text-gray-700">步驟 2: 選擇消費商品/服務類型</h4>
-                <p class="text-sm text-gray-600 mb-3">您在 <span id="selected-market-type-display" class="font-semibold text-purple-600"></span> 消費了什麼？</p>
-                <div id="product-type-options" class="space-y-3 mb-6">
-                    </div>
-                 <div class="mt-4">
-                    <label for="market-store-code" class="block text-sm font-medium text-gray-700 mb-1">商店碼 (5位數字):</label>
-                    <input type="text" id="market-store-code" class="w-full p-3 border rounded-md focus:outline-none focus:ring focus:border-purple-500 text-sm" maxlength="5" placeholder="請輸入5位數字商店碼">
-                </div>
-            </div>
-
-            <div class="mt-6 text-center">
-                <button id="submit-market-activity-button" class="px-8 py-3 bg-purple-600 text-white font-semibold rounded-lg shadow hover:bg-purple-700 transition-colors duration-300 ease-in-out disabled:opacity-50" disabled>
-                    <i class="fas fa-check-circle mr-2"></i>確認並記錄消費
-                </button>
-                <button id="back-to-market-type-button" class="hidden ml-2 px-6 py-3 bg-gray-300 text-gray-700 font-semibold rounded-lg shadow hover:bg-gray-400 transition-colors duration-300 ease-in-out">
-                    <i class="fas fa-arrow-left mr-2"></i>返回選擇市集
-                </button>
-                <p id="market-activity-status" class="mt-4 text-sm font-semibold text-gray-700"></p>
-            </div>
         </div>
     </div>
 
