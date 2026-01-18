@@ -72,7 +72,7 @@ const pois = [
     { id: 'poi9', name: '蛇窯文化園區', coords: { lat: 23.801177, lng: 120.864479 }, icon: '🏺', description: '共乘、台灣好行...', image: '', socialLink: '#' },
     { id: 'poi10', name: '雨社山下', coords: { lat: 23.790644, lng: 120.896569 }, icon: '🥒', description: '接駁、共乘、摩托...', image: '', socialLink: '#', sroiInfo: { reportLink: '#', formLink: '#', lineId: 'TestID' } },
     { id: 'poi11', name: '阿爾喜莊園', coords: { lat: 23.803119, lng: 120.926340 }, icon: '🍋', description: '接駁、共乘、摩托...', image: '', socialLink: '#', sroiInfo: { reportLink: '#', formLink: '#', lineId: 'TestID' } },
-    { id: 'poi12', name: '湧健酪梨園', coords: { lat: 23.725349, lng: 120.846123 }, icon: '🥑', description: '農場導覽、生態導覽...', image: '', socialLink: '#', sroiInfo: { reportLink: '#', formLink: '#', lineId: 'TestID' } },
+    { id: 'poi12', name: '湧健酪梨園', coords: { lat: 23.725349, lng: 120.846123 }, icon: '🥑', description: '台灣好行、共乘、摩托。\n\n活動資訊: 農場導覽、生態導覽、食農教育。完成單一活動可獲得永續與環境教育任務點數10點。', image: '', socialLink: '#', sroiInfo: { reportLink: '#', formLink: '#', lineId: 'TestID' } },
     { id: 'poi13', name: '謝家肉圓', coords: { lat: 23.817521, lng: 120.853831 }, icon: '🥟', description: '步行、摩托、台灣好行...', image: '', socialLink: '#' },
     { id: 'poi14', name: '機車貓聯盟', coords: { lat: 23.810883, lng: 120.855798 }, icon: '🍚', description: '共乘、摩托、台灣好行...', image: '', socialLink: '#' },
     { id: 'poi15', name: '二坪大觀冰店', coords: { lat: 23.813627, lng: 120.859651 }, icon: '🍦', description: '共乘、摩托...', image: '', socialLink: '#' },
@@ -292,7 +292,6 @@ async function updateGlobalCarbonStats(mileage, carbon) {
             total_carbon: increment(carbon),
             trip_count: increment(1)
         }, { merge: true });
-        console.log("Global stats updated: ", carbon);
     } catch (e) { console.error("Update Carbon Stats Error", e); }
 }
 
