@@ -5,13 +5,13 @@ import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.22.2/firebase
 
 // --- Firebase Configuration ---
 const firebaseConfig = {
-    apiKey: "AIzaSyCEH65YbNirj_IRmtsIJZS-HNEbsRBBsSQ", // Firebase API Key
-    authDomain: "sustainable-tourism-65025.firebaseapp.com",
-    projectId: "sustainable-tourism-65025",
-    storageBucket: "sustainable-tourism-65025.firebasestorage.app",
-    messagingSenderId: "781325465882",
-    appId: "1:781325465882:web:9435b02bd618f0c16814a3",
-    measurementId: "G-SZJ1RX5QS4"
+  apiKey: "AIzaSyB2vgQFtOGle5qtf7sp_zydPCjt0Hw7A90",
+  authDomain: "sustainable-procurement.firebaseapp.com",
+  projectId: "sustainable-procurement",
+  storageBucket: "sustainable-procurement.firebasestorage.app",
+  messagingSenderId: "580097886645",
+  appId: "1:580097886645:web:871719aee24fddae8931fc",
+  measurementId: "G-T2PJ4VYZ8Z"
 };
 
 // Initialize Firebase
@@ -374,8 +374,11 @@ async function initGlobalCounters() {
         onSnapshot(greenStatsDocRef, (doc) => {
             if (doc.exists()) {
                 const data = doc.data();
-                const total = data.totalAmount || 0;
-                const count = data.transactionCount || 0;
+                const green = data.green_amt || 0;
+                const sroi = data.sroi_amt || 0;
+                const project = data.project_amt || 0;
+                const total = green + sroi + project;
+                const count = data.count || 0;
 
                 if(displayGrandTotalGreen) displayGrandTotalGreen.textContent = `$${total.toLocaleString()}`;
                 const countEl = document.getElementById('global-green-trans-count');
@@ -387,13 +390,17 @@ async function initGlobalCounters() {
     }
 }
 
-async function updateGlobalGreenStats(amount) {
+async function updateGlobalGreenStats(amount, type) {
     if (!db || amount <= 0) return;
     try {
-        await setDoc(greenStatsDocRef, {
-            totalAmount: increment(amount),
-            transactionCount: increment(1)
-        }, { merge: true });
+        const updatePayload = {
+            count: increment(1)
+        };
+        if (type === 'green') updatePayload.green_amt = increment(amount);
+        if (type === 'sroi') updatePayload.sroi_amt = increment(amount);
+        if (type === 'project') updatePayload.project_amt = increment(amount);
+
+        await setDoc(greenStatsDocRef, updatePayload, { merge: true });
     } catch (e) { console.error("Global stats update error", e); }
 }
 
@@ -458,6 +465,7 @@ function showHomepage() {
     selectedActivity = null;
     if (db) {
         fetchNetworkTotalCarbonReduction();
+        // Global stats are init in loadData
     }
 }
 
@@ -1330,7 +1338,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if(subtotal > 0) {
             greenProcurementTotal += subtotal;
             updateGreenConsumptionDisplay();
-            updateGlobalGreenStats(subtotal); // Update server global stats
+            updateGlobalGreenStats(subtotal, 'green'); // Update server global stats with type
             saveData();
             // Reset
             greenQtyInput.value = 1;
@@ -1349,7 +1357,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if(subtotal > 0) {
             sroiProcurementTotal += subtotal;
             updateGreenConsumptionDisplay();
-            updateGlobalGreenStats(subtotal); // Update server global stats
+            updateGlobalGreenStats(subtotal, 'sroi'); // Update server global stats with type
             saveData();
             // Reset
             sroiQtyInput.value = 1;
@@ -1366,7 +1374,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (amount > 0) {
             projectProcurementTotal += amount;
             updateGreenConsumptionDisplay();
-            updateGlobalGreenStats(amount); // Update server global stats
+            updateGlobalGreenStats(amount, 'project'); // Update server global stats with type
             saveData();
             // Reset
             projectDescInput.value = '';
