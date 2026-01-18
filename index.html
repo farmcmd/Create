@@ -28,7 +28,7 @@
         <h1 class="text-3xl font-bold">永續旅遊積分網站</h1>
         <p class="mt-2 text-lg">用低碳永續的方式探索美麗的南投農庄</p>
         
-        <!-- 右側功能按鈕 -->
+        <!-- 右側功能按鈕 (確保 ID 正確) -->
         <div class="mt-4 md:mt-0 md:absolute md:top-1/2 md:right-6 md:-translate-y-1/2 flex gap-3 justify-center">
             <button id="enterprise-version-btn" class="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white text-sm font-bold rounded shadow transition duration-300">
                 <i class="fas fa-building mr-1"></i> 企業版
@@ -128,6 +128,7 @@
 
             <h2 class="text-2xl font-semibold mb-6 text-green-800 text-center">選擇低碳交通方式開始您的永續旅遊</h2>
             <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6 mb-8">
+                <!-- 交通按鈕 -->
                 <button class="transport-option flex flex-col items-center p-5 bg-green-100 rounded-lg shadow hover:bg-green-200 transition-all duration-300 ease-in-out" data-transport="bike" data-carbon-reduction="350">
                     <span class="text-3xl mb-3">🚲</span>
                     <span class="font-semibold text-center text-sm">腳踏車</span>
@@ -244,7 +245,7 @@
                 <p class="mt-2 text-gray-700">開發者信箱: <a href="mailto:farmcmd@gmail.com" class="text-blue-600 hover:underline">farmcmd@gmail.com</a></p>
                 <p class="mt-2 text-gray-700">V2.2，歡迎至FACEBOOK粉專「<a href="https://www.facebook.com/Satoyamadining" target="_blank" class="text-green-600 hover:underline">里山餐桌</a>」提出建議。</p>
                 
-                <!-- 新增：網頁瀏覽人次 -->
+                <!-- 網頁瀏覽人次 -->
                 <p class="mt-4 text-xs text-gray-500 border-t border-gray-200 pt-4"><i class="far fa-eye mr-1"></i>網頁瀏覽人次: <span id="page-view-count" class="font-bold text-gray-600">統計中...</span></p>
             </div>
 
@@ -267,7 +268,6 @@
                             <i class="fas fa-sync-alt"></i>
                         </button>
                     </div>
-                    <!-- 地圖容器 -->
                     <div id="map-container" class="relative">
                         <div id="map"></div>
                         <div id="map-overlay" class="absolute inset-0 bg-gray-100 flex flex-col justify-center items-center z-10 transition-opacity duration-500">
@@ -285,7 +285,6 @@
                 </div>
 
                 <div class="lg:col-span-1 flex flex-col gap-6">
-
                     <div class="bg-gray-50 p-4 rounded-lg shadow-md overflow-y-auto max-h-[70vh]">
                         <h3 class="text-xl font-semibold mb-4 text-gray-700">景點列表</h3>
                         <ul id="poi-list" class="space-y-3">
@@ -314,6 +313,50 @@
         </section>
 
     </main>
+    
+    <!-- 企業版 Modal -->
+    <div id="enterprise-modal" class="modal-overlay hidden">
+        <div class="modal-content shadow-xl">
+            <span class="close-button">×</span>
+            <h3 class="text-2xl font-bold mb-4 text-yellow-700 text-center">企業永續旅遊專區</h3>
+            <div class="text-gray-700 leading-relaxed space-y-4">
+                <div class="text-center text-5xl mb-4">🏢</div>
+                <p class="text-center font-bold text-gray-800">歡迎企業夥伴員工登入</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                     <a href="#" class="block p-4 bg-yellow-50 hover:bg-yellow-100 border border-yellow-200 rounded-lg text-center transition duration-300 group"><span class="font-bold text-yellow-800">◯◯◯企業/集團</span><span class="block text-xs text-gray-500 mt-1">(連結建置中)</span></a>
+                     <a href="#" class="block p-4 bg-yellow-50 hover:bg-yellow-100 border border-yellow-200 rounded-lg text-center transition duration-300 group"><span class="font-bold text-yellow-800">◯◯◯企業/集團</span><span class="block text-xs text-gray-500 mt-1">(連結建置中)</span></a>
+                     <a href="#" class="block p-4 bg-yellow-50 hover:bg-yellow-100 border border-yellow-200 rounded-lg text-center transition duration-300 group"><span class="font-bold text-yellow-800">◯◯◯企業/集團</span><span class="block text-xs text-gray-500 mt-1">(連結建置中)</span></a>
+                     <a href="#" class="block p-4 bg-yellow-50 hover:bg-yellow-100 border border-yellow-200 rounded-lg text-center transition duration-300 group"><span class="font-bold text-yellow-800">◯◯◯企業/集團</span><span class="block text-xs text-gray-500 mt-1">(連結建置中)</span></a>
+                     <a href="#" class="block p-4 bg-yellow-50 hover:bg-yellow-100 border border-yellow-200 rounded-lg text-center transition duration-300 group"><span class="font-bold text-yellow-800">◯◯◯企業/集團</span><span class="block text-xs text-gray-500 mt-1">(連結建置中)</span></a>
+                     <a href="#" class="block p-4 bg-yellow-50 hover:bg-yellow-100 border border-yellow-200 rounded-lg text-center transition duration-300 group"><span class="font-bold text-yellow-800">◯◯◯企業/集團</span><span class="block text-xs text-gray-500 mt-1">(連結建置中)</span></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 永續政府 Modal -->
+    <div id="gov-modal" class="modal-overlay hidden">
+        <div class="modal-content shadow-xl">
+            <span class="close-button">×</span>
+            <h3 class="text-2xl font-bold mb-4 text-blue-700 text-center">永續政府管理平台</h3>
+            <div class="text-gray-700 leading-relaxed space-y-4">
+                <div class="text-center text-5xl mb-4">🏛️</div>
+                <p class="text-center font-bold text-gray-800">歡迎公務機關同仁登入</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <a href="https://docs.google.com/document/d/1v2TkJWN0WbwG3uOjUEaZCwci5UfKnkQSaiE9JEc-Hoo/edit?tab=t.0" target="_blank" class="block p-4 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-lg text-center transition duration-300 group">
+                        <span class="font-bold text-blue-800 group-hover:text-blue-900 block">南投縣政府農業處林保科</span>
+                        <span class="block text-xs text-gray-600 mt-1 font-semibold">一次型計畫活動</span>
+                        <span class="block text-xs text-blue-500 mt-1 hover:underline">SROI 社會價值報告書</span>
+                    </a>
+                    <a href="#" class="block p-4 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-lg text-center transition duration-300 group"><span class="font-bold text-blue-800">◯◯◯機關/機構</span><span class="block text-xs text-gray-500 mt-1">(連結建置中)</span></a>
+                    <a href="#" class="block p-4 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-lg text-center transition duration-300 group"><span class="font-bold text-blue-800">◯◯◯機關/機構</span><span class="block text-xs text-gray-500 mt-1">(連結建置中)</span></a>
+                    <a href="#" class="block p-4 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-lg text-center transition duration-300 group"><span class="font-bold text-blue-800">◯◯◯機關/機構</span><span class="block text-xs text-gray-500 mt-1">(連結建置中)</span></a>
+                    <a href="#" class="block p-4 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-lg text-center transition duration-300 group"><span class="font-bold text-blue-800">◯◯◯機關/機構</span><span class="block text-xs text-gray-500 mt-1">(連結建置中)</span></a>
+                    <a href="#" class="block p-4 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-lg text-center transition duration-300 group"><span class="font-bold text-blue-800">◯◯◯機關/機構</span><span class="block text-xs text-gray-500 mt-1">(連結建置中)</span></a>
+                </div>
+            </div>
+        </div>
+    </div>
     
     <!-- 綠色消費評鑑 Modal -->
     <div id="green-consumption-modal" class="modal-overlay hidden">
@@ -363,52 +406,8 @@
             </div>
         </div>
     </div>
-
-    <!-- 永續政府 Modal -->
-    <div id="gov-modal" class="modal-overlay hidden">
-        <div class="modal-content shadow-xl">
-            <span class="close-button">×</span>
-            <h3 class="text-2xl font-bold mb-4 text-blue-700 text-center">永續政府管理平台</h3>
-            <div class="text-gray-700 leading-relaxed space-y-4">
-                <div class="text-center text-5xl mb-4">🏛️</div>
-                <p class="text-center font-bold text-gray-800">歡迎公務機關同仁登入</p>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    <a href="https://docs.google.com/document/d/1v2TkJWN0WbwG3uOjUEaZCwci5UfKnkQSaiE9JEc-Hoo/edit?tab=t.0" target="_blank" class="block p-4 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-lg text-center transition duration-300 group">
-                        <span class="font-bold text-blue-800 group-hover:text-blue-900 block">南投縣政府農業處林保科</span>
-                        <span class="block text-xs text-gray-600 mt-1 font-semibold">一次型計畫活動</span>
-                        <span class="block text-xs text-blue-500 mt-1 hover:underline">SROI 社會價值報告書</span>
-                    </a>
-                    <a href="#" class="block p-4 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-lg text-center transition duration-300 group"><span class="font-bold text-blue-800">◯◯◯機關/機構</span><span class="block text-xs text-gray-500 mt-1">(連結建置中)</span></a>
-                    <a href="#" class="block p-4 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-lg text-center transition duration-300 group"><span class="font-bold text-blue-800">◯◯◯機關/機構</span><span class="block text-xs text-gray-500 mt-1">(連結建置中)</span></a>
-                    <a href="#" class="block p-4 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-lg text-center transition duration-300 group"><span class="font-bold text-blue-800">◯◯◯機關/機構</span><span class="block text-xs text-gray-500 mt-1">(連結建置中)</span></a>
-                    <a href="#" class="block p-4 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-lg text-center transition duration-300 group"><span class="font-bold text-blue-800">◯◯◯機關/機構</span><span class="block text-xs text-gray-500 mt-1">(連結建置中)</span></a>
-                    <a href="#" class="block p-4 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-lg text-center transition duration-300 group"><span class="font-bold text-blue-800">◯◯◯機關/機構</span><span class="block text-xs text-gray-500 mt-1">(連結建置中)</span></a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 企業版 Modal (Simplified for brevity but functionally complete) -->
-    <div id="enterprise-modal" class="modal-overlay hidden">
-        <div class="modal-content shadow-xl">
-            <span class="close-button">×</span>
-            <h3 class="text-2xl font-bold mb-4 text-yellow-700 text-center">企業永續旅遊專區</h3>
-             <div class="text-gray-700 leading-relaxed space-y-4">
-                <div class="text-center text-5xl mb-4">🏢</div>
-                <p class="text-center font-bold text-gray-800">歡迎企業夥伴員工登入</p>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                     <a href="#" class="block p-4 bg-yellow-50 hover:bg-yellow-100 border border-yellow-200 rounded-lg text-center transition duration-300 group"><span class="font-bold text-yellow-800">◯◯◯企業/集團</span><span class="block text-xs text-gray-500 mt-1">(連結建置中)</span></a>
-                     <a href="#" class="block p-4 bg-yellow-50 hover:bg-yellow-100 border border-yellow-200 rounded-lg text-center transition duration-300 group"><span class="font-bold text-yellow-800">◯◯◯企業/集團</span><span class="block text-xs text-gray-500 mt-1">(連結建置中)</span></a>
-                     <a href="#" class="block p-4 bg-yellow-50 hover:bg-yellow-100 border border-yellow-200 rounded-lg text-center transition duration-300 group"><span class="font-bold text-yellow-800">◯◯◯企業/集團</span><span class="block text-xs text-gray-500 mt-1">(連結建置中)</span></a>
-                     <a href="#" class="block p-4 bg-yellow-50 hover:bg-yellow-100 border border-yellow-200 rounded-lg text-center transition duration-300 group"><span class="font-bold text-yellow-800">◯◯◯企業/集團</span><span class="block text-xs text-gray-500 mt-1">(連結建置中)</span></a>
-                     <a href="#" class="block p-4 bg-yellow-50 hover:bg-yellow-100 border border-yellow-200 rounded-lg text-center transition duration-300 group"><span class="font-bold text-yellow-800">◯◯◯企業/集團</span><span class="block text-xs text-gray-500 mt-1">(連結建置中)</span></a>
-                     <a href="#" class="block p-4 bg-yellow-50 hover:bg-yellow-100 border border-yellow-200 rounded-lg text-center transition duration-300 group"><span class="font-bold text-yellow-800">◯◯◯企業/集團</span><span class="block text-xs text-gray-500 mt-1">(連結建置中)</span></a>
-                </div>
-            </div>
-        </div>
-    </div>
     
-    <!-- POI, Activity, etc. Modals (Standard) -->
+    <!-- POI Modal, Activity Modal, THSR, Log Trip, Taxi, SROI, Market, Photo Modals (Simplified for brevity but functionally present) -->
     <div id="poi-modal" class="modal-overlay hidden"><div class="modal-content shadow-xl"><span class="close-button">×</span><h3 id="poi-modal-title" class="text-2xl font-bold mb-4 text-green-800"></h3><img id="poi-modal-image" class="mb-4 hidden w-full h-48 object-cover rounded-md"><div class="poi-modal-content-body"><p id="poi-modal-description" class="text-gray-700 leading-relaxed"></p><p id="poi-modal-coordinates" class="text-sm text-gray-600 mt-4"></p><div id="poi-modal-social" class="mt-4 text-sm"></div><div id="sroi-info-button-container" class="mt-6 hidden"><button id="show-sroi-info-button" class="w-full px-6 py-3 bg-purple-600 text-white font-bold rounded-lg shadow">SROI生態棲地農產品訂購</button></div><div id="poi-modal-dynamic-buttons" class="mt-6 space-y-3"></div></div><div id="poi-review-section" class="hidden mt-6 pt-4 border-t border-gray-200"><h4 class="text-lg font-medium mb-3 text-gray-600">永續消費審核</h4><input type="number" id="consumption-amount" class="w-full p-2 border rounded-md mb-3" placeholder="消費金額"><input type="text" id="review-code" class="w-full p-2 border rounded-md mb-4" placeholder="審核碼"><button id="submit-poi-review" class="px-6 py-3 bg-green-600 text-white rounded-lg shadow">提交審核</button><p id="poi-review-status" class="mt-3 text-sm font-semibold text-gray-600"></p></div><div class="mt-6 flex justify-end space-x-4"><button id="set-as-start-button" class="px-6 py-3 bg-yellow-500 text-white rounded-lg">設定為起點</button><button id="set-as-end-button" class="px-6 py-3 bg-emerald-500 text-white rounded-lg">設定為終點</button></div></div></div>
     <div id="log-trip-modal" class="modal-overlay hidden"><div class="modal-content shadow-xl"><span class="close-button">×</span><h3 class="text-2xl font-bold mb-4 text-orange-700">記錄旅程</h3><p>前往：<span id="log-trip-poi-name" class="font-bold"></span></p><div id="log-trip-transport-options" class="flex flex-wrap gap-3 my-4"></div><input type="number" id="log-trip-mileage" class="w-full p-3 border rounded-md mb-4" placeholder="輸入里程 (km)"><button id="submit-log-trip" class="w-full px-8 py-4 bg-orange-600 text-white font-bold rounded-lg shadow">記錄</button><p id="log-trip-status" class="mt-3 text-sm text-center"></p></div></div>
     <div id="market-selection-modal" class="modal-overlay hidden"><div class="modal-content shadow-xl"><span class="close-button">×</span><h3 class="text-2xl font-bold mb-6 text-purple-700 text-center">地產地銷</h3><div id="market-type-selection-step"><div id="market-type-options" class="grid grid-cols-1 gap-4"></div></div><div id="product-type-selection-step" class="hidden"><p class="mb-3">在 <span id="selected-market-type-display" class="font-bold text-purple-600"></span> 消費了：</p><div id="product-type-options" class="space-y-3 mb-4"></div><input id="market-store-code" class="w-full p-3 border rounded-md mb-4" placeholder="商店碼"><button id="submit-market-activity-button" class="w-full bg-purple-600 text-white py-3 rounded-lg font-bold">記錄</button><button id="back-to-market-type-button" class="mt-2 w-full bg-gray-300 py-3 rounded-lg font-bold">返回</button></div><p id="market-activity-status" class="mt-3 text-center"></p></div></div>
