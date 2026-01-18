@@ -81,6 +81,28 @@ const pois = [
     { id: 'poi18', name: '森音', coords: { lat: 23.742587, lng: 120.866954 }, icon: '🎶', description: '接駁、摩托、私家車...', image: '', socialLink: '#' }
 ];
 
+const sustainableActions = [
+    { name: '支持在地飲食', points: 5 },
+    { name: '減少剩食', points: 5 },
+    { name: '自備環保用品', points: 5 },
+    { name: '回收分類', points: 5 },
+    { name: '保育行為', points: 10 },
+    { name: '導覽參加', points: 10 },
+    { name: '不破壞棲地', points: 10 },
+    { name: '支持小農', points: 5 },
+    { name: '遵守營火', points: 5 }
+];
+
+const activities = [
+    { id: 'act1', name: 'SROI 社會責任農產品購買', points: 15, validCodes: ['ABC123', 'XYZ789'], image: 'https://placehold.co/400x200/4caf50/white?text=SROI+Image' },
+    { id: 'act2', name: '生態棲地破冰活動', points: 20, validCodes: ['DEF456', 'UVW012'] },
+    { id: 'act3', name: 'ESG社會責任活動講堂', points: 25, validCodes: ['GHI789', 'RST345'] },
+    { id: 'act4', name: 'CBD里山生態廊道永續旅遊', points: 30, validCodes: ['JKL012', 'QRS678'] },
+    { id: 'act5', name: '里山倡議食農下午茶講堂', points: 20, validCodes: ['MNO345', 'PQR901'] },
+    { id: 'act6', name: '小白宮x山形工作室', points: 10, validCodes: ['PQR678', 'STU234'] },
+    { id: 'act7', name: '其他永續與環境教育活動及課程', points: 10, validCodes: ['VWX901', 'YZA567'] }
+];
+
 const marketTypes = [
     { id: 'starlight_market', name: '水里星光市集', icon: '🌟' },
     { id: 'farmers_market', name: '小農市集', icon: '🧑‍🌾' },
@@ -192,8 +214,8 @@ async function initGlobalCounters() {
 
     try {
         // 1. Page Views
-        // 先檢查是否存在，不存在則建立，存在則更新
-        // 為了簡單起見，直接用 setDoc merge: true，如果不存在會建立
+        // Check if doc exists first to avoid errors if rules are strict
+        // We use setDoc with merge: true to effectively "create if missing"
         await setDoc(pageViewsDocRef, { count: increment(1) }, { merge: true });
         
         onSnapshot(pageViewsDocRef, (doc) => {
@@ -270,6 +292,7 @@ async function updateGlobalCarbonStats(mileage, carbon) {
             total_carbon: increment(carbon),
             trip_count: increment(1)
         }, { merge: true });
+        console.log("Global stats updated: ", carbon);
     } catch (e) { console.error("Update Carbon Stats Error", e); }
 }
 
