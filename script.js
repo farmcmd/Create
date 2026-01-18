@@ -23,7 +23,7 @@ let analytics;
 let globalStatsRef;
 let greenStatsDocRef;
 let pageViewsDocRef;
-let carbonStatsDocRef; // 新增：全網碳排統計
+let carbonStatsDocRef;
 
 try {
     app = initializeApp(firebaseConfig);
@@ -34,7 +34,7 @@ try {
     globalStatsRef = collection(db, 'global_stats');
     greenStatsDocRef = doc(db, 'global_stats', 'green_consumption');
     pageViewsDocRef = doc(db, 'global_stats', 'page_views');
-    carbonStatsDocRef = doc(db, 'global_stats', 'carbon_stats'); // 新增
+    carbonStatsDocRef = doc(db, 'global_stats', 'carbon_stats'); 
     
     console.log("Firebase initialized successfully.");
 } catch (error) {
@@ -64,7 +64,6 @@ const pois = [
     { id: 'poi3', name: '鑫鮮菇園', coords: { lat: 23.794049, lng: 120.859407 }, icon: '🍄', description: '需預約。提供香菇園區種植導覽...', image: '', socialLink: '#', sroiInfo: { reportLink: '#', formLink: '#', lineId: 'TestID' } },
     { id: 'poi12', name: '湧健酪梨園', coords: { lat: 23.725349, lng: 120.846123 }, icon: '🥑', description: '農場導覽、生態導覽...', image: '', socialLink: '#', sroiInfo: { reportLink: '#', formLink: '#', lineId: 'TestID' } },
     { id: 'poi17', name: '水里星光市集', coords: { lat: 23.813636, lng: 120.850816 }, icon: '💡', description: '參加”逛市集增里程”...', image: '', socialLink: '#', isNew: true, marketScheduleLink: '#' }
-    // (Pois list shortened for brevity, ensure full list is in your actual file)
 ];
 
 const marketTypes = [
@@ -99,6 +98,9 @@ let selectedEndPoi = null;
 let mapLoaded = false;
 let selectedMarketType = null;
 let selectedMarketProduct = null;
+let selectedActivity = null; // Add missing var
+let loggedActions = []; // Add missing var
+let selectedSustainableActions = []; // Add missing var
 
 // --- DOM Elements ---
 const playerNameInput = document.getElementById('player-name');
@@ -108,13 +110,10 @@ const totalScoreSpan = document.getElementById('total-score');
 const mapElement = document.getElementById('map');
 const mapStatusElement = document.getElementById('map-status');
 const mapOverlay = document.getElementById('map-overlay');
-// Green Consumption DOM
-const openGreenEvalBtn = document.getElementById('open-green-eval-btn');
-const greenConsumptionModal = document.getElementById('green-consumption-modal');
 const displayGreenProcure = document.getElementById('display-green-procurement');
 const displaySroiProcure = document.getElementById('display-sroi-procurement');
 const displayProjectProcure = document.getElementById('display-project-procurement');
-const displayGrandTotalGreen = document.getElementById('display-grand-total-green'); // Global
+const displayGrandTotalGreen = document.getElementById('display-grand-total-green'); 
 const totalGreenProcureDisplay = document.getElementById('total-green-procure-display');
 const totalSroiDisplay = document.getElementById('total-sroi-display');
 const totalProjectDisplay = document.getElementById('total-project-display');
@@ -285,6 +284,15 @@ function initMap() {
         directionsRenderer = new google.maps.DirectionsRenderer({ map: map });
         
         // Add markers logic here (simplified for brevity)
+        pois.forEach(poi => {
+            const marker = new google.maps.Marker({
+                position: poi.coords,
+                map: map,
+                title: poi.name
+            });
+            marker.addListener('click', () => showPoiModal(poi));
+        });
+
         mapLoaded = true;
         if(mapOverlay) mapOverlay.classList.add('hidden');
     } catch(e) {
@@ -307,7 +315,6 @@ window.mapScriptLoadError = function() {
 document.addEventListener('DOMContentLoaded', () => {
     loadData();
     
-    // ... (Event listeners for buttons, modals, inputs) ...
     // Green Consumption
     document.getElementById('log-green-procure-btn').addEventListener('click', () => {
         const qty = parseFloat(document.getElementById('green-qty').value) || 0;
@@ -321,34 +328,106 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('已記錄');
         }
     });
+    
+    document.getElementById('log-sroi-btn').addEventListener('click', () => {
+        const qty = parseFloat(document.getElementById('sroi-qty').value) || 0;
+        const price = parseFloat(document.getElementById('sroi-price').value) || 0;
+        const weight = parseFloat(document.getElementById('sroi-unit-select').value) || 0;
+        const total = qty * price * weight;
+        if (total > 0) {
+            sroiProcurementTotal += total;
+            updateGreenConsumptionDisplay();
+            updateGlobalGreenStats(total, 'sroi');
+            saveData();
+            alert('已記錄');
+        }
+    });
 
-    // ... (Similar listeners for SROI and Project) ...
+    document.getElementById('log-project-btn').addEventListener('click', () => {
+        const amount = parseFloat(document.getElementById('project-amount').value) || 0;
+        if (amount > 0) {
+            projectProcurementTotal += amount;
+            updateGreenConsumptionDisplay();
+            updateGlobalGreenStats(amount, 'project');
+            saveData();
+            alert('已記錄');
+        }
+    });
 
     // Trip Calculation
     document.getElementById('calculate-mileage-button').addEventListener('click', () => {
-         // ... (Check selections) ...
-         // Use Google Maps or Fallback
+         if (!selectedStartPoi || !selectedEndPoi) { alert('請選擇起訖點'); return; }
          if (mapLoaded && directionsService) {
-             // ... directionsService.route ...
-             // On Success:
-             // processTripResult(distance, 'Google Maps');
+             const request = {
+                origin: selectedStartPoi.coords,
+                destination: selectedEndPoi.coords,
+                travelMode: google.maps.TravelMode.DRIVING
+             };
+             directionsService.route(request, (res, status) => {
+                 if (status === 'OK') {
+                     directionsRenderer.setDirections(res);
+                     const dist = res.routes[0].legs[0].distance.value;
+                     processTripResult(dist, 'Google Maps');
+                 } else useFallbackCalculation();
+             });
          } else {
-             // useFallbackCalculation();
+             useFallbackCalculation();
          }
     });
+    
+    // Modals
+    document.getElementById('enterprise-version-btn').addEventListener('click', () => document.getElementById('enterprise-modal').classList.remove('hidden'));
+    document.getElementById('gov-version-btn').addEventListener('click', () => document.getElementById('gov-modal').classList.remove('hidden'));
+    document.getElementById('open-green-eval-btn').addEventListener('click', () => document.getElementById('green-consumption-modal').classList.remove('hidden'));
+    
+    document.querySelectorAll('.close-button').forEach(btn => {
+        btn.addEventListener('click', function() {
+            this.closest('.modal-overlay').classList.add('hidden');
+        });
+    });
 
-    // ... (Tabs switching logic) ...
+    // Tabs
+    const tabs = document.querySelectorAll('.tab-btn');
+    const contents = document.querySelectorAll('.tab-content');
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            tabs.forEach(t => t.classList.remove('active-tab', 'border-emerald-600', 'text-emerald-600'));
+            contents.forEach(c => c.classList.add('hidden'));
+            tab.classList.add('active-tab', 'border-emerald-600', 'text-emerald-600');
+            document.getElementById(tab.dataset.tab).classList.remove('hidden');
+        });
+    });
+    
+    // Populate Lists (Simplified)
+    const poiList = document.getElementById('poi-list');
+    pois.forEach(poi => {
+        const li = document.createElement('li');
+        li.className = 'clickable-list-item p-2 hover:bg-gray-100 cursor-pointer';
+        li.innerHTML = `${poi.icon} ${poi.name}`;
+        li.onclick = () => showPoiModal(poi);
+        poiList.appendChild(li);
+    });
+    
+    showHomepage();
 });
+
+function showPoiModal(poi) {
+    const modal = document.getElementById('poi-modal');
+    modal.classList.remove('hidden');
+    document.getElementById('poi-modal-title').textContent = poi.name;
+    // Set current selections for trip
+    document.getElementById('set-as-start-button').onclick = () => { selectedStartPoi = poi; modal.classList.add('hidden'); updateSelectedPointsDisplay(); };
+    document.getElementById('set-as-end-button').onclick = () => { selectedEndPoi = poi; modal.classList.add('hidden'); updateSelectedPointsDisplay(); };
+}
 
 // Helper to process trip result and update DB
 function processTripResult(distanceMeters, method) {
     totalMileage += distanceMeters;
-    // Calculate carbon...
     const carbon = distanceMeters * 0.035; // Example factor
     totalCarbonReduction += carbon;
     
     updateStatsDisplay();
     updateGlobalCarbonStats(distanceMeters, carbon); // Update Global
     saveData();
-    // Show result to user...
+    document.getElementById('trip-calculation-status').innerHTML = `計算成功 (${method})<br>里程: ${(distanceMeters/1000).toFixed(2)}km`;
 }
