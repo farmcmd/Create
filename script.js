@@ -98,9 +98,9 @@ let selectedEndPoi = null;
 let mapLoaded = false;
 let selectedMarketType = null;
 let selectedMarketProduct = null;
-let selectedActivity = null; // Add missing var
-let loggedActions = []; // Add missing var
-let selectedSustainableActions = []; // Add missing var
+let selectedActivity = null; 
+let loggedActions = []; 
+let selectedSustainableActions = [];
 
 // --- DOM Elements ---
 const playerNameInput = document.getElementById('player-name');
@@ -315,70 +315,33 @@ window.mapScriptLoadError = function() {
 document.addEventListener('DOMContentLoaded', () => {
     loadData();
     
+    // ... (Event listeners for buttons, modals, inputs) ...
     // Green Consumption
-    document.getElementById('log-green-procure-btn').addEventListener('click', () => {
-        const qty = parseFloat(document.getElementById('green-qty').value) || 0;
-        const price = parseFloat(document.getElementById('green-price').value) || 0;
-        const total = qty * price;
-        if (total > 0) {
-            greenProcurementTotal += total;
-            updateGreenConsumptionDisplay();
-            updateGlobalGreenStats(total, 'green');
-            saveData();
-            alert('已記錄');
-        }
-    });
-    
-    document.getElementById('log-sroi-btn').addEventListener('click', () => {
-        const qty = parseFloat(document.getElementById('sroi-qty').value) || 0;
-        const price = parseFloat(document.getElementById('sroi-price').value) || 0;
-        const weight = parseFloat(document.getElementById('sroi-unit-select').value) || 0;
-        const total = qty * price * weight;
-        if (total > 0) {
-            sroiProcurementTotal += total;
-            updateGreenConsumptionDisplay();
-            updateGlobalGreenStats(total, 'sroi');
-            saveData();
-            alert('已記錄');
-        }
-    });
+    const greenBtn = document.getElementById('log-green-procure-btn');
+    if (greenBtn) {
+        greenBtn.addEventListener('click', () => {
+            const qty = parseFloat(document.getElementById('green-qty').value) || 0;
+            const price = parseFloat(document.getElementById('green-price').value) || 0;
+            const total = qty * price;
+            if (total > 0) {
+                greenProcurementTotal += total;
+                updateGreenConsumptionDisplay();
+                updateGlobalGreenStats(total, 'green');
+                saveData();
+                alert('已記錄');
+            }
+        });
+    }
 
-    document.getElementById('log-project-btn').addEventListener('click', () => {
-        const amount = parseFloat(document.getElementById('project-amount').value) || 0;
-        if (amount > 0) {
-            projectProcurementTotal += amount;
-            updateGreenConsumptionDisplay();
-            updateGlobalGreenStats(amount, 'project');
-            saveData();
-            alert('已記錄');
-        }
-    });
-
-    // Trip Calculation
-    document.getElementById('calculate-mileage-button').addEventListener('click', () => {
-         if (!selectedStartPoi || !selectedEndPoi) { alert('請選擇起訖點'); return; }
-         if (mapLoaded && directionsService) {
-             const request = {
-                origin: selectedStartPoi.coords,
-                destination: selectedEndPoi.coords,
-                travelMode: google.maps.TravelMode.DRIVING
-             };
-             directionsService.route(request, (res, status) => {
-                 if (status === 'OK') {
-                     directionsRenderer.setDirections(res);
-                     const dist = res.routes[0].legs[0].distance.value;
-                     processTripResult(dist, 'Google Maps');
-                 } else useFallbackCalculation();
-             });
-         } else {
-             useFallbackCalculation();
-         }
-    });
+    // Modal Triggers with Null Checks
+    const entBtn = document.getElementById('enterprise-version-btn');
+    if(entBtn) entBtn.addEventListener('click', () => document.getElementById('enterprise-modal').classList.remove('hidden'));
     
-    // Modals
-    document.getElementById('enterprise-version-btn').addEventListener('click', () => document.getElementById('enterprise-modal').classList.remove('hidden'));
-    document.getElementById('gov-version-btn').addEventListener('click', () => document.getElementById('gov-modal').classList.remove('hidden'));
-    document.getElementById('open-green-eval-btn').addEventListener('click', () => document.getElementById('green-consumption-modal').classList.remove('hidden'));
+    const govBtn = document.getElementById('gov-version-btn');
+    if(govBtn) govBtn.addEventListener('click', () => document.getElementById('gov-modal').classList.remove('hidden'));
+    
+    const greenEvalBtn = document.getElementById('open-green-eval-btn');
+    if(greenEvalBtn) greenEvalBtn.addEventListener('click', () => document.getElementById('green-consumption-modal').classList.remove('hidden'));
     
     document.querySelectorAll('.close-button').forEach(btn => {
         btn.addEventListener('click', function() {
@@ -400,13 +363,38 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Populate Lists (Simplified)
     const poiList = document.getElementById('poi-list');
-    pois.forEach(poi => {
-        const li = document.createElement('li');
-        li.className = 'clickable-list-item p-2 hover:bg-gray-100 cursor-pointer';
-        li.innerHTML = `${poi.icon} ${poi.name}`;
-        li.onclick = () => showPoiModal(poi);
-        poiList.appendChild(li);
-    });
+    if (poiList) {
+        pois.forEach(poi => {
+            const li = document.createElement('li');
+            li.className = 'clickable-list-item p-2 hover:bg-gray-100 cursor-pointer';
+            li.innerHTML = `${poi.icon} ${poi.name}`;
+            li.onclick = () => showPoiModal(poi);
+            poiList.appendChild(li);
+        });
+    }
+
+    const calcBtn = document.getElementById('calculate-mileage-button');
+    if(calcBtn) {
+        calcBtn.addEventListener('click', () => {
+             if (!selectedStartPoi || !selectedEndPoi) { alert('請選擇起訖點'); return; }
+             if (mapLoaded && directionsService) {
+                 const request = {
+                    origin: selectedStartPoi.coords,
+                    destination: selectedEndPoi.coords,
+                    travelMode: google.maps.TravelMode.DRIVING
+                 };
+                 directionsService.route(request, (res, status) => {
+                     if (status === 'OK') {
+                         directionsRenderer.setDirections(res);
+                         const dist = res.routes[0].legs[0].distance.value;
+                         processTripResult(dist, 'Google Maps');
+                     } else useFallbackCalculation();
+                 });
+             } else {
+                 useFallbackCalculation();
+             }
+        });
+    }
     
     showHomepage();
 });
