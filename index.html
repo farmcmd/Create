@@ -16,7 +16,7 @@
     <script type="module" src="script.js"></script>
 
     <!-- Google Maps API -->
-    <!-- 新增 onerror 處理，確保在網路阻擋時也能執行 fallback -->
+    <!-- 增加 onerror 以處理網路阻擋或 API 載入失敗的情況 -->
     <script async defer 
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAwNfK9p-tYV9iR7OGjr0um8ZvJ9Hr49cM&libraries=geometry,routes&callback=initMap"
         onerror="window.mapScriptLoadError()">
@@ -124,6 +124,7 @@
 
             <h2 class="text-2xl font-semibold mb-6 text-green-800 text-center">選擇低碳交通方式開始您的永續旅遊</h2>
             <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6 mb-8">
+                <!-- 交通按鈕群，保持原樣 -->
                 <button class="transport-option flex flex-col items-center p-5 bg-green-100 rounded-lg shadow hover:bg-green-200 transition-all duration-300 ease-in-out" data-transport="bike" data-carbon-reduction="350">
                     <span class="text-3xl mb-3">🚲</span>
                     <span class="font-semibold text-center text-sm">腳踏車</span>
@@ -249,13 +250,14 @@
                 <p class="mt-6 text-gray-700">© 2025 水里永續共好聯盟。版權所有。</p>
                 <p class="mt-2 text-gray-700">開發者信箱: <a href="mailto:farmcmd@gmail.com" class="text-blue-600 hover:underline">farmcmd@gmail.com</a></p>
                 <p class="mt-2 text-gray-700">V2.2，歡迎至FACEBOOK粉專「<a href="https://www.facebook.com/Satoyamadining" target="_blank" class="text-green-600 hover:underline">里山餐桌</a>」提出建議。</p>
+                
                 <!-- 網頁瀏覽人次 -->
-                <p class="mt-4 text-xs text-gray-500"><i class="far fa-eye mr-1"></i>網頁瀏覽人次: <span id="page-view-count" class="font-bold text-gray-600">統計中...</span></p>
+                <p class="mt-4 text-xs text-gray-500 border-t border-gray-200 pt-4"><i class="far fa-eye mr-1"></i>網頁瀏覽人次: <span id="page-view-count" class="font-bold text-gray-600">統計中...</span></p>
             </div>
 
         </section>
 
-        <!-- Mission Page -->
+        <!-- Mission Page (Other sections remain unchanged) -->
         <section id="mission-page" class="page-section bg-white p-6 rounded-lg shadow-lg">
              <h2 class="text-2xl font-semibold mb-6 text-green-800 text-center">您的永續旅遊任務</h2>
              <button id="back-to-home" class="mb-6 px-6 py-3 bg-gray-300 rounded-lg hover:bg-gray-400 transition-all duration-300 ease-in-out"><i class="fas fa-arrow-left mr-2"></i>返回首頁</button>
