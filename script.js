@@ -1,9 +1,9 @@
-// --- 引入 Firebase SDK (使用 CDN 方式，方便直接預覽) ---
+// --- 引入 Firebase SDK ---
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
 import { getFirestore, collection, doc, setDoc, updateDoc, increment, onSnapshot, serverTimestamp, getDoc } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-analytics.js";
 
-// --- Firebase Configuration (User Provided) ---
+// --- Firebase Configuration ---
 const firebaseConfig = {
   apiKey: "AIzaSyB2vgQFtOGle5qtf7sp_zydPCjt0Hw7A90",
   authDomain: "sustainable-procurement.firebaseapp.com",
@@ -18,12 +18,10 @@ const firebaseConfig = {
 let app;
 let db;
 let analytics;
-
-// Define Global Stats References
 let globalStatsRef;
 let greenStatsDocRef;
 let pageViewsDocRef;
-let carbonStatsDocRef;
+let carbonStatsDocRef; // Declare here
 
 try {
     app = initializeApp(firebaseConfig);
@@ -34,18 +32,19 @@ try {
     globalStatsRef = collection(db, 'global_stats');
     greenStatsDocRef = doc(db, 'global_stats', 'green_consumption');
     pageViewsDocRef = doc(db, 'global_stats', 'page_views');
-    carbonStatsDocRef = doc(db, 'global_stats', 'carbon_stats'); 
+    carbonStatsDocRef = doc(db, 'global_stats', 'carbon_stats'); // Assign here
     
     console.log("Firebase initialized successfully.");
 } catch (error) {
     console.error("Error initializing Firebase:", error);
     const networkStatsStatusElement = document.getElementById('network-stats-status');
     if (networkStatsStatusElement) {
-        networkStatsStatusElement.textContent = `預覽模式: 無法連線至資料庫。`;
+        networkStatsStatusElement.textContent = `Firebase 初始化失敗: 無法載入網路統計。`;
         networkStatsStatusElement.classList.add('text-red-600');
     }
 }
 
+// ... (Data Definitions for transportData, pois, etc. - Keep same as before) ...
 // --- Data Definitions ---
 let transportData = {
     bike: { name: '腳踏車', icon: '🚲', carbonReductionPer10km: 350, travelMode: null, metersPerPoint: 10000 },
@@ -58,8 +57,6 @@ let transportData = {
     thsr_haoxing: { name: '高鐵假期x台灣好行', icon: '🚄🚌', carbonReductionPer10km: 0, travelMode: null, metersPerPoint: Infinity } 
 };
 
-// ... (Pois, Activities, Market definitions - kept same as previous context for brevity) ... 
-// (Assume full definitions here)
 const pois = [
     { id: 'poi1', name: '水里永續共好聯盟打氣站', coords: { lat: 23.809799, lng: 120.849286 }, icon: '🌲', description: '營業時間上午8:00~17:00...', image: '', socialLink: '#' },
     { id: 'poi2', name: '漫遊堤岸風光', coords: { lat: 23.808537, lng: 120.849415 }, icon: '🏞️', description: '路線全長約4公里...', image: '' },
@@ -130,23 +127,23 @@ let projectProcurementTotal = 0;
 let map = null;
 let directionsService = null;
 let directionsRenderer = null;
+let poiMarkers = [];
+let selectedActivity = null;
 let selectedStartPoi = null;
 let selectedEndPoi = null;
-let mapLoaded = false;
+let loggedActions = [];
+let selectedSustainableActions = [];
+let currentLogTripPoi = null;
+let networkTotalCarbonReduction = 0;
 let selectedMarketType = null;
 let selectedMarketProduct = null;
-let selectedActivity = null; 
-let loggedActions = []; 
-let selectedSustainableActions = [];
+let mapLoaded = false;
 
 // --- DOM Elements ---
 const playerNameInput = document.getElementById('player-name');
 const totalMileageSpan = document.getElementById('total-mileage');
 const totalCarbonReductionSpan = document.getElementById('total-carbon-reduction');
 const totalScoreSpan = document.getElementById('total-score');
-const mapElement = document.getElementById('map');
-const mapStatusElement = document.getElementById('map-status');
-const mapOverlay = document.getElementById('map-overlay');
 const displayGreenProcure = document.getElementById('display-green-procurement');
 const displaySroiProcure = document.getElementById('display-sroi-procurement');
 const displayProjectProcure = document.getElementById('display-project-procurement');
@@ -202,7 +199,6 @@ function updateGreenConsumptionDisplay() {
     displayGreenProcure.textContent = `$${greenProcurementTotal}`;
     displaySroiProcure.textContent = `$${sroiProcurementTotal.toFixed(0)}`;
     displayProjectProcure.textContent = `$${projectProcurementTotal}`;
-    // Grand total is handled by Firebase listener
     totalGreenProcureDisplay.textContent = `$${greenProcurementTotal}`;
     totalSroiDisplay.textContent = `$${sroiProcurementTotal.toFixed(0)}`;
     totalProjectDisplay.textContent = `$${projectProcurementTotal}`;
@@ -214,8 +210,7 @@ async function initGlobalCounters() {
 
     try {
         // 1. Page Views
-        // Check if doc exists first to avoid errors if rules are strict
-        // We use setDoc with merge: true to effectively "create if missing"
+        // 如果文件不存在，嘗試建立它
         await setDoc(pageViewsDocRef, { count: increment(1) }, { merge: true });
         
         onSnapshot(pageViewsDocRef, (doc) => {
@@ -227,9 +222,8 @@ async function initGlobalCounters() {
         });
 
         // 2. Green Consumption
-        // Ensure doc exists so listener doesn't fail
         await setDoc(greenStatsDocRef, { count: increment(0) }, { merge: true });
-
+        
         onSnapshot(greenStatsDocRef, (doc) => {
             if (doc.exists()) {
                 const data = doc.data();
@@ -245,7 +239,7 @@ async function initGlobalCounters() {
         });
 
         // 3. Global Carbon & Mileage (New Feature)
-         // Ensure doc exists so listener doesn't fail
+        // **自動初始化 carbon_stats 文件**
         await setDoc(carbonStatsDocRef, { trip_count: increment(0) }, { merge: true });
 
         onSnapshot(carbonStatsDocRef, (doc) => {
@@ -256,14 +250,21 @@ async function initGlobalCounters() {
                  if(networkEl) networkEl.textContent = `${totalCarbon.toFixed(2)} g`;
                  
                  const statusEl = document.getElementById('network-stats-status');
-                 if(statusEl) statusEl.textContent = '雲端數據同步中...';
+                 if(statusEl) statusEl.textContent = '雲端數據同步成功';
 
                  // Update Trees
-                 const gramsPerTree = 10000; // Assuming 10kg = 1 tree
+                 const gramsPerTree = 10000;
                  const trees = Math.floor(totalCarbon / gramsPerTree);
                  const treeEl = document.getElementById('trees-planted-count');
                  if(treeEl) treeEl.textContent = trees;
              }
+        }, (error) => {
+            console.error("Carbon stats listener error:", error);
+            const statusEl = document.getElementById('network-stats-status');
+            if(statusEl) {
+                statusEl.textContent = '權限不足或連線錯誤，無法讀取全網數據。';
+                statusEl.className = 'text-xs text-red-600 mt-2';
+            }
         });
 
     } catch (e) {
@@ -292,6 +293,7 @@ async function updateGlobalCarbonStats(mileage, carbon) {
             total_carbon: increment(carbon),
             trip_count: increment(1)
         }, { merge: true });
+        console.log("Global Carbon Updated:", carbon);
     } catch (e) { console.error("Update Carbon Stats Error", e); }
 }
 
@@ -326,7 +328,6 @@ function initMap() {
         directionsService = new google.maps.DirectionsService();
         directionsRenderer = new google.maps.DirectionsRenderer({ map: map });
         
-        // Add markers logic here (simplified for brevity)
         pois.forEach(poi => {
             const marker = new google.maps.Marker({
                 position: poi.coords,
@@ -337,7 +338,7 @@ function initMap() {
         });
 
         mapLoaded = true;
-        if(mapOverlay) mapOverlay.classList.add('hidden');
+        if(mapOverlay) document.getElementById('map-overlay').classList.add('hidden');
     } catch(e) {
         console.warn("Map init failed", e);
         window.mapScriptLoadError();
@@ -346,24 +347,23 @@ function initMap() {
 window.initMap = initMap;
 
 window.mapScriptLoadError = function() {
-    if(mapOverlay) mapOverlay.classList.add('hidden');
-    if(mapStatusElement) {
-        mapStatusElement.innerHTML = '地圖載入失敗，已啟用離線計算模式。';
-        mapStatusElement.classList.add('text-red-600');
+    if(document.getElementById('map-overlay')) document.getElementById('map-overlay').classList.add('hidden');
+    if(document.getElementById('map-status')) {
+        document.getElementById('map-status').innerHTML = '地圖載入失敗，已啟用離線計算模式。';
+        document.getElementById('map-status').classList.add('text-red-600');
     }
     mapLoaded = false;
 };
 
-// UI Handlers
+// UI Handlers - Moved to ensure binding happens even if errors occur
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. First attach ALL event listeners to ensure UI works even if data loading fails
     
-    // Transport Buttons
+    // 1. Bind UI Events First (Fixes button not working issue)
     document.querySelectorAll('.transport-option').forEach(button => {
         button.addEventListener('click', () => {
             const transportType = button.dataset.transport;
             if (transportType === 'thsr_haoxing') { showThsrInfoModal(); return; }
-            if (transportType === 'taxi') { showTaxiInfoModal(); return; } // Added handler for taxi
+            if (transportType === 'taxi') { showTaxiInfoModal(); return; }
             document.querySelectorAll('.transport-option').forEach(btn => btn.classList.remove('selected'));
             button.classList.add('selected');
             currentTransport = transportType;
@@ -371,7 +371,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Modals
     const entBtn = document.getElementById('enterprise-version-btn');
     if(entBtn) entBtn.addEventListener('click', () => document.getElementById('enterprise-modal').classList.remove('hidden'));
     
@@ -393,55 +392,29 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Green Consumption Logic
-    const greenBtn = document.getElementById('log-green-procure-btn');
-    if (greenBtn) {
-        greenBtn.addEventListener('click', () => {
-            const qty = parseFloat(document.getElementById('green-qty').value) || 0;
-            const price = parseFloat(document.getElementById('green-price').value) || 0;
-            const total = qty * price;
-            if (total > 0) {
-                greenProcurementTotal += total;
-                updateGreenConsumptionDisplay();
-                updateGlobalGreenStats(total, 'green');
-                saveData();
-                alert('已記錄');
-            }
+    const tabs = document.querySelectorAll('.tab-btn');
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            tabs.forEach(t => t.classList.remove('active-tab', 'border-emerald-600', 'text-emerald-600'));
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(c => c.classList.add('hidden'));
+            tab.classList.add('active-tab', 'border-emerald-600', 'text-emerald-600');
+            const target = document.getElementById(tab.dataset.tab);
+            if(target) target.classList.remove('hidden');
         });
-    }
+    });
     
-    const sroiBtn = document.getElementById('log-sroi-btn');
-    if (sroiBtn) {
-        sroiBtn.addEventListener('click', () => {
-            const qty = parseFloat(document.getElementById('sroi-qty').value) || 0;
-            const price = parseFloat(document.getElementById('sroi-price').value) || 0;
-            const weight = parseFloat(document.getElementById('sroi-unit-select').value) || 0;
-            const total = qty * price * weight;
-            if (total > 0) {
-                sroiProcurementTotal += total;
-                updateGreenConsumptionDisplay();
-                updateGlobalGreenStats(total, 'sroi');
-                saveData();
-                alert('已記錄');
-            }
+    const poiList = document.getElementById('poi-list');
+    if (poiList) {
+        pois.forEach(poi => {
+            const li = document.createElement('li');
+            li.className = 'clickable-list-item p-2 hover:bg-gray-100 cursor-pointer';
+            li.innerHTML = `${poi.icon} ${poi.name}`;
+            li.onclick = () => showPoiModal(poi);
+            poiList.appendChild(li);
         });
     }
 
-    const projBtn = document.getElementById('log-project-btn');
-    if(projBtn) {
-        projBtn.addEventListener('click', () => {
-            const amount = parseFloat(document.getElementById('project-amount').value) || 0;
-            if (amount > 0) {
-                projectProcurementTotal += amount;
-                updateGreenConsumptionDisplay();
-                updateGlobalGreenStats(amount, 'project');
-                saveData();
-                alert('已記錄');
-            }
-        });
-    }
-
-    // Trip Calculation
     const calcBtn = document.getElementById('calculate-mileage-button');
     if(calcBtn) {
         calcBtn.addEventListener('click', () => {
@@ -468,50 +441,59 @@ document.addEventListener('DOMContentLoaded', () => {
     // Modal Submits
     const submitLogTripBtn = document.getElementById('submit-log-trip');
     if(submitLogTripBtn) submitLogTripBtn.addEventListener('click', submitLogTrip);
-
     const marketSubmitBtn = document.getElementById('submit-market-activity-button');
     if(marketSubmitBtn) marketSubmitBtn.addEventListener('click', submitMarketActivity);
-
     const backMarketBtn = document.getElementById('back-to-market-type-button');
     if(backMarketBtn) backMarketBtn.addEventListener('click', handleBackToMarketType);
 
-
-    // Populate Lists
-    const poiList = document.getElementById('poi-list');
-    if (poiList) {
-        pois.forEach(poi => {
-            const li = document.createElement('li');
-            li.className = 'clickable-list-item p-2 hover:bg-gray-100 cursor-pointer';
-            li.innerHTML = `${poi.icon} ${poi.name}`;
-            li.onclick = () => showPoiModal(poi);
-            poiList.appendChild(li);
+    // Green Consumption Buttons
+    const greenBtn = document.getElementById('log-green-procure-btn');
+    if (greenBtn) {
+        greenBtn.addEventListener('click', () => {
+            const qty = parseFloat(document.getElementById('green-qty').value) || 0;
+            const price = parseFloat(document.getElementById('green-price').value) || 0;
+            const total = qty * price;
+            if (total > 0) {
+                greenProcurementTotal += total;
+                updateGreenConsumptionDisplay();
+                updateGlobalGreenStats(total, 'green');
+                saveData();
+                alert('已記錄');
+            }
         });
     }
-    
-    // Tabs
-    const tabs = document.querySelectorAll('.tab-btn');
-    const contents = document.querySelectorAll('.tab-content');
-    tabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-            tabs.forEach(t => t.classList.remove('active-tab', 'border-emerald-600', 'text-emerald-600'));
-            contents.forEach(c => c.classList.add('hidden'));
-            tab.classList.add('active-tab', 'border-emerald-600', 'text-emerald-600');
-            const target = document.getElementById(tab.dataset.tab);
-            if(target) target.classList.remove('hidden');
+    const sroiBtn = document.getElementById('log-sroi-btn');
+    if (sroiBtn) {
+        sroiBtn.addEventListener('click', () => {
+            const qty = parseFloat(document.getElementById('sroi-qty').value) || 0;
+            const price = parseFloat(document.getElementById('sroi-price').value) || 0;
+            const weight = parseFloat(document.getElementById('sroi-unit-select').value) || 0;
+            const total = qty * price * weight;
+            if (total > 0) {
+                sroiProcurementTotal += total;
+                updateGreenConsumptionDisplay();
+                updateGlobalGreenStats(total, 'sroi');
+                saveData();
+                alert('已記錄');
+            }
         });
-    });
+    }
+    const projBtn = document.getElementById('log-project-btn');
+    if(projBtn) {
+        projBtn.addEventListener('click', () => {
+            const amount = parseFloat(document.getElementById('project-amount').value) || 0;
+            if (amount > 0) {
+                projectProcurementTotal += amount;
+                updateGreenConsumptionDisplay();
+                updateGlobalGreenStats(amount, 'project');
+                saveData();
+                alert('已記錄');
+            }
+        });
+    }
 
-    // Populate Markets (Simplified)
     populateMarketTypeOptions();
-
-
-    // 2. Load Data (After events are bound)
-    try {
-        loadData();
-    } catch(e) {
-        console.error("Data load failed", e);
-    }
-    
+    loadData();
     showHomepage();
 });
 
@@ -520,18 +502,15 @@ function showPoiModal(poi) {
     if(!modal) return;
     modal.classList.remove('hidden');
     document.getElementById('poi-modal-title').textContent = poi.name;
-    // Set current selections for trip
     const startBtn = document.getElementById('set-as-start-button');
     if(startBtn) startBtn.onclick = () => { selectedStartPoi = poi; modal.classList.add('hidden'); updateSelectedPointsDisplay(); };
-    
     const endBtn = document.getElementById('set-as-end-button');
     if(endBtn) endBtn.onclick = () => { selectedEndPoi = poi; modal.classList.add('hidden'); updateSelectedPointsDisplay(); };
 }
 
-// Helper to process trip result and update DB
 function processTripResult(distanceMeters, method) {
     totalMileage += distanceMeters;
-    const carbon = distanceMeters * 0.035; // Example factor
+    const carbon = distanceMeters * 0.035; 
     totalCarbonReduction += carbon;
     
     updateStatsDisplay();
