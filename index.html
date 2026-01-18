@@ -4,18 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>永續旅遊積分網站</title>
+    <!-- 引入外部樣式庫 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="style.css">
     
+    <!-- 引入您的自訂 CSS -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- 引入您的自訂 JS (模組化) -->
+    <script type="module" src="script.js"></script>
+
     <!-- Google Maps API -->
+    <!-- 新增 onerror 處理，確保在網路阻擋時也能執行 fallback -->
     <script async defer 
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAwNfK9p-tYV9iR7OGjr0um8ZvJ9Hr49cM&libraries=geometry,routes&callback=initMap"
         onerror="window.mapScriptLoadError()">
     </script>
-    
-    <script type="module" src="script.js"></script>
 </head>
 <body class="bg-gray-100 text-gray-800 font-sans">
 
@@ -23,6 +28,7 @@
         <h1 class="text-3xl font-bold">永續旅遊積分網站</h1>
         <p class="mt-2 text-lg">用低碳永續的方式探索美麗的南投農庄</p>
         
+        <!-- 右側功能按鈕 -->
         <div class="mt-4 md:mt-0 md:absolute md:top-1/2 md:right-6 md:-translate-y-1/2 flex gap-3 justify-center">
             <button id="enterprise-version-btn" class="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white text-sm font-bold rounded shadow transition duration-300">
                 <i class="fas fa-building mr-1"></i> 企業版
@@ -49,7 +55,7 @@
                         <p id="player-code" class="mt-1 text-2xl font-bold text-green-600">生成中...</p>
                     </div>
                 </div>
-                <p id="stats-load-status" class="text-sm text-gray-600 mb-4 text-center">載入中...</p>
+                <p id="stats-load-status" class="text-sm text-gray-600 mb-4 text-center">已自動載入之前的旅遊數據...</p>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
                     <div class="p-4 bg-white rounded-md shadow-sm border border-green-200">
                         <p class="text-sm font-medium text-gray-700">個人累計里程</p>
@@ -237,6 +243,8 @@
                 <p class="mt-6 text-gray-700">© 2025 水里永續共好聯盟。版權所有。</p>
                 <p class="mt-2 text-gray-700">開發者信箱: <a href="mailto:farmcmd@gmail.com" class="text-blue-600 hover:underline">farmcmd@gmail.com</a></p>
                 <p class="mt-2 text-gray-700">V2.2，歡迎至FACEBOOK粉專「<a href="https://www.facebook.com/Satoyamadining" target="_blank" class="text-green-600 hover:underline">里山餐桌</a>」提出建議。</p>
+                
+                <!-- 新增：網頁瀏覽人次 -->
                 <p class="mt-4 text-xs text-gray-500 border-t border-gray-200 pt-4"><i class="far fa-eye mr-1"></i>網頁瀏覽人次: <span id="page-view-count" class="font-bold text-gray-600">統計中...</span></p>
             </div>
 
@@ -259,6 +267,7 @@
                             <i class="fas fa-sync-alt"></i>
                         </button>
                     </div>
+                    <!-- 地圖容器 -->
                     <div id="map-container" class="relative">
                         <div id="map"></div>
                         <div id="map-overlay" class="absolute inset-0 bg-gray-100 flex flex-col justify-center items-center z-10 transition-opacity duration-500">
@@ -276,6 +285,7 @@
                 </div>
 
                 <div class="lg:col-span-1 flex flex-col gap-6">
+
                     <div class="bg-gray-50 p-4 rounded-lg shadow-md overflow-y-auto max-h-[70vh]">
                         <h3 class="text-xl font-semibold mb-4 text-gray-700">景點列表</h3>
                         <ul id="poi-list" class="space-y-3">
@@ -305,9 +315,55 @@
 
     </main>
     
-    <!-- Modal 結構 (略微簡化，保留 ID) -->
     <!-- 綠色消費評鑑 Modal -->
     <div id="green-consumption-modal" class="modal-overlay hidden">
+        <div class="modal-content shadow-xl w-full max-w-2xl">
+            <span class="close-button">×</span>
+            <h3 class="text-2xl font-bold mb-6 text-emerald-700 text-center">綠色消費評鑑計算系統</h3>
+            <div class="mb-4">
+                 <div class="flex border-b border-gray-200">
+                    <button class="tab-btn w-1/3 py-2 px-4 text-center font-bold text-gray-600 hover:text-emerald-600 focus:outline-none border-b-2 border-transparent hover:border-emerald-600 active-tab" data-tab="tab-green-procure">1. 綠色採購</button>
+                    <button class="tab-btn w-1/3 py-2 px-4 text-center font-bold text-gray-600 hover:text-emerald-600 focus:outline-none border-b-2 border-transparent hover:border-emerald-600" data-tab="tab-sroi">2. SROI 評鑑</button>
+                    <button class="tab-btn w-1/3 py-2 px-4 text-center font-bold text-gray-600 hover:text-emerald-600 focus:outline-none border-b-2 border-transparent hover:border-emerald-600" data-tab="tab-project">3. 專案採購</button>
+                </div>
+            </div>
+            
+            <!-- 1. 綠色採購 Tab -->
+            <div id="tab-green-procure" class="tab-content block">
+                <div class="green-calc-section">
+                    <div class="mb-3"><label class="block text-sm font-medium text-gray-700 mb-1">標章類型:</label><select id="green-label-select" class="w-full p-2 border rounded-md"><option value="Organic">有機農產品標章</option><option value="TAP">產銷履歷農產品標章</option><option value="CAS">CAS台灣優良農產品標章</option><option value="QRCode">溯源產品標示</option><option value="EcoLabel">對地綠色環境給付生態標章</option></select></div>
+                    <div class="mb-3"><label class="block text-sm font-medium text-gray-700 mb-1">產品類型:</label><select id="green-product-type" class="w-full p-2 border rounded-md"><option value="produce">農產品</option><option value="processed">加工食品</option></select></div>
+                    <div class="grid grid-cols-2 gap-4 mb-4"><div><label>數量:</label><input type="number" id="green-qty" class="w-full p-2 border rounded-md" min="1" value="1"></div><div><label>單價:</label><input type="number" id="green-price" class="w-full p-2 border rounded-md" min="0"></div></div>
+                    <div class="text-right mb-4"><p class="text-lg font-bold">小計: <span id="green-subtotal" class="text-emerald-600">0</span></p></div>
+                    <button id="log-green-procure-btn" class="w-full px-6 py-3 bg-emerald-600 text-white font-bold rounded-lg shadow">登入消費額按鈕</button>
+                    <div class="mt-4 p-3 bg-emerald-50 rounded text-center"><p class="text-sm font-bold text-gray-600">本區登錄總額</p><p id="total-green-procure-display" class="text-2xl font-bold text-emerald-800">$0</p></div>
+                </div>
+            </div>
+            <!-- 2. SROI Tab -->
+            <div id="tab-sroi" class="tab-content hidden">
+                <div class="green-calc-section">
+                    <div class="mb-3"><label class="block text-sm font-medium text-gray-700 mb-1">選擇單位 (含權重):</label><select id="sroi-unit-select" class="w-full p-2 border rounded-md"><option value="1.95">指令教育農場 (195%)</option><option value="1.95">阿爾喜 (195%)</option><option value="1.58">雨社山下 (158%)</option><option value="1.58">明揚養蜂 (158%)</option><option value="2.66">湧健酪梨園 (266%)</option><option value="3.40">水里里山餐桌團隊 (340%)</option></select></div>
+                    <div class="grid grid-cols-2 gap-4 mb-4"><div><label>數量:</label><input type="number" id="sroi-qty" class="w-full p-2 border rounded-md" min="1" value="1"></div><div><label>單價:</label><input type="number" id="sroi-price" class="w-full p-2 border rounded-md" min="0"></div></div>
+                    <div class="text-right mb-4"><p>SROI 價值小計: <span id="sroi-subtotal" class="text-emerald-600">0</span></p></div>
+                    <button id="log-sroi-btn" class="w-full px-6 py-3 bg-emerald-600 text-white font-bold rounded-lg shadow">登入消費額按鈕</button>
+                    <div class="mt-4 p-3 bg-emerald-50 rounded text-center"><p class="text-sm font-bold text-gray-600">本區登錄總額</p><p id="total-sroi-display" class="text-2xl font-bold text-emerald-800">$0</p></div>
+                </div>
+            </div>
+            <!-- 3. 專案採購 Tab -->
+            <div id="tab-project" class="tab-content hidden">
+                <div class="green-calc-section">
+                     <div id="project-password-section" class="mb-4"><label class="block text-sm font-medium text-gray-700 mb-1">請輸入專案密碼:</label><div class="flex gap-2"><input type="password" id="project-password" class="w-full p-2 border rounded-md"><button id="unlock-project-btn" class="px-4 py-2 bg-gray-600 text-white rounded">解鎖</button></div><p id="password-msg" class="text-xs text-red-500 mt-1"></p></div>
+                     <div id="project-entry-section" class="hidden">
+                        <div class="mb-3"><label>專案說明:</label><input type="text" id="project-desc" class="w-full p-2 border rounded-md"></div>
+                        <div class="mb-4"><label>消費金額:</label><input type="number" id="project-amount" class="w-full p-2 border rounded-md"></div>
+                        <button id="log-project-btn" class="w-full px-6 py-3 bg-emerald-600 text-white font-bold rounded-lg shadow">登入專案消費金額</button>
+                    </div>
+                    <div class="mt-4 p-3 bg-emerald-50 rounded text-center"><p class="text-sm font-bold text-gray-600">本區登錄總額</p><p id="total-project-display" class="text-2xl font-bold text-emerald-800">$0</p></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- 永續政府 Modal -->
     <div id="gov-modal" class="modal-overlay hidden">
         <div class="modal-content shadow-xl">
@@ -316,73 +372,51 @@
             <div class="text-gray-700 leading-relaxed space-y-4">
                 <div class="text-center text-5xl mb-4">🏛️</div>
                 <p class="text-center font-bold text-gray-800">歡迎公務機關同仁登入</p>
-                <p class="text-sm text-gray-600 text-center mb-4">請選擇所屬單位，登入「客製化永續旅遊積分網站-永續政府」</p>
-                
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    <!-- 第一則資訊更新 -->
                     <a href="https://docs.google.com/document/d/1v2TkJWN0WbwG3uOjUEaZCwci5UfKnkQSaiE9JEc-Hoo/edit?tab=t.0" target="_blank" class="block p-4 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-lg text-center transition duration-300 group">
                         <span class="font-bold text-blue-800 group-hover:text-blue-900 block">南投縣政府農業處林保科</span>
                         <span class="block text-xs text-gray-600 mt-1 font-semibold">一次型計畫活動</span>
                         <span class="block text-xs text-blue-500 mt-1 hover:underline">SROI 社會價值報告書</span>
                     </a>
-                    
-                    <a href="#" class="block p-4 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-lg text-center transition duration-300 group">
-                        <span class="font-bold text-blue-800 group-hover:text-blue-900">◯◯◯機關/機構</span>
-                        <span class="block text-xs text-gray-500 mt-1">(連結建置中)</span>
-                    </a>
-                    <a href="#" class="block p-4 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-lg text-center transition duration-300 group">
-                        <span class="font-bold text-blue-800 group-hover:text-blue-900">◯◯◯機關/機構</span>
-                        <span class="block text-xs text-gray-500 mt-1">(連結建置中)</span>
-                    </a>
-                    <a href="#" class="block p-4 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-lg text-center transition duration-300 group">
-                        <span class="font-bold text-blue-800 group-hover:text-blue-900">◯◯◯機關/機構</span>
-                        <span class="block text-xs text-gray-500 mt-1">(連結建置中)</span>
-                    </a>
-                    <a href="#" class="block p-4 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-lg text-center transition duration-300 group">
-                        <span class="font-bold text-blue-800 group-hover:text-blue-900">◯◯◯機關/機構</span>
-                        <span class="block text-xs text-gray-500 mt-1">(連結建置中)</span>
-                    </a>
-                    <a href="#" class="block p-4 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-lg text-center transition duration-300 group">
-                        <span class="font-bold text-blue-800 group-hover:text-blue-900">◯◯◯機關/機構</span>
-                        <span class="block text-xs text-gray-500 mt-1">(連結建置中)</span>
-                    </a>
+                    <a href="#" class="block p-4 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-lg text-center transition duration-300 group"><span class="font-bold text-blue-800">◯◯◯機關/機構</span><span class="block text-xs text-gray-500 mt-1">(連結建置中)</span></a>
+                    <a href="#" class="block p-4 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-lg text-center transition duration-300 group"><span class="font-bold text-blue-800">◯◯◯機關/機構</span><span class="block text-xs text-gray-500 mt-1">(連結建置中)</span></a>
+                    <a href="#" class="block p-4 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-lg text-center transition duration-300 group"><span class="font-bold text-blue-800">◯◯◯機關/機構</span><span class="block text-xs text-gray-500 mt-1">(連結建置中)</span></a>
+                    <a href="#" class="block p-4 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-lg text-center transition duration-300 group"><span class="font-bold text-blue-800">◯◯◯機關/機構</span><span class="block text-xs text-gray-500 mt-1">(連結建置中)</span></a>
+                    <a href="#" class="block p-4 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-lg text-center transition duration-300 group"><span class="font-bold text-blue-800">◯◯◯機關/機構</span><span class="block text-xs text-gray-500 mt-1">(連結建置中)</span></a>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- POI Modal -->
-    <div id="poi-modal" class="modal-overlay hidden">
+    <!-- 企業版 Modal (Simplified for brevity but functionally complete) -->
+    <div id="enterprise-modal" class="modal-overlay hidden">
         <div class="modal-content shadow-xl">
             <span class="close-button">×</span>
-            <h3 id="poi-modal-title" class="text-2xl font-bold mb-4 text-green-800"></h3>
-            <img id="poi-modal-image" src="" class="mb-4 hidden w-full h-48 object-cover rounded-md">
-            <div class="poi-modal-content-body">
-                 <p id="poi-modal-description" class="text-gray-700 leading-relaxed"></p>
-                 <p id="poi-modal-coordinates" class="text-sm text-gray-600 mt-4"></p>
-                 <div id="poi-modal-social" class="mt-4 text-sm"></div>
-                 <div id="sroi-info-button-container" class="mt-6 hidden">
-                     <button id="show-sroi-info-button" class="w-full px-6 py-3 bg-purple-600 text-white font-bold rounded-lg">SROI生態棲地農產品訂購</button>
-                 </div>
-                 <div id="poi-modal-dynamic-buttons" class="mt-6 space-y-3"></div>
+            <h3 class="text-2xl font-bold mb-4 text-yellow-700 text-center">企業永續旅遊專區</h3>
+             <div class="text-gray-700 leading-relaxed space-y-4">
+                <div class="text-center text-5xl mb-4">🏢</div>
+                <p class="text-center font-bold text-gray-800">歡迎企業夥伴員工登入</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                     <a href="#" class="block p-4 bg-yellow-50 hover:bg-yellow-100 border border-yellow-200 rounded-lg text-center transition duration-300 group"><span class="font-bold text-yellow-800">◯◯◯企業/集團</span><span class="block text-xs text-gray-500 mt-1">(連結建置中)</span></a>
+                     <a href="#" class="block p-4 bg-yellow-50 hover:bg-yellow-100 border border-yellow-200 rounded-lg text-center transition duration-300 group"><span class="font-bold text-yellow-800">◯◯◯企業/集團</span><span class="block text-xs text-gray-500 mt-1">(連結建置中)</span></a>
+                     <a href="#" class="block p-4 bg-yellow-50 hover:bg-yellow-100 border border-yellow-200 rounded-lg text-center transition duration-300 group"><span class="font-bold text-yellow-800">◯◯◯企業/集團</span><span class="block text-xs text-gray-500 mt-1">(連結建置中)</span></a>
+                     <a href="#" class="block p-4 bg-yellow-50 hover:bg-yellow-100 border border-yellow-200 rounded-lg text-center transition duration-300 group"><span class="font-bold text-yellow-800">◯◯◯企業/集團</span><span class="block text-xs text-gray-500 mt-1">(連結建置中)</span></a>
+                     <a href="#" class="block p-4 bg-yellow-50 hover:bg-yellow-100 border border-yellow-200 rounded-lg text-center transition duration-300 group"><span class="font-bold text-yellow-800">◯◯◯企業/集團</span><span class="block text-xs text-gray-500 mt-1">(連結建置中)</span></a>
+                     <a href="#" class="block p-4 bg-yellow-50 hover:bg-yellow-100 border border-yellow-200 rounded-lg text-center transition duration-300 group"><span class="font-bold text-yellow-800">◯◯◯企業/集團</span><span class="block text-xs text-gray-500 mt-1">(連結建置中)</span></a>
+                </div>
             </div>
-             <div class="mt-6 flex justify-end space-x-4">
-                 <button id="set-as-start-button" class="px-6 py-3 bg-yellow-500 text-white rounded-lg">設定為起點</button>
-                 <button id="set-as-end-button" class="px-6 py-3 bg-emerald-500 text-white rounded-lg">設定為終點</button>
-             </div>
         </div>
     </div>
     
-    <!-- Other Modals (Log Trip, Market, etc.) hidden for brevity but present in DOM logic -->
-    <div id="log-trip-modal" class="modal-overlay hidden"><div class="modal-content"><span class="close-button">×</span><h3>記錄旅程</h3><p>前往：<span id="log-trip-poi-name"></span></p><div id="log-trip-transport-options" class="flex flex-wrap gap-3"></div><input type="number" id="log-trip-mileage" class="w-full p-3 border rounded-md mt-4" placeholder="輸入里程"><button id="submit-log-trip" class="mt-4 px-8 py-4 bg-orange-600 text-white font-bold rounded-lg w-full">記錄</button></div></div>
-    <div id="market-selection-modal" class="modal-overlay hidden"><div class="modal-content"><span class="close-button">×</span><h3>地產地銷最減碳</h3><div id="market-type-selection-step"><div id="market-type-options" class="grid grid-cols-1 sm:grid-cols-3 gap-4"></div></div><div id="product-type-selection-step" class="hidden"><p>您在 <span id="selected-market-type-display"></span> 消費了什麼？</p><div id="product-type-options" class="space-y-3"></div><input id="market-store-code" class="w-full p-3 border mt-4" placeholder="商店碼"><button id="submit-market-activity-button" class="mt-4 w-full bg-purple-600 text-white py-3 rounded-lg">記錄</button><button id="back-to-market-type-button" class="mt-2 w-full bg-gray-300 py-3 rounded-lg">返回</button></div><p id="market-activity-status" class="mt-2 text-center"></p></div></div>
-    <div id="photo-album-modal" class="modal-overlay hidden"><div class="modal-content"><span class="close-button">×</span><h3>相簿</h3><ul><li><a href="#" class="photo-album-link">相簿連結...</a></li></ul></div></div>
-    <div id="enterprise-modal" class="modal-overlay hidden"><div class="modal-content"><span class="close-button">×</span><h3>企業專區</h3><p>連結建置中...</p></div></div>
-    <div id="gov-modal" class="modal-overlay hidden"><div class="modal-content"><span class="close-button">×</span><h3>政府專區</h3><p>連結建置中...</p></div></div>
-    <div id="thsr-info-modal" class="modal-overlay hidden"><div class="modal-content"><span class="close-button">×</span><h3>高鐵假期</h3><p>相關資訊...</p></div></div>
-    <div id="taxi-info-modal" class="modal-overlay hidden"><div class="modal-content"><span class="close-button">×</span><h3>計程車資訊</h3><p>0980-015-339</p></div></div>
-    <div id="sroi-info-modal" class="modal-overlay hidden"><div class="modal-content"><span class="close-button">×</span><h3>SROI 資訊</h3><p id="sroi-modal-poi-name"></p><div id="sroi-modal-content-body"></div></div></div>
-    <div id="activity-modal" class="modal-overlay hidden"><div class="modal-content"><span class="close-button">×</span><h3>活動</h3><input id="verification-code-input"><textarea id="activity-content-input"></textarea><button id="submit-activity-log">送出</button><p id="activity-log-status"></p></div></div>
+    <!-- POI, Activity, etc. Modals (Standard) -->
+    <div id="poi-modal" class="modal-overlay hidden"><div class="modal-content shadow-xl"><span class="close-button">×</span><h3 id="poi-modal-title" class="text-2xl font-bold mb-4 text-green-800"></h3><img id="poi-modal-image" class="mb-4 hidden w-full h-48 object-cover rounded-md"><div class="poi-modal-content-body"><p id="poi-modal-description" class="text-gray-700 leading-relaxed"></p><p id="poi-modal-coordinates" class="text-sm text-gray-600 mt-4"></p><div id="poi-modal-social" class="mt-4 text-sm"></div><div id="sroi-info-button-container" class="mt-6 hidden"><button id="show-sroi-info-button" class="w-full px-6 py-3 bg-purple-600 text-white font-bold rounded-lg shadow">SROI生態棲地農產品訂購</button></div><div id="poi-modal-dynamic-buttons" class="mt-6 space-y-3"></div></div><div id="poi-review-section" class="hidden mt-6 pt-4 border-t border-gray-200"><h4 class="text-lg font-medium mb-3 text-gray-600">永續消費審核</h4><input type="number" id="consumption-amount" class="w-full p-2 border rounded-md mb-3" placeholder="消費金額"><input type="text" id="review-code" class="w-full p-2 border rounded-md mb-4" placeholder="審核碼"><button id="submit-poi-review" class="px-6 py-3 bg-green-600 text-white rounded-lg shadow">提交審核</button><p id="poi-review-status" class="mt-3 text-sm font-semibold text-gray-600"></p></div><div class="mt-6 flex justify-end space-x-4"><button id="set-as-start-button" class="px-6 py-3 bg-yellow-500 text-white rounded-lg">設定為起點</button><button id="set-as-end-button" class="px-6 py-3 bg-emerald-500 text-white rounded-lg">設定為終點</button></div></div></div>
+    <div id="log-trip-modal" class="modal-overlay hidden"><div class="modal-content shadow-xl"><span class="close-button">×</span><h3 class="text-2xl font-bold mb-4 text-orange-700">記錄旅程</h3><p>前往：<span id="log-trip-poi-name" class="font-bold"></span></p><div id="log-trip-transport-options" class="flex flex-wrap gap-3 my-4"></div><input type="number" id="log-trip-mileage" class="w-full p-3 border rounded-md mb-4" placeholder="輸入里程 (km)"><button id="submit-log-trip" class="w-full px-8 py-4 bg-orange-600 text-white font-bold rounded-lg shadow">記錄</button><p id="log-trip-status" class="mt-3 text-sm text-center"></p></div></div>
+    <div id="market-selection-modal" class="modal-overlay hidden"><div class="modal-content shadow-xl"><span class="close-button">×</span><h3 class="text-2xl font-bold mb-6 text-purple-700 text-center">地產地銷</h3><div id="market-type-selection-step"><div id="market-type-options" class="grid grid-cols-1 gap-4"></div></div><div id="product-type-selection-step" class="hidden"><p class="mb-3">在 <span id="selected-market-type-display" class="font-bold text-purple-600"></span> 消費了：</p><div id="product-type-options" class="space-y-3 mb-4"></div><input id="market-store-code" class="w-full p-3 border rounded-md mb-4" placeholder="商店碼"><button id="submit-market-activity-button" class="w-full bg-purple-600 text-white py-3 rounded-lg font-bold">記錄</button><button id="back-to-market-type-button" class="mt-2 w-full bg-gray-300 py-3 rounded-lg font-bold">返回</button></div><p id="market-activity-status" class="mt-3 text-center"></p></div></div>
+    <div id="photo-album-modal" class="modal-overlay hidden"><div class="modal-content shadow-xl"><span class="close-button">×</span><h3 class="text-2xl font-bold mb-4 text-teal-700">相簿</h3><ul class="space-y-2"><li><a href="#" class="text-blue-600 hover:underline">小農遊程</a></li><li><a href="#" class="text-blue-600 hover:underline">生態旅遊</a></li><li><a href="https://photos.google.com/share/AF1QipN86zQIAJaA-HyNbExPBNARmU7VT1eEOS2JNsjAC1VfonWpOT5zDAwIVwbueSdfWQ?key=NlN1NlVVS0tZdWhiRV9HYnlsSnNsV0VXVHN5YVJR" target="_blank" class="text-blue-600 hover:underline">星光市集</a></li></ul></div></div>
+    <div id="thsr-info-modal" class="modal-overlay hidden"><div class="modal-content shadow-xl"><span class="close-button">×</span><h3 class="text-2xl font-bold mb-4 text-blue-800">高鐵假期</h3><p>請參考官方網站資訊。</p></div></div>
+    <div id="taxi-info-modal" class="modal-overlay hidden"><div class="modal-content shadow-xl"><span class="close-button">×</span><h3 class="text-2xl font-bold mb-4 text-yellow-700">計程車資訊</h3><p>預約電話: 0980-015-339</p></div></div>
+    <div id="sroi-info-modal" class="modal-overlay hidden"><div class="modal-content shadow-xl"><span class="close-button">×</span><h3 class="text-2xl font-bold mb-4 text-purple-700">SROI 資訊</h3><p id="sroi-modal-poi-name" class="font-bold mb-2"></p><div id="sroi-modal-content-body"></div></div></div>
+    <div id="activity-modal" class="modal-overlay hidden"><div class="modal-content shadow-xl"><span class="close-button">×</span><h3 class="text-2xl font-bold mb-4 text-green-800">活動</h3><img id="activity-modal-image" class="hidden"><input id="verification-code-input" class="w-full p-3 border rounded-md mb-3" placeholder="驗證碼"><textarea id="activity-content-input" class="w-full p-3 border rounded-md mb-3" placeholder="內容"></textarea><button id="submit-activity-log" class="w-full bg-green-600 text-white py-3 rounded-lg font-bold">送出</button><p id="activity-log-status" class="mt-3 text-center"></p></div></div>
 
 </body>
 </html>
