@@ -177,8 +177,8 @@ async function initGlobalCounters() {
 
     try {
         // 1. Page Views
-        // 先檢查是否存在，不存在則建立，存在則更新
-        // 為了簡單起見，直接用 setDoc merge: true，如果不存在會建立
+        // Check if doc exists first to avoid errors if rules are strict
+        // We use setDoc with merge: true to effectively "create if missing"
         await setDoc(pageViewsDocRef, { count: increment(1) }, { merge: true });
         
         onSnapshot(pageViewsDocRef, (doc) => {
@@ -190,6 +190,9 @@ async function initGlobalCounters() {
         });
 
         // 2. Green Consumption
+        // Ensure doc exists so listener doesn't fail
+        await setDoc(greenStatsDocRef, { count: increment(0) }, { merge: true });
+
         onSnapshot(greenStatsDocRef, (doc) => {
             if (doc.exists()) {
                 const data = doc.data();
@@ -205,6 +208,9 @@ async function initGlobalCounters() {
         });
 
         // 3. Global Carbon & Mileage (New Feature)
+         // Ensure doc exists so listener doesn't fail
+        await setDoc(carbonStatsDocRef, { trip_count: increment(0) }, { merge: true });
+
         onSnapshot(carbonStatsDocRef, (doc) => {
              if (doc.exists()) {
                  const data = doc.data();
@@ -332,16 +338,56 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+    
+    const sroiBtn = document.getElementById('log-sroi-btn');
+    if (sroiBtn) {
+        sroiBtn.addEventListener('click', () => {
+            const qty = parseFloat(document.getElementById('sroi-qty').value) || 0;
+            const price = parseFloat(document.getElementById('sroi-price').value) || 0;
+            const weight = parseFloat(document.getElementById('sroi-unit-select').value) || 0;
+            const total = qty * price * weight;
+            if (total > 0) {
+                sroiProcurementTotal += total;
+                updateGreenConsumptionDisplay();
+                updateGlobalGreenStats(total, 'sroi');
+                saveData();
+                alert('已記錄');
+            }
+        });
+    }
 
-    // Modal Triggers with Null Checks
+    const projBtn = document.getElementById('log-project-btn');
+    if(projBtn) {
+        projBtn.addEventListener('click', () => {
+            const amount = parseFloat(document.getElementById('project-amount').value) || 0;
+            if (amount > 0) {
+                projectProcurementTotal += amount;
+                updateGreenConsumptionDisplay();
+                updateGlobalGreenStats(amount, 'project');
+                saveData();
+                alert('已記錄');
+            }
+        });
+    }
+
+    // Modal Triggers with Null Checks (Crucial Fix)
     const entBtn = document.getElementById('enterprise-version-btn');
-    if(entBtn) entBtn.addEventListener('click', () => document.getElementById('enterprise-modal').classList.remove('hidden'));
+    if(entBtn) entBtn.addEventListener('click', () => {
+        const modal = document.getElementById('enterprise-modal');
+        if(modal) modal.classList.remove('hidden');
+    });
     
     const govBtn = document.getElementById('gov-version-btn');
-    if(govBtn) govBtn.addEventListener('click', () => document.getElementById('gov-modal').classList.remove('hidden'));
+    if(govBtn) govBtn.addEventListener('click', () => {
+        const modal = document.getElementById('gov-modal');
+        if(modal) modal.classList.remove('hidden');
+    });
     
     const greenEvalBtn = document.getElementById('open-green-eval-btn');
-    if(greenEvalBtn) greenEvalBtn.addEventListener('click', () => document.getElementById('green-consumption-modal').classList.remove('hidden'));
+    if(greenEvalBtn) greenEvalBtn.addEventListener('click', () => {
+        const modal = document.getElementById('green-consumption-modal');
+        if(modal) modal.classList.remove('hidden');
+    });
     
     document.querySelectorAll('.close-button').forEach(btn => {
         btn.addEventListener('click', function() {
@@ -357,7 +403,8 @@ document.addEventListener('DOMContentLoaded', () => {
             tabs.forEach(t => t.classList.remove('active-tab', 'border-emerald-600', 'text-emerald-600'));
             contents.forEach(c => c.classList.add('hidden'));
             tab.classList.add('active-tab', 'border-emerald-600', 'text-emerald-600');
-            document.getElementById(tab.dataset.tab).classList.remove('hidden');
+            const target = document.getElementById(tab.dataset.tab);
+            if(target) target.classList.remove('hidden');
         });
     });
     
@@ -401,11 +448,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function showPoiModal(poi) {
     const modal = document.getElementById('poi-modal');
+    if(!modal) return;
     modal.classList.remove('hidden');
     document.getElementById('poi-modal-title').textContent = poi.name;
     // Set current selections for trip
-    document.getElementById('set-as-start-button').onclick = () => { selectedStartPoi = poi; modal.classList.add('hidden'); updateSelectedPointsDisplay(); };
-    document.getElementById('set-as-end-button').onclick = () => { selectedEndPoi = poi; modal.classList.add('hidden'); updateSelectedPointsDisplay(); };
+    const startBtn = document.getElementById('set-as-start-button');
+    if(startBtn) startBtn.onclick = () => { selectedStartPoi = poi; modal.classList.add('hidden'); updateSelectedPointsDisplay(); };
+    
+    const endBtn = document.getElementById('set-as-end-button');
+    if(endBtn) endBtn.onclick = () => { selectedEndPoi = poi; modal.classList.add('hidden'); updateSelectedPointsDisplay(); };
 }
 
 // Helper to process trip result and update DB
@@ -417,5 +468,6 @@ function processTripResult(distanceMeters, method) {
     updateStatsDisplay();
     updateGlobalCarbonStats(distanceMeters, carbon); // Update Global
     saveData();
-    document.getElementById('trip-calculation-status').innerHTML = `計算成功 (${method})<br>里程: ${(distanceMeters/1000).toFixed(2)}km`;
+    const statusEl = document.getElementById('trip-calculation-status');
+    if(statusEl) statusEl.innerHTML = `計算成功 (${method})<br>里程: ${(distanceMeters/1000).toFixed(2)}km`;
 }
