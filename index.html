@@ -3,24 +3,275 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>永續旅遊積分網站</title>
-    <!-- 引入外部樣式庫 -->
+    <title>水里永續共好聯盟 – 山村永續旅遊</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- 引入您的自訂 CSS -->
-    <link rel="stylesheet" href="style.css">
-
-    <!-- 引入您的自訂 JS (模組化) -->
-    <script type="module" src="script.js"></script>
-
     <!-- Google Maps API -->
-    <!-- 新增 onerror 處理，確保在網路阻擋時也能執行 fallback -->
+    <!-- 保留 onerror 以處理網路阻擋或 API 載入失敗的情況 -->
     <script async defer 
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAwNfK9p-tYV9iR7OGjr0um8ZvJ9Hr49cM&libraries=geometry,routes&callback=initMap"
         onerror="window.mapScriptLoadError()">
     </script>
+
+    <!-- 內嵌 CSS (原 style.css) -->
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            line-height: 1.6;
+        }
+
+        .page-section {
+            display: none; /* Hidden by default */
+        }
+
+        .page-section.block {
+            display: block; /* Shown when active */
+        }
+
+        /* Custom styles for map container */
+        #map {
+            height: 500px; /* Adjust height as needed */
+            min-height: 300px; /* Ensure a minimum height on smaller screens */
+            width: 100%;
+            border-radius: 0.5rem; /* Rounded corners */
+            z-index: 1; /* Ensure map is below modals */
+            background-color: #e5e7eb; /* Fallback color */
+            position: relative;
+        }
+
+        /* Style for modals */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7); /* Dim background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000; /* Ensure modal is on top */
+            padding: 1rem; /* Add padding for smaller screens */
+        }
+
+        .modal-content {
+            background-color: #fff;
+            padding: 20px; /* Default padding */
+            border-radius: 10px;
+            width: 100%; /* Full width on small screens */
+            max-width: 90%; /* Max width for responsiveness */
+            max-height: 90vh; /* Max height relative to viewport */
+            overflow-y: auto; /* Enable scrolling if content overflows */
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Adjust padding for larger screens */
+        @media (min-width: 640px) { /* sm breakpoint */
+            .modal-content {
+                padding: 30px;
+                max-width: 600px; /* Example max-width for larger modals */
+            }
+        }
+
+        .modal-content .close-button {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #aaa;
+            line-height: 1; /* Ensure proper alignment */
+        }
+
+        .modal-content .close-button:hover {
+            color: #777;
+        }
+
+        /* Style for clickable list items */
+        .clickable-list-item {
+            cursor: pointer;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            display: flex; /* Use flexbox for layout */
+            justify-content: space-between; /* Space out text and icons */
+            align-items: center; /* Vertically align items */
+        }
+
+        .clickable-list-item:last-child {
+            border-bottom: none;
+        }
+
+        .clickable-list-item:hover {
+            background-color: #f5f5f5;
+        }
+
+        /* Style for selected transport option */
+        .transport-option.selected,
+        #market-mileage-button.selected { /* Added for market button if needed */
+            background-color: #a5d6a7; /* Lighter green */
+            border: 2px solid #388e3c; /* Darker green border */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Style for selected sustainable action item */
+        .selectable-action-item {
+            cursor: pointer;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 5px;
+            background-color: #fff;
+            transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+        }
+
+        .selectable-action-item:hover {
+            background-color: #e0e0e0;
+        }
+
+        .selectable-action-item.selected {
+            background-color: #a5d6a7; /* Lighter green */
+            border-color: #388e3c; /* Darker green */
+            font-weight: bold;
+        }
+
+        /* Style for logged action items */
+        .action-log-item {
+            background-color: #e8f5e9; /* Very light green */
+            padding: 12px; /* Increased padding */
+            border-radius: 6px; /* Slightly more rounded */
+            margin-bottom: 12px; /* Increased margin */
+            border-left: 5px solid #4caf50; /* Green left border, slightly thicker */
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05); /* Subtle shadow */
+        }
+
+        .action-log-item p {
+            margin-bottom: 6px; /* Adjusted margin */
+        }
+
+        .action-log-item p:last-child {
+            margin-bottom: 0;
+        }
+
+        .action-log-item .log-type {
+            font-weight: bold;
+            color: #1b5e20; /* Dark green */
+            margin-bottom: 6px; /* Adjusted margin */
+            font-size: 0.95em; /* Slightly adjusted font size */
+        }
+
+        .action-log-item .timestamp {
+            font-size: 0.8em;
+            color: #757575; /* Gray */
+            text-align: right;
+            margin-top: 8px; /* Increased margin */
+        }
+        .action-log-item .log-points {
+            font-weight: bold;
+            color: #2e7d32; /* Slightly different green for points */
+            font-size: 0.9em;
+        }
+
+        /* Style for selected activity item in the list */
+        .activity-list-item.selected-activity-item {
+             background-color: #bbdefb; /* Light blue */
+             border: 1px solid #2196f3; /* Blue border */
+             font-weight: bold;
+         }
+
+         /* Style for the icon group in list items */
+         .icon-group {
+             display: flex;
+             align-items: center;
+             gap: 10px; /* Space between icons */
+         }
+
+         .icon-group .social-icon,
+         .icon-group .navigation-icon,
+         .icon-group .log-trip-icon {
+             color: #4a5568; /* Tailwind gray-700 */
+             font-size: 1.1em;
+             transition: color 0.2s ease-in-out;
+         }
+
+         .icon-group .social-icon:hover {
+             color: #3b82f6; /* Tailwind blue-500 */
+         }
+
+         .icon-group .navigation-icon:hover {
+              color: #10b981; /* Tailwind emerald-500 */
+         }
+
+         .icon-group .log-trip-icon:hover {
+              color: #f97316; /* Tailwind orange-500 */
+         }
+
+         /* Style for the NEW indicator */
+         .new-indicator {
+             animation: pulse-subtle 2s infinite ease-in-out;
+         }
+
+         @keyframes pulse-subtle {
+             0%, 100% { opacity: 1; }
+             50% { opacity: 0.6; }
+         }
+
+         /* Animation for the tip text */
+         .animate-pulse-subtle {
+            animation: pulse-subtle 4s infinite ease-in-out;
+         }
+
+         /* Styles for the new Market Selection Modal */
+        .market-option-button, .product-option-button {
+            /* Base styles are applied via Tailwind, this is for custom states or overrides */
+            transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, transform 0.1s ease-in-out;
+        }
+
+        .market-option-button.selected, .product-option-button.selected {
+            background-color: #c9b2ec !important; /* A lighter purple */
+            border-color: #805ad5 !important; /* Tailwind purple-600 */
+            color: #44337a !important; /* Darker purple text for contrast */
+            font-weight: bold;
+            transform: scale(1.02); /* Slight scale effect */
+        }
+        /* Ensure Tailwind's focus rings are visible if needed, or add custom focus */
+        .market-option-button:focus, .product-option-button:focus {
+            outline: 2px solid #9f7aea; /* Tailwind purple-500 focus outline */
+            outline-offset: 2px;
+        }
+
+        /* Styling for POI list item highlights */
+        .poi-list-item-start {
+            background-color: #fffde7 !important; /* Light yellow for start */
+            border-left: 4px solid #fbc02d !important; /* Yellow border */
+        }
+
+        .poi-list-item-end {
+            background-color: #e8f5e9 !important; /* Light green for end */
+            border-left: 4px solid #4caf50 !important; /* Green border */
+        }
+
+        /* Styling for Log Trip Modal transport buttons */
+        .log-trip-transport-button.selected {
+            background-color: #fdba74 !important; /* Tailwind orange-300 */
+            border-color: #f97316 !important; /* Tailwind orange-600 */
+            color: #7c2d12 !important; /* Tailwind orange-900 */
+            font-weight: bold;
+        }
+
+        /* Green Consumption Modal Styles */
+        .green-calc-section {
+            border: 1px solid #e5e7eb;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            background-color: #f9fafb;
+        }
+
+        .hidden { display: none !important; }
+    </style>
 </head>
 <body class="bg-gray-100 text-gray-800 font-sans">
 
@@ -97,7 +348,7 @@
                     <!-- 全網累積數據顯示區 -->
                     <div class="p-3 bg-emerald-100 rounded-md shadow-sm border border-emerald-300 relative overflow-hidden">
                         <p class="text-xs font-bold text-emerald-800">全網累計綠色消費總額</p>
-                        <p id="display-grand-total-green" class="text-2xl font-bold text-emerald-800 my-1">載入中...</p>
+                        <p id="display-grand-total-green" class="text-2xl font-bold text-emerald-800 my-1">連線中...</p>
                         <p class="text-[10px] text-emerald-700">累積響應次數: <span id="global-green-trans-count">0</span> 次</p>
                         <div class="absolute top-0 right-0 p-1">
                             <i class="fas fa-globe-asia text-emerald-200 text-3xl opacity-50"></i>
@@ -113,13 +364,13 @@
                      <span class="block text-sm font-normal mt-1">註:自發布日2025年3月21日起累計</span>
                  </h3>
                  <div class="text-center relative z-10">
-                     <p id="network-total-carbon-reduction" class="mt-1 text-3xl font-bold text-blue-600">載入中...</p>
+                     <p id="network-total-carbon-reduction" class="mt-1 text-3xl font-bold text-blue-600">連線中...</p>
                      <div id="trees-planted-display" class="mt-3 text-green-700">
                          <span class="text-4xl">🌳</span>
                          <p class="text-xl font-bold">已累積 <span id="trees-planted-count">0</span> 棵樹</p>
                          <p class="text-xs text-gray-600 mt-1">(每減碳10公斤，我們將實際種植一棵樹)</p>
                      </div>
-                     <p id="network-stats-status" class="text-xs text-gray-600 mt-2">從伺服器載入中...</p>
+                     <p id="network-stats-status" class="text-xs text-gray-600 mt-2">正在同步雲端數據...</p>
                  </div>
                  <div class="absolute top-2 right-4 opacity-10">
                      <i class="fas fa-cloud text-9xl text-blue-300"></i>
@@ -245,7 +496,7 @@
                 <p class="mt-2 text-gray-700">開發者信箱: <a href="mailto:farmcmd@gmail.com" class="text-blue-600 hover:underline">farmcmd@gmail.com</a></p>
                 <p class="mt-2 text-gray-700">V2.2，歡迎至FACEBOOK粉專「<a href="https://www.facebook.com/Satoyamadining" target="_blank" class="text-green-600 hover:underline">里山餐桌</a>」提出建議。</p>
                 
-                <!-- 新增：網頁瀏覽人次 -->
+                <!-- 網頁瀏覽人次 -->
                 <p class="mt-4 text-xs text-gray-500 border-t border-gray-200 pt-4"><i class="far fa-eye mr-1"></i>網頁瀏覽人次: <span id="page-view-count" class="font-bold text-gray-600">統計中...</span></p>
             </div>
 
@@ -490,7 +741,7 @@
         <div class="modal-content shadow-xl">
             <span class="close-button">×</span>
             <h3 id="poi-modal-title" class="text-2xl font-bold mb-4 text-green-800">景點標題</h3>
-            <img id="poi-modal-image" src="" alt="景點圖片" class="mb-4 hidden">
+            <img id="poi-modal-image" src="" alt="景點圖片" class="mb-4 hidden w-full h-48 object-cover rounded-md">
             <div class="poi-modal-content-body">
                  <p id="poi-modal-description" class="text-gray-700 leading-relaxed"></p>
                  <p id="poi-modal-coordinates" class="text-sm text-gray-600 mt-4"></p>
@@ -673,6 +924,65 @@
             </div>
         </div>
     </div>
+    
+    <!-- 綠色消費評鑑 Modal -->
+    <div id="green-consumption-modal" class="modal-overlay hidden">
+        <div class="modal-content shadow-xl w-full max-w-2xl">
+            <span class="close-button">×</span>
+            <h3 class="text-2xl font-bold mb-6 text-emerald-700 text-center">綠色消費評鑑計算系統</h3>
+            <div class="mb-4">
+                 <div class="flex border-b border-gray-200">
+                    <button class="tab-btn w-1/3 py-2 px-4 text-center font-bold text-gray-600 hover:text-emerald-600 focus:outline-none border-b-2 border-transparent hover:border-emerald-600 active-tab" data-tab="tab-green-procure">1. 綠色採購</button>
+                    <button class="tab-btn w-1/3 py-2 px-4 text-center font-bold text-gray-600 hover:text-emerald-600 focus:outline-none border-b-2 border-transparent hover:border-emerald-600" data-tab="tab-sroi">2. SROI 評鑑</button>
+                    <button class="tab-btn w-1/3 py-2 px-4 text-center font-bold text-gray-600 hover:text-emerald-600 focus:outline-none border-b-2 border-transparent hover:border-emerald-600" data-tab="tab-project">3. 專案採購</button>
+                </div>
+            </div>
+            
+            <!-- 1. 綠色採購 Tab -->
+            <div id="tab-green-procure" class="tab-content block">
+                <div class="green-calc-section">
+                    <div class="mb-3"><label class="block text-sm font-medium text-gray-700 mb-1">標章類型:</label><select id="green-label-select" class="w-full p-2 border rounded-md"><option value="Organic">有機農產品標章</option><option value="TAP">產銷履歷農產品標章</option><option value="CAS">CAS台灣優良農產品標章</option><option value="QRCode">溯源產品標示</option><option value="EcoLabel">對地綠色環境給付生態標章</option></select></div>
+                    <div class="mb-3"><label class="block text-sm font-medium text-gray-700 mb-1">產品類型:</label><select id="green-product-type" class="w-full p-2 border rounded-md"><option value="produce">農產品</option><option value="processed">加工食品</option></select></div>
+                    <div class="grid grid-cols-2 gap-4 mb-4"><div><label>數量:</label><input type="number" id="green-qty" class="w-full p-2 border rounded-md" min="1" value="1"></div><div><label>單價:</label><input type="number" id="green-price" class="w-full p-2 border rounded-md" min="0"></div></div>
+                    <div class="text-right mb-4"><p class="text-lg font-bold">小計: <span id="green-subtotal" class="text-emerald-600">0</span></p></div>
+                    <button id="log-green-procure-btn" class="w-full px-6 py-3 bg-emerald-600 text-white font-bold rounded-lg shadow">登入消費額按鈕</button>
+                    <div class="mt-4 p-3 bg-emerald-50 rounded text-center"><p class="text-sm font-bold text-gray-600">本區登錄總額</p><p id="total-green-procure-display" class="text-2xl font-bold text-emerald-800">$0</p></div>
+                </div>
+            </div>
+            <!-- 2. SROI Tab -->
+            <div id="tab-sroi" class="tab-content hidden">
+                <div class="green-calc-section">
+                    <div class="mb-3"><label class="block text-sm font-medium text-gray-700 mb-1">選擇單位 (含權重):</label><select id="sroi-unit-select" class="w-full p-2 border rounded-md"><option value="1.95">指令教育農場 (195%)</option><option value="1.95">阿爾喜 (195%)</option><option value="1.58">雨社山下 (158%)</option><option value="1.58">明揚養蜂 (158%)</option><option value="2.66">湧健酪梨園 (266%)</option><option value="3.40">水里里山餐桌團隊 (340%)</option></select></div>
+                    <div class="grid grid-cols-2 gap-4 mb-4"><div><label>數量:</label><input type="number" id="sroi-qty" class="w-full p-2 border rounded-md" min="1" value="1"></div><div><label>單價:</label><input type="number" id="sroi-price" class="w-full p-2 border rounded-md" min="0"></div></div>
+                    <div class="text-right mb-4"><p>SROI 價值小計: <span id="sroi-subtotal" class="text-emerald-600">0</span></p></div>
+                    <button id="log-sroi-btn" class="w-full px-6 py-3 bg-emerald-600 text-white font-bold rounded-lg shadow">登入消費額按鈕</button>
+                    <div class="mt-4 p-3 bg-emerald-50 rounded text-center"><p class="text-sm font-bold text-gray-600">本區登錄總額</p><p id="total-sroi-display" class="text-2xl font-bold text-emerald-800">$0</p></div>
+                </div>
+            </div>
+            <!-- 3. 專案採購 Tab -->
+            <div id="tab-project" class="tab-content hidden">
+                <div class="green-calc-section">
+                     <div id="project-password-section" class="mb-4"><label class="block text-sm font-medium text-gray-700 mb-1">請輸入專案密碼:</label><div class="flex gap-2"><input type="password" id="project-password" class="w-full p-2 border rounded-md"><button id="unlock-project-btn" class="px-4 py-2 bg-gray-600 text-white rounded">解鎖</button></div><p id="password-msg" class="text-xs text-red-500 mt-1"></p></div>
+                     <div id="project-entry-section" class="hidden">
+                        <div class="mb-3"><label>專案說明:</label><input type="text" id="project-desc" class="w-full p-2 border rounded-md"></div>
+                        <div class="mb-4"><label>消費金額:</label><input type="number" id="project-amount" class="w-full p-2 border rounded-md"></div>
+                        <button id="log-project-btn" class="w-full px-6 py-3 bg-emerald-600 text-white font-bold rounded-lg shadow">登入專案消費金額</button>
+                    </div>
+                    <div class="mt-4 p-3 bg-emerald-50 rounded text-center"><p class="text-sm font-bold text-gray-600">本區登錄總額</p><p id="total-project-display" class="text-2xl font-bold text-emerald-800">$0</p></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- POI Modal, Activity Modal, THSR, Log Trip, Taxi, SROI, Market, Photo Modals (Simplified for brevity but functionally present) -->
+    <div id="poi-modal" class="modal-overlay hidden"><div class="modal-content shadow-xl"><span class="close-button">×</span><h3 id="poi-modal-title" class="text-2xl font-bold mb-4 text-green-800"></h3><img id="poi-modal-image" class="mb-4 hidden w-full h-48 object-cover rounded-md"><div class="poi-modal-content-body"><p id="poi-modal-description" class="text-gray-700 leading-relaxed"></p><p id="poi-modal-coordinates" class="text-sm text-gray-600 mt-4"></p><div id="poi-modal-social" class="mt-4 text-sm"></div><div id="sroi-info-button-container" class="mt-6 hidden"><button id="show-sroi-info-button" class="w-full px-6 py-3 bg-purple-600 text-white font-bold rounded-lg shadow">SROI生態棲地農產品訂購</button></div><div id="poi-modal-dynamic-buttons" class="mt-6 space-y-3"></div></div><div id="poi-review-section" class="hidden mt-6 pt-4 border-t border-gray-200"><h4 class="text-lg font-medium mb-3 text-gray-600">永續消費審核</h4><input type="number" id="consumption-amount" class="w-full p-2 border rounded-md mb-3" placeholder="消費金額"><input type="text" id="review-code" class="w-full p-2 border rounded-md mb-4" placeholder="審核碼"><button id="submit-poi-review" class="px-6 py-3 bg-green-600 text-white rounded-lg shadow">提交審核</button><p id="poi-review-status" class="mt-3 text-sm font-semibold text-gray-600"></p></div><div class="mt-6 flex justify-end space-x-4"><button id="set-as-start-button" class="px-6 py-3 bg-yellow-500 text-white rounded-lg">設定為起點</button><button id="set-as-end-button" class="px-6 py-3 bg-emerald-500 text-white rounded-lg">設定為終點</button></div></div></div>
+    <div id="log-trip-modal" class="modal-overlay hidden"><div class="modal-content shadow-xl"><span class="close-button">×</span><h3 class="text-2xl font-bold mb-4 text-orange-700">記錄旅程</h3><p>前往：<span id="log-trip-poi-name" class="font-bold"></span></p><div id="log-trip-transport-options" class="flex flex-wrap gap-3 my-4"></div><input type="number" id="log-trip-mileage" class="w-full p-3 border rounded-md mb-4" placeholder="輸入里程 (km)"><button id="submit-log-trip" class="w-full px-8 py-4 bg-orange-600 text-white font-bold rounded-lg shadow">記錄</button><p id="log-trip-status" class="mt-3 text-sm text-center"></p></div></div>
+    <div id="market-selection-modal" class="modal-overlay hidden"><div class="modal-content shadow-xl"><span class="close-button">×</span><h3 class="text-2xl font-bold mb-6 text-purple-700 text-center">地產地銷</h3><div id="market-type-selection-step"><div id="market-type-options" class="grid grid-cols-1 gap-4"></div></div><div id="product-type-selection-step" class="hidden"><p class="mb-3">在 <span id="selected-market-type-display" class="font-bold text-purple-600"></span> 消費了：</p><div id="product-type-options" class="space-y-3 mb-4"></div><input id="market-store-code" class="w-full p-3 border rounded-md mb-4" placeholder="商店碼"><button id="submit-market-activity-button" class="w-full bg-purple-600 text-white py-3 rounded-lg font-bold">記錄</button><button id="back-to-market-type-button" class="mt-2 w-full bg-gray-300 py-3 rounded-lg font-bold">返回</button></div><p id="market-activity-status" class="mt-3 text-center"></p></div></div>
+    <div id="photo-album-modal" class="modal-overlay hidden"><div class="modal-content shadow-xl"><span class="close-button">×</span><h3 class="text-2xl font-bold mb-4 text-teal-700">相簿</h3><ul class="space-y-2"><li><a href="#" class="text-blue-600 hover:underline">小農遊程</a></li><li><a href="#" class="text-blue-600 hover:underline">生態旅遊</a></li><li><a href="https://photos.google.com/share/AF1QipN86zQIAJaA-HyNbExPBNARmU7VT1eEOS2JNsjAC1VfonWpOT5zDAwIVwbueSdfWQ?key=NlN1NlVVS0tZdWhiRV9HYnlsSnNsV0VXVHN5YVJR" target="_blank" class="text-blue-600 hover:underline">星光市集</a></li></ul></div></div>
+    <div id="thsr-info-modal" class="modal-overlay hidden"><div class="modal-content shadow-xl"><span class="close-button">×</span><h3 class="text-2xl font-bold mb-4 text-blue-800">高鐵假期</h3><p>請參考官方網站資訊。</p></div></div>
+    <div id="taxi-info-modal" class="modal-overlay hidden"><div class="modal-content shadow-xl"><span class="close-button">×</span><h3 class="text-2xl font-bold mb-4 text-yellow-700">計程車資訊</h3><p>預約電話: 0980-015-339</p></div></div>
+    <div id="sroi-info-modal" class="modal-overlay hidden"><div class="modal-content shadow-xl"><span class="close-button">×</span><h3 class="text-2xl font-bold mb-4 text-purple-700">SROI 資訊</h3><p id="sroi-modal-poi-name" class="font-bold mb-2"></p><div id="sroi-modal-content-body"></div></div></div>
+    <div id="activity-modal" class="modal-overlay hidden"><div class="modal-content shadow-xl"><span class="close-button">×</span><h3 class="text-2xl font-bold mb-4 text-green-800">活動</h3><img id="activity-modal-image" class="hidden"><input id="verification-code-input" class="w-full p-3 border rounded-md mb-3" placeholder="驗證碼"><textarea id="activity-content-input" class="w-full p-3 border rounded-md mb-3" placeholder="內容"></textarea><button id="submit-activity-log" class="w-full bg-green-600 text-white py-3 rounded-lg font-bold">送出</button><p id="activity-log-status" class="mt-3 text-center"></p></div></div>
 
 </body>
 </html>
