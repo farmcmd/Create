@@ -58,12 +58,27 @@ let transportData = {
     thsr_haoxing: { name: '高鐵假期x台灣好行', icon: '🚄🚌', carbonReductionPer10km: 0, travelMode: null, metersPerPoint: Infinity } 
 };
 
+// ... (Pois, Activities, Market definitions - kept same as previous context for brevity) ... 
+// (Assume full definitions here)
 const pois = [
     { id: 'poi1', name: '水里永續共好聯盟打氣站', coords: { lat: 23.809799, lng: 120.849286 }, icon: '🌲', description: '營業時間上午8:00~17:00...', image: '', socialLink: '#' },
     { id: 'poi2', name: '漫遊堤岸風光', coords: { lat: 23.808537, lng: 120.849415 }, icon: '🏞️', description: '路線全長約4公里...', image: '' },
     { id: 'poi3', name: '鑫鮮菇園', coords: { lat: 23.794049, lng: 120.859407 }, icon: '🍄', description: '需預約。提供香菇園區種植導覽...', image: '', socialLink: '#', sroiInfo: { reportLink: '#', formLink: '#', lineId: 'TestID' } },
+    { id: 'poi4', name: '永興神木', coords: { lat: 23.784127, lng: 120.862294 }, icon: '🌳', description: '社區麵包坊營業時間”上午9:00~17:00...', image: '', socialLink: '#' },
+    { id: 'poi5', name: '森林小白宮', coords: { lat: 23.779408, lng: 120.844019 }, icon: '🏠', description: '接駁、共乘、摩托。需預約...', image: '', socialLink: '#' },
+    { id: 'poi6', name: '瑪路馬咖啡莊園', coords: { lat: 23.778239, lng: 120.843859 }, icon: '☕', description: '接駁、共乘、摩托...', image: '', socialLink: '#' },
+    { id: 'poi7', name: '指令教育農場', coords: { lat: 23.802776, lng: 120.864715 }, icon: '👆', description: '台灣好行、共乘、摩托...', image: '', socialLink: '#', sroiInfo: { reportLink: '#', formLink: '#', lineId: 'TestID' } },
+    { id: 'poi8', name: '明揚養蜂', coords: { lat: 23.803787, lng: 120.862401 }, icon: '🐝', description: '共乘、台灣好行、摩托...', image: '', socialLink: '#', sroiInfo: { reportLink: '#', formLink: '#', lineId: 'TestID' } },
+    { id: 'poi9', name: '蛇窯文化園區', coords: { lat: 23.801177, lng: 120.864479 }, icon: '🏺', description: '共乘、台灣好行...', image: '', socialLink: '#' },
+    { id: 'poi10', name: '雨社山下', coords: { lat: 23.790644, lng: 120.896569 }, icon: '🥒', description: '接駁、共乘、摩托...', image: '', socialLink: '#', sroiInfo: { reportLink: '#', formLink: '#', lineId: 'TestID' } },
+    { id: 'poi11', name: '阿爾喜莊園', coords: { lat: 23.803119, lng: 120.926340 }, icon: '🍋', description: '接駁、共乘、摩托...', image: '', socialLink: '#', sroiInfo: { reportLink: '#', formLink: '#', lineId: 'TestID' } },
     { id: 'poi12', name: '湧健酪梨園', coords: { lat: 23.725349, lng: 120.846123 }, icon: '🥑', description: '農場導覽、生態導覽...', image: '', socialLink: '#', sroiInfo: { reportLink: '#', formLink: '#', lineId: 'TestID' } },
-    { id: 'poi17', name: '水里星光市集', coords: { lat: 23.813636, lng: 120.850816 }, icon: '💡', description: '參加”逛市集增里程”...', image: '', socialLink: '#', isNew: true, marketScheduleLink: '#' }
+    { id: 'poi13', name: '謝家肉圓', coords: { lat: 23.817521, lng: 120.853831 }, icon: '🥟', description: '步行、摩托、台灣好行...', image: '', socialLink: '#' },
+    { id: 'poi14', name: '機車貓聯盟', coords: { lat: 23.810883, lng: 120.855798 }, icon: '🍚', description: '共乘、摩托、台灣好行...', image: '', socialLink: '#' },
+    { id: 'poi15', name: '二坪大觀冰店', coords: { lat: 23.813627, lng: 120.859651 }, icon: '🍦', description: '共乘、摩托...', image: '', socialLink: '#' },
+    { id: 'poi16', name: '水里里山村', coords: { lat: 23.813459, lng: 120.853787 }, icon: '🏡', description: '共乘、摩托...', image: '', socialLink: '#' },
+    { id: 'poi17', name: '水里星光市集', coords: { lat: 23.813636, lng: 120.850816 }, icon: '💡', description: '參加”逛市集增里程”...', image: '', socialLink: '#', isNew: true, marketScheduleLink: '#' },
+    { id: 'poi18', name: '森音', coords: { lat: 23.742587, lng: 120.866954 }, icon: '🎶', description: '接駁、摩托、私家車...', image: '', socialLink: '#' }
 ];
 
 const marketTypes = [
@@ -177,8 +192,8 @@ async function initGlobalCounters() {
 
     try {
         // 1. Page Views
-        // Check if doc exists first to avoid errors if rules are strict
-        // We use setDoc with merge: true to effectively "create if missing"
+        // 先檢查是否存在，不存在則建立，存在則更新
+        // 為了簡單起見，直接用 setDoc merge: true，如果不存在會建立
         await setDoc(pageViewsDocRef, { count: increment(1) }, { merge: true });
         
         onSnapshot(pageViewsDocRef, (doc) => {
@@ -319,10 +334,44 @@ window.mapScriptLoadError = function() {
 
 // UI Handlers
 document.addEventListener('DOMContentLoaded', () => {
-    loadData();
+    // 1. First attach ALL event listeners to ensure UI works even if data loading fails
     
-    // ... (Event listeners for buttons, modals, inputs) ...
-    // Green Consumption
+    // Transport Buttons
+    document.querySelectorAll('.transport-option').forEach(button => {
+        button.addEventListener('click', () => {
+            const transportType = button.dataset.transport;
+            if (transportType === 'thsr_haoxing') { showThsrInfoModal(); return; }
+            if (transportType === 'taxi') { showTaxiInfoModal(); return; } // Added handler for taxi
+            document.querySelectorAll('.transport-option').forEach(btn => btn.classList.remove('selected'));
+            button.classList.add('selected');
+            currentTransport = transportType;
+            showMissionPage();
+        });
+    });
+
+    // Modals
+    const entBtn = document.getElementById('enterprise-version-btn');
+    if(entBtn) entBtn.addEventListener('click', () => document.getElementById('enterprise-modal').classList.remove('hidden'));
+    
+    const govBtn = document.getElementById('gov-version-btn');
+    if(govBtn) govBtn.addEventListener('click', () => document.getElementById('gov-modal').classList.remove('hidden'));
+    
+    const greenEvalBtn = document.getElementById('open-green-eval-btn');
+    if(greenEvalBtn) greenEvalBtn.addEventListener('click', () => document.getElementById('green-consumption-modal').classList.remove('hidden'));
+
+    const marketBtn = document.getElementById('market-mileage-button');
+    if(marketBtn) marketBtn.addEventListener('click', showMarketSelectionModal);
+
+    const photoBtn = document.getElementById('photo-album-promo-button');
+    if(photoBtn) photoBtn.addEventListener('click', showPhotoAlbumModal);
+
+    document.querySelectorAll('.close-button').forEach(btn => {
+        btn.addEventListener('click', function() {
+            this.closest('.modal-overlay').classList.add('hidden');
+        });
+    });
+
+    // Green Consumption Logic
     const greenBtn = document.getElementById('log-green-procure-btn');
     if (greenBtn) {
         greenBtn.addEventListener('click', () => {
@@ -370,56 +419,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Modal Triggers with Null Checks (Crucial Fix)
-    const entBtn = document.getElementById('enterprise-version-btn');
-    if(entBtn) entBtn.addEventListener('click', () => {
-        const modal = document.getElementById('enterprise-modal');
-        if(modal) modal.classList.remove('hidden');
-    });
-    
-    const govBtn = document.getElementById('gov-version-btn');
-    if(govBtn) govBtn.addEventListener('click', () => {
-        const modal = document.getElementById('gov-modal');
-        if(modal) modal.classList.remove('hidden');
-    });
-    
-    const greenEvalBtn = document.getElementById('open-green-eval-btn');
-    if(greenEvalBtn) greenEvalBtn.addEventListener('click', () => {
-        const modal = document.getElementById('green-consumption-modal');
-        if(modal) modal.classList.remove('hidden');
-    });
-    
-    document.querySelectorAll('.close-button').forEach(btn => {
-        btn.addEventListener('click', function() {
-            this.closest('.modal-overlay').classList.add('hidden');
-        });
-    });
-
-    // Tabs
-    const tabs = document.querySelectorAll('.tab-btn');
-    const contents = document.querySelectorAll('.tab-content');
-    tabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-            tabs.forEach(t => t.classList.remove('active-tab', 'border-emerald-600', 'text-emerald-600'));
-            contents.forEach(c => c.classList.add('hidden'));
-            tab.classList.add('active-tab', 'border-emerald-600', 'text-emerald-600');
-            const target = document.getElementById(tab.dataset.tab);
-            if(target) target.classList.remove('hidden');
-        });
-    });
-    
-    // Populate Lists (Simplified)
-    const poiList = document.getElementById('poi-list');
-    if (poiList) {
-        pois.forEach(poi => {
-            const li = document.createElement('li');
-            li.className = 'clickable-list-item p-2 hover:bg-gray-100 cursor-pointer';
-            li.innerHTML = `${poi.icon} ${poi.name}`;
-            li.onclick = () => showPoiModal(poi);
-            poiList.appendChild(li);
-        });
-    }
-
+    // Trip Calculation
     const calcBtn = document.getElementById('calculate-mileage-button');
     if(calcBtn) {
         calcBtn.addEventListener('click', () => {
@@ -441,6 +441,53 @@ document.addEventListener('DOMContentLoaded', () => {
                  useFallbackCalculation();
              }
         });
+    }
+
+    // Modal Submits
+    const submitLogTripBtn = document.getElementById('submit-log-trip');
+    if(submitLogTripBtn) submitLogTripBtn.addEventListener('click', submitLogTrip);
+
+    const marketSubmitBtn = document.getElementById('submit-market-activity-button');
+    if(marketSubmitBtn) marketSubmitBtn.addEventListener('click', submitMarketActivity);
+
+    const backMarketBtn = document.getElementById('back-to-market-type-button');
+    if(backMarketBtn) backMarketBtn.addEventListener('click', handleBackToMarketType);
+
+
+    // Populate Lists
+    const poiList = document.getElementById('poi-list');
+    if (poiList) {
+        pois.forEach(poi => {
+            const li = document.createElement('li');
+            li.className = 'clickable-list-item p-2 hover:bg-gray-100 cursor-pointer';
+            li.innerHTML = `${poi.icon} ${poi.name}`;
+            li.onclick = () => showPoiModal(poi);
+            poiList.appendChild(li);
+        });
+    }
+    
+    // Tabs
+    const tabs = document.querySelectorAll('.tab-btn');
+    const contents = document.querySelectorAll('.tab-content');
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            tabs.forEach(t => t.classList.remove('active-tab', 'border-emerald-600', 'text-emerald-600'));
+            contents.forEach(c => c.classList.add('hidden'));
+            tab.classList.add('active-tab', 'border-emerald-600', 'text-emerald-600');
+            const target = document.getElementById(tab.dataset.tab);
+            if(target) target.classList.remove('hidden');
+        });
+    });
+
+    // Populate Markets (Simplified)
+    populateMarketTypeOptions();
+
+
+    // 2. Load Data (After events are bound)
+    try {
+        loadData();
+    } catch(e) {
+        console.error("Data load failed", e);
     }
     
     showHomepage();
