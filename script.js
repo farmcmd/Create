@@ -5,13 +5,13 @@ import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.22.2/firebase
 
 // --- Firebase Configuration (User Provided) ---
 const firebaseConfig = {
-  apiKey: "AIzaSyB2vgQFtOGle5qtf7sp_zydPCjt0Hw7A90",
-  authDomain: "sustainable-procurement.firebaseapp.com",
-  projectId: "sustainable-procurement",
-  storageBucket: "sustainable-procurement.firebasestorage.app",
-  messagingSenderId: "580097886645",
-  appId: "1:580097886645:web:871719aee24fddae8931fc",
-  measurementId: "G-T2PJ4VYZ8Z"
+  apiKey: "AIzaSyArR1k85j1tWxP1dZSEFEJgj1X-T04l8RI",
+  authDomain: "sustainable-procurement-1.firebaseapp.com",
+  projectId: "sustainable-procurement-1",
+  storageBucket: "sustainable-procurement-1.firebasestorage.app",
+  messagingSenderId: "524848367336",
+  appId: "1:524848367336:web:85d888f1668506bbd4eb5d",
+  measurementId: "G-NQ3G51CFP1"
 };
 
 // Initialize Firebase
@@ -30,18 +30,18 @@ try {
     db = getFirestore(app);
     analytics = getAnalytics(app);
     
-    // Init refs
+    // Init refs - 參照到 global_stats 集合下的各個文件
     globalStatsRef = collection(db, 'global_stats');
     greenStatsDocRef = doc(db, 'global_stats', 'green_consumption');
     pageViewsDocRef = doc(db, 'global_stats', 'page_views');
     carbonStatsDocRef = doc(db, 'global_stats', 'carbon_stats'); 
     
-    console.log("Firebase initialized successfully.");
+    console.log("Firebase initialized successfully with project: sustainable-procurement-1");
 } catch (error) {
     console.error("Error initializing Firebase:", error);
     const networkStatsStatusElement = document.getElementById('network-stats-status');
     if (networkStatsStatusElement) {
-        networkStatsStatusElement.textContent = `預覽模式: 無法連線至資料庫。`;
+        networkStatsStatusElement.textContent = `連線錯誤: 無法連結至資料庫 (sustainable-procurement-1)。`;
         networkStatsStatusElement.classList.add('text-red-600');
     }
 }
@@ -59,13 +59,47 @@ let transportData = {
 };
 
 // ... (Pois, Activities, Market definitions - kept same as previous context for brevity) ... 
-// (Assume full definitions here)
 const pois = [
     { id: 'poi1', name: '水里永續共好聯盟打氣站', coords: { lat: 23.809799, lng: 120.849286 }, icon: '🌲', description: '營業時間上午8:00~17:00...', image: '', socialLink: '#' },
     { id: 'poi2', name: '漫遊堤岸風光', coords: { lat: 23.808537, lng: 120.849415 }, icon: '🏞️', description: '路線全長約4公里...', image: '' },
     { id: 'poi3', name: '鑫鮮菇園', coords: { lat: 23.794049, lng: 120.859407 }, icon: '🍄', description: '需預約。提供香菇園區種植導覽...', image: '', socialLink: '#', sroiInfo: { reportLink: '#', formLink: '#', lineId: 'TestID' } },
-    { id: 'poi12', name: '湧健酪梨園', coords: { lat: 23.725349, lng: 120.846123 }, icon: '🥑', description: '農場導覽、生態導覽...', image: '', socialLink: '#', sroiInfo: { reportLink: '#', formLink: '#', lineId: 'TestID' } },
-    { id: 'poi17', name: '水里星光市集', coords: { lat: 23.813636, lng: 120.850816 }, icon: '💡', description: '參加”逛市集增里程”...', image: '', socialLink: '#', isNew: true, marketScheduleLink: '#' }
+    { id: 'poi4', name: '永興神木', coords: { lat: 23.784127, lng: 120.862294 }, icon: '🌳', description: '社區麵包坊營業時間”上午9:00~17:00...', image: '', socialLink: '#' },
+    { id: 'poi5', name: '森林小白宮', coords: { lat: 23.779408, lng: 120.844019 }, icon: '🏠', description: '接駁、共乘、摩托。需預約...', image: '', socialLink: '#' },
+    { id: 'poi6', name: '瑪路馬咖啡莊園', coords: { lat: 23.778239, lng: 120.843859 }, icon: '☕', description: '接駁、共乘、摩托...', image: '', socialLink: '#' },
+    { id: 'poi7', name: '指令教育農場', coords: { lat: 23.802776, lng: 120.864715 }, icon: '👆', description: '台灣好行、共乘、摩托...', image: '', socialLink: '#', sroiInfo: { reportLink: '#', formLink: '#', lineId: 'TestID' } },
+    { id: 'poi8', name: '明揚養蜂', coords: { lat: 23.803787, lng: 120.862401 }, icon: '🐝', description: '共乘、台灣好行、摩托...', image: '', socialLink: '#', sroiInfo: { reportLink: '#', formLink: '#', lineId: 'TestID' } },
+    { id: 'poi9', name: '蛇窯文化園區', coords: { lat: 23.801177, lng: 120.864479 }, icon: '🏺', description: '共乘、台灣好行...', image: '', socialLink: '#' },
+    { id: 'poi10', name: '雨社山下', coords: { lat: 23.790644, lng: 120.896569 }, icon: '🥒', description: '接駁、共乘、摩托...', image: '', socialLink: '#', sroiInfo: { reportLink: '#', formLink: '#', lineId: 'TestID' } },
+    { id: 'poi11', name: '阿爾喜莊園', coords: { lat: 23.803119, lng: 120.926340 }, icon: '🍋', description: '接駁、共乘、摩托...', image: '', socialLink: '#', sroiInfo: { reportLink: '#', formLink: '#', lineId: 'TestID' } },
+    { id: 'poi12', name: '湧健酪梨園', coords: { lat: 23.725349, lng: 120.846123 }, icon: '🥑', description: '台灣好行、共乘、摩托。\n\n活動資訊: 農場導覽、生態導覽、食農教育。完成單一活動可獲得永續與環境教育任務點數10點。', image: '', socialLink: '#', sroiInfo: { reportLink: '#', formLink: '#', lineId: 'TestID' } },
+    { id: 'poi13', name: '謝家肉圓', coords: { lat: 23.817521, lng: 120.853831 }, icon: '🥟', description: '步行、摩托、台灣好行...', image: '', socialLink: '#' },
+    { id: 'poi14', name: '機車貓聯盟', coords: { lat: 23.810883, lng: 120.855798 }, icon: '🍚', description: '共乘、摩托、台灣好行...', image: '', socialLink: '#' },
+    { id: 'poi15', name: '二坪大觀冰店', coords: { lat: 23.813627, lng: 120.859651 }, icon: '🍦', description: '共乘、摩托...', image: '', socialLink: '#' },
+    { id: 'poi16', name: '水里里山村', coords: { lat: 23.813459, lng: 120.853787 }, icon: '🏡', description: '共乘、摩托...', image: '', socialLink: '#' },
+    { id: 'poi17', name: '水里星光市集', coords: { lat: 23.813636, lng: 120.850816 }, icon: '💡', description: '參加”逛市集增里程”...', image: '', socialLink: '#', isNew: true, marketScheduleLink: '#' },
+    { id: 'poi18', name: '森音', coords: { lat: 23.742587, lng: 120.866954 }, icon: '🎶', description: '接駁、摩托、私家車...', image: '', socialLink: '#' }
+];
+
+const sustainableActions = [
+    { name: '支持在地飲食', points: 5 },
+    { name: '減少剩食', points: 5 },
+    { name: '自備環保用品', points: 5 },
+    { name: '回收分類', points: 5 },
+    { name: '保育行為', points: 10 },
+    { name: '導覽參加', points: 10 },
+    { name: '不破壞棲地', points: 10 },
+    { name: '支持小農', points: 5 },
+    { name: '遵守營火', points: 5 }
+];
+
+const activities = [
+    { id: 'act1', name: 'SROI 社會責任農產品購買', points: 15, validCodes: ['ABC123', 'XYZ789'], image: 'https://placehold.co/400x200/4caf50/white?text=SROI+Image' },
+    { id: 'act2', name: '生態棲地破冰活動', points: 20, validCodes: ['DEF456', 'UVW012'] },
+    { id: 'act3', name: 'ESG社會責任活動講堂', points: 25, validCodes: ['GHI789', 'RST345'] },
+    { id: 'act4', name: 'CBD里山生態廊道永續旅遊', points: 30, validCodes: ['JKL012', 'QRS678'] },
+    { id: 'act5', name: '里山倡議食農下午茶講堂', points: 20, validCodes: ['MNO345', 'PQR901'] },
+    { id: 'act6', name: '小白宮x山形工作室', points: 10, validCodes: ['PQR678', 'STU234'] },
+    { id: 'act7', name: '其他永續與環境教育活動及課程', points: 10, validCodes: ['VWX901', 'YZA567'] }
 ];
 
 const marketTypes = [
@@ -138,10 +172,10 @@ function loadData() {
         playerCode = generateRandomCode();
     }
     
-    document.getElementById('player-code').textContent = playerCode;
+    if(document.getElementById('player-code')) document.getElementById('player-code').textContent = playerCode;
     updateStatsDisplay();
     updateGreenConsumptionDisplay();
-    document.getElementById('stats-load-status').textContent = '已載入數據';
+    if(document.getElementById('stats-load-status')) document.getElementById('stats-load-status').textContent = '已載入數據';
     
     if (db) {
         initGlobalCounters();
@@ -150,35 +184,37 @@ function loadData() {
 
 function saveData() {
     const dataToSave = {
-        totalMileage, totalCarbonReduction, totalScore, playerName: playerNameInput.value,
+        totalMileage, totalCarbonReduction, totalScore, playerName: playerNameInput ? playerNameInput.value : '',
         playerCode, greenProcurementTotal, sroiProcurementTotal, projectProcurementTotal
     };
     localStorage.setItem(localStorageKey, JSON.stringify(dataToSave));
 }
 
 function updateStatsDisplay() {
-    totalMileageSpan.textContent = `${(totalMileage / 1000).toFixed(2)} km`;
-    totalCarbonReductionSpan.textContent = `${totalCarbonReduction.toFixed(2)} g`;
-    totalScoreSpan.textContent = totalScore;
+    if(totalMileageSpan) totalMileageSpan.textContent = `${(totalMileage / 1000).toFixed(2)} km`;
+    if(totalCarbonReductionSpan) totalCarbonReductionSpan.textContent = `${totalCarbonReduction.toFixed(2)} g`;
+    if(totalScoreSpan) totalScoreSpan.textContent = totalScore;
     if(playerNameInput) playerNameInput.value = playerName;
 }
 
 function updateGreenConsumptionDisplay() {
-    displayGreenProcure.textContent = `$${greenProcurementTotal}`;
-    displaySroiProcure.textContent = `$${sroiProcurementTotal.toFixed(0)}`;
-    displayProjectProcure.textContent = `$${projectProcurementTotal}`;
+    if(displayGreenProcure) displayGreenProcure.textContent = `$${greenProcurementTotal}`;
+    if(displaySroiProcure) displaySroiProcure.textContent = `$${sroiProcurementTotal.toFixed(0)}`;
+    if(displayProjectProcure) displayProjectProcure.textContent = `$${projectProcurementTotal}`;
     // Grand total is handled by Firebase listener
-    totalGreenProcureDisplay.textContent = `$${greenProcurementTotal}`;
-    totalSroiDisplay.textContent = `$${sroiProcurementTotal.toFixed(0)}`;
-    totalProjectDisplay.textContent = `$${projectProcurementTotal}`;
+    if(totalGreenProcureDisplay) totalGreenProcureDisplay.textContent = `$${greenProcurementTotal}`;
+    if(totalSroiDisplay) totalSroiDisplay.textContent = `$${sroiProcurementTotal.toFixed(0)}`;
+    if(totalProjectDisplay) totalProjectDisplay.textContent = `$${projectProcurementTotal}`;
 }
 
-// --- Firebase Global Stats Logic (關鍵修正：確保文件存在) ---
+// --- Firebase Global Stats Logic ---
 async function initGlobalCounters() {
     if (!db) return;
 
     try {
-        // 1. Page Views (若文件不存在，setDoc(merge:true) 會自動建立)
+        // 1. Page Views
+        // 先檢查是否存在，不存在則建立，存在則更新
+        // 為了簡單起見，直接用 setDoc merge: true，如果不存在會建立
         await setDoc(pageViewsDocRef, { count: increment(1) }, { merge: true });
         
         onSnapshot(pageViewsDocRef, (doc) => {
@@ -190,7 +226,7 @@ async function initGlobalCounters() {
         });
 
         // 2. Green Consumption
-        // 確保 green_consumption 文件存在
+        // Ensure doc exists so listener doesn't fail
         await setDoc(greenStatsDocRef, { count: increment(0) }, { merge: true });
 
         onSnapshot(greenStatsDocRef, (doc) => {
@@ -208,32 +244,25 @@ async function initGlobalCounters() {
         });
 
         // 3. Global Carbon & Mileage (New Feature)
-        // **關鍵修正：自動初始化 carbon_stats 文件**
-        await setDoc(carbonStatsDocRef, { trip_count: increment(0), total_carbon: increment(0), total_mileage: increment(0) }, { merge: true });
+         // Ensure doc exists so listener doesn't fail
+        await setDoc(carbonStatsDocRef, { trip_count: increment(0) }, { merge: true });
 
         onSnapshot(carbonStatsDocRef, (doc) => {
              if (doc.exists()) {
                  const data = doc.data();
                  const totalCarbon = data.total_carbon || 0;
-                 
-                 // 更新前端顯示
                  const networkEl = document.getElementById('network-total-carbon-reduction');
                  if(networkEl) networkEl.textContent = `${totalCarbon.toFixed(2)} g`;
                  
                  const statusEl = document.getElementById('network-stats-status');
                  if(statusEl) statusEl.textContent = '雲端數據同步成功';
 
-                 // 更新種樹數量
-                 const gramsPerTree = 10000; // 假設 10kg = 1 棵樹
+                 // Update Trees
+                 const gramsPerTree = 10000; // Assuming 10kg = 1 tree
                  const trees = Math.floor(totalCarbon / gramsPerTree);
                  const treeEl = document.getElementById('trees-planted-count');
                  if(treeEl) treeEl.textContent = trees;
              }
-        }, (error) => {
-             console.error("Carbon stats listener error:", error);
-             // 處理權限不足的錯誤顯示，避免介面卡死
-             const statusEl = document.getElementById('network-stats-status');
-             if(statusEl) statusEl.textContent = '無法讀取數據 (權限或連線問題)';
         });
 
     } catch (e) {
@@ -270,7 +299,7 @@ function generateRandomCode() {
     return Math.random().toString(36).substring(2, 8).toUpperCase();
 }
 
-// Map Functions
+// Map Functions (with Fallback)
 function haversineDistance(lat1, lon1, lat2, lon2) {
     const R = 6371; 
     const dLat = (lat2 - lat1) * Math.PI / 180;
@@ -297,6 +326,7 @@ function initMap() {
         directionsService = new google.maps.DirectionsService();
         directionsRenderer = new google.maps.DirectionsRenderer({ map: map });
         
+        // Add markers logic here (simplified for brevity)
         pois.forEach(poi => {
             const marker = new google.maps.Marker({
                 position: poi.coords,
