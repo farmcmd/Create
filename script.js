@@ -64,19 +64,7 @@ const pois = [
     { id: 'poi1', name: '水里永續共好聯盟打氣站', coords: { lat: 23.809799, lng: 120.849286 }, icon: '🌲', description: '營業時間上午8:00~17:00...', image: '', socialLink: '#' },
     { id: 'poi2', name: '漫遊堤岸風光', coords: { lat: 23.808537, lng: 120.849415 }, icon: '🏞️', description: '路線全長約4公里...', image: '' },
     { id: 'poi3', name: '鑫鮮菇園', coords: { lat: 23.794049, lng: 120.859407 }, icon: '🍄', description: '需預約。提供香菇園區種植導覽...', image: '', socialLink: '#', sroiInfo: { reportLink: '#', formLink: '#', lineId: 'TestID' } },
-    { id: 'poi4', name: '永興神木', coords: { lat: 23.784127, lng: 120.862294 }, icon: '🌳', description: '社區麵包坊營業時間”上午9:00~17:00...', image: '', socialLink: '#' },
-    { id: 'poi5', name: '森林小白宮', coords: { lat: 23.779408, lng: 120.844019 }, icon: '🏠', description: '接駁、共乘、摩托。需預約...', image: '', socialLink: '#' },
-    { id: 'poi6', name: '瑪路馬咖啡莊園', coords: { lat: 23.778239, lng: 120.843859 }, icon: '☕', description: '接駁、共乘、摩托...', image: '', socialLink: '#' },
-    { id: 'poi7', name: '指令教育農場', coords: { lat: 23.802776, lng: 120.864715 }, icon: '👆', description: '台灣好行、共乘、摩托...', image: '', socialLink: '#', sroiInfo: { reportLink: '#', formLink: '#', lineId: 'TestID' } },
-    { id: 'poi8', name: '明揚養蜂', coords: { lat: 23.803787, lng: 120.862401 }, icon: '🐝', description: '共乘、台灣好行、摩托...', image: '', socialLink: '#', sroiInfo: { reportLink: '#', formLink: '#', lineId: 'TestID' } },
-    { id: 'poi9', name: '蛇窯文化園區', coords: { lat: 23.801177, lng: 120.864479 }, icon: '🏺', description: '共乘、台灣好行...', image: '', socialLink: '#' },
-    { id: 'poi10', name: '雨社山下', coords: { lat: 23.790644, lng: 120.896569 }, icon: '🥒', description: '接駁、共乘、摩托...', image: '', socialLink: '#', sroiInfo: { reportLink: '#', formLink: '#', lineId: 'TestID' } },
-    { id: 'poi11', name: '阿爾喜莊園', coords: { lat: 23.803119, lng: 120.926340 }, icon: '🍋', description: '接駁、共乘、摩托...', image: '', socialLink: '#', sroiInfo: { reportLink: '#', formLink: '#', lineId: 'TestID' } },
-    { id: 'poi12', name: '湧健酪梨園', coords: { lat: 23.725349, lng: 120.846123 }, icon: '🥑', description: '台灣好行、共乘、摩托。\n\n活動資訊: 農場導覽、生態導覽、食農教育。完成單一活動可獲得永續與環境教育任務點數10點。', image: '', socialLink: '#', sroiInfo: { reportLink: '#', formLink: '#', lineId: 'TestID' } },
-    { id: 'poi13', name: '謝家肉圓', coords: { lat: 23.817521, lng: 120.853831 }, icon: '🥟', description: '步行、摩托、台灣好行...', image: '', socialLink: '#' },
-    { id: 'poi14', name: '機車貓聯盟', coords: { lat: 23.810883, lng: 120.855798 }, icon: '🍚', description: '共乘、摩托、台灣好行...', image: '', socialLink: '#' },
-    { id: 'poi15', name: '二坪大觀冰店', coords: { lat: 23.813627, lng: 120.859651 }, icon: '🍦', description: '共乘、摩托...', image: '', socialLink: '#' },
-    { id: 'poi16', name: '水里里山村', coords: { lat: 23.813459, lng: 120.853787 }, icon: '🏡', description: '共乘、摩托...', image: '', socialLink: '#' },
+    { id: 'poi12', name: '湧健酪梨園', coords: { lat: 23.725349, lng: 120.846123 }, icon: '🥑', description: '農場導覽、生態導覽...', image: '', socialLink: '#', sroiInfo: { reportLink: '#', formLink: '#', lineId: 'TestID' } },
     { id: 'poi17', name: '水里星光市集', coords: { lat: 23.813636, lng: 120.850816 }, icon: '💡', description: '參加”逛市集增里程”...', image: '', socialLink: '#', isNew: true, marketScheduleLink: '#' }
 ];
 
@@ -121,6 +109,9 @@ const playerNameInput = document.getElementById('player-name');
 const totalMileageSpan = document.getElementById('total-mileage');
 const totalCarbonReductionSpan = document.getElementById('total-carbon-reduction');
 const totalScoreSpan = document.getElementById('total-score');
+const mapElement = document.getElementById('map');
+const mapStatusElement = document.getElementById('map-status');
+const mapOverlay = document.getElementById('map-overlay');
 const displayGreenProcure = document.getElementById('display-green-procurement');
 const displaySroiProcure = document.getElementById('display-sroi-procurement');
 const displayProjectProcure = document.getElementById('display-project-procurement');
@@ -366,59 +357,36 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Green Consumption Logic
-    const greenBtn = document.getElementById('log-green-procure-btn');
-    if (greenBtn) {
-        greenBtn.addEventListener('click', () => {
-            const qty = parseFloat(document.getElementById('green-qty').value) || 0;
-            const price = parseFloat(document.getElementById('green-price').value) || 0;
-            const total = qty * price;
-            if (total > 0) {
-                greenProcurementTotal += total;
-                updateGreenConsumptionDisplay();
-                updateGlobalGreenStats(total, 'green');
-                saveData();
-                alert('已記錄');
-            }
+    // Tabs
+    const tabs = document.querySelectorAll('.tab-btn');
+    const contents = document.querySelectorAll('.tab-content');
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            tabs.forEach(t => t.classList.remove('active-tab', 'border-emerald-600', 'text-emerald-600'));
+            contents.forEach(c => c.classList.add('hidden'));
+            tab.classList.add('active-tab', 'border-emerald-600', 'text-emerald-600');
+            const target = document.getElementById(tab.dataset.tab);
+            if(target) target.classList.remove('hidden');
         });
-    }
-    
-    const sroiBtn = document.getElementById('log-sroi-btn');
-    if (sroiBtn) {
-        sroiBtn.addEventListener('click', () => {
-            const qty = parseFloat(document.getElementById('sroi-qty').value) || 0;
-            const price = parseFloat(document.getElementById('sroi-price').value) || 0;
-            const weight = parseFloat(document.getElementById('sroi-unit-select').value) || 0;
-            const total = qty * price * weight;
-            if (total > 0) {
-                sroiProcurementTotal += total;
-                updateGreenConsumptionDisplay();
-                updateGlobalGreenStats(total, 'sroi');
-                saveData();
-                alert('已記錄');
-            }
+    });
+
+    // Populate Lists (Simplified)
+    const poiList = document.getElementById('poi-list');
+    if (poiList) {
+        pois.forEach(poi => {
+            const li = document.createElement('li');
+            li.className = 'clickable-list-item p-2 hover:bg-gray-100 cursor-pointer';
+            li.innerHTML = `${poi.icon} ${poi.name}`;
+            li.onclick = () => showPoiModal(poi);
+            poiList.appendChild(li);
         });
     }
 
-    const projBtn = document.getElementById('log-project-btn');
-    if(projBtn) {
-        projBtn.addEventListener('click', () => {
-            const amount = parseFloat(document.getElementById('project-amount').value) || 0;
-            if (amount > 0) {
-                projectProcurementTotal += amount;
-                updateGreenConsumptionDisplay();
-                updateGlobalGreenStats(amount, 'project');
-                saveData();
-                alert('已記錄');
-            }
-        });
-    }
-
-    // Trip Calculation
     const calcBtn = document.getElementById('calculate-mileage-button');
     if(calcBtn) {
         calcBtn.addEventListener('click', () => {
              if (!selectedStartPoi || !selectedEndPoi) { alert('請選擇起訖點'); return; }
+             // Map is loaded or not, we handle it
              if (mapLoaded && directionsService) {
                  const request = {
                     origin: selectedStartPoi.coords,
@@ -441,50 +409,59 @@ document.addEventListener('DOMContentLoaded', () => {
     // Modal Submits
     const submitLogTripBtn = document.getElementById('submit-log-trip');
     if(submitLogTripBtn) submitLogTripBtn.addEventListener('click', submitLogTrip);
-
     const marketSubmitBtn = document.getElementById('submit-market-activity-button');
     if(marketSubmitBtn) marketSubmitBtn.addEventListener('click', submitMarketActivity);
-
     const backMarketBtn = document.getElementById('back-to-market-type-button');
     if(backMarketBtn) backMarketBtn.addEventListener('click', handleBackToMarketType);
 
-
-    // Populate Lists
-    const poiList = document.getElementById('poi-list');
-    if (poiList) {
-        pois.forEach(poi => {
-            const li = document.createElement('li');
-            li.className = 'clickable-list-item p-2 hover:bg-gray-100 cursor-pointer';
-            li.innerHTML = `${poi.icon} ${poi.name}`;
-            li.onclick = () => showPoiModal(poi);
-            poiList.appendChild(li);
+    // Green Consumption Buttons
+    const greenBtn = document.getElementById('log-green-procure-btn');
+    if (greenBtn) {
+        greenBtn.addEventListener('click', () => {
+            const qty = parseFloat(document.getElementById('green-qty').value) || 0;
+            const price = parseFloat(document.getElementById('green-price').value) || 0;
+            const total = qty * price;
+            if (total > 0) {
+                greenProcurementTotal += total;
+                updateGreenConsumptionDisplay();
+                updateGlobalGreenStats(total, 'green');
+                saveData();
+                alert('已記錄');
+            }
         });
     }
-    
-    // Tabs
-    const tabs = document.querySelectorAll('.tab-btn');
-    const contents = document.querySelectorAll('.tab-content');
-    tabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-            tabs.forEach(t => t.classList.remove('active-tab', 'border-emerald-600', 'text-emerald-600'));
-            contents.forEach(c => c.classList.add('hidden'));
-            tab.classList.add('active-tab', 'border-emerald-600', 'text-emerald-600');
-            const target = document.getElementById(tab.dataset.tab);
-            if(target) target.classList.remove('hidden');
+    const sroiBtn = document.getElementById('log-sroi-btn');
+    if (sroiBtn) {
+        sroiBtn.addEventListener('click', () => {
+            const qty = parseFloat(document.getElementById('sroi-qty').value) || 0;
+            const price = parseFloat(document.getElementById('sroi-price').value) || 0;
+            const weight = parseFloat(document.getElementById('sroi-unit-select').value) || 0;
+            const total = qty * price * weight;
+            if (total > 0) {
+                sroiProcurementTotal += total;
+                updateGreenConsumptionDisplay();
+                updateGlobalGreenStats(total, 'sroi');
+                saveData();
+                alert('已記錄');
+            }
         });
-    });
+    }
+    const projBtn = document.getElementById('log-project-btn');
+    if(projBtn) {
+        projBtn.addEventListener('click', () => {
+            const amount = parseFloat(document.getElementById('project-amount').value) || 0;
+            if (amount > 0) {
+                projectProcurementTotal += amount;
+                updateGreenConsumptionDisplay();
+                updateGlobalGreenStats(amount, 'project');
+                saveData();
+                alert('已記錄');
+            }
+        });
+    }
 
-    // Populate Markets (Simplified)
     populateMarketTypeOptions();
-
-
-    // 2. Load Data (After events are bound)
-    try {
-        loadData();
-    } catch(e) {
-        console.error("Data load failed", e);
-    }
-    
+    loadData();
     showHomepage();
 });
 
@@ -493,18 +470,15 @@ function showPoiModal(poi) {
     if(!modal) return;
     modal.classList.remove('hidden');
     document.getElementById('poi-modal-title').textContent = poi.name;
-    // Set current selections for trip
     const startBtn = document.getElementById('set-as-start-button');
     if(startBtn) startBtn.onclick = () => { selectedStartPoi = poi; modal.classList.add('hidden'); updateSelectedPointsDisplay(); };
-    
     const endBtn = document.getElementById('set-as-end-button');
     if(endBtn) endBtn.onclick = () => { selectedEndPoi = poi; modal.classList.add('hidden'); updateSelectedPointsDisplay(); };
 }
 
-// Helper to process trip result and update DB
 function processTripResult(distanceMeters, method) {
     totalMileage += distanceMeters;
-    const carbon = distanceMeters * 0.035; // Example factor
+    const carbon = distanceMeters * 0.035; 
     totalCarbonReduction += carbon;
     
     updateStatsDisplay();
